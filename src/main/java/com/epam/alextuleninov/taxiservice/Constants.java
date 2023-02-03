@@ -44,5 +44,7 @@ public final class Constants {
     public static final String USER_SUCC_REGISTER = "Successful registration. Go to login page.";
     public static final String USER_FAIL_REGISTER_UK = "Вибачте, цей email існує.";
     public static final String USER_FAIL_REGISTER = "Sorry, this email exists.";
+    public static final String USER_CANCEL_ORDER_UK = "Немає вільних машин, скасуйте замовлення.";
+    public static final String USER_CANCEL_ORDER = "No available cars, cancel order.";
     // endregion message
 }

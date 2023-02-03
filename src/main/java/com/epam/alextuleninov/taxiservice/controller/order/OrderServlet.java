@@ -122,6 +122,16 @@ public class OrderServlet extends HttpServlet {
 
         var cars = verifyOrderOrderService.checkOrder(saveOrderRequest);
 
+        if (cars.size() == 0) {
+            log.info("No available cars, order cancellation");
+
+            PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_CANCEL_ORDER_UK, Constants.USER_CANCEL_ORDER);
+
+            req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
+                    .forward(req, resp);
+            return false;
+        }
+
         var stringOfCars = getStringOfCars(cars);
 
         var loyaltyPrice = loyaltyService.getLoyaltyPrice(saveOrderRequest);
