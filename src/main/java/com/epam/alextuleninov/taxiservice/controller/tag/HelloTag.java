@@ -22,7 +22,7 @@ public class HelloTag extends TagSupport {
     @Override
     public int doStartTag() {
         try {
-            String to = " " + userLogin;
+            String to = userLogin;
             pageContext.getOut().write("<hr/>" + to + "<hr/>");
         } catch (IOException e) {
             log.error("An I/O error occurs in HelloTag.class", e);

@@ -141,6 +141,8 @@ public class AuthenticationFilter implements Filter {
 
                 req.getSession().setAttribute("listOfSort", Arrays.asList("-----", "without sorting", Constants.SORTING_ASC, Constants.SORTING_DESC));
                 req.getSession().setAttribute("orders", allOrders);
+                // set order by for default sorting by the date of order and at the cost of the order
+                req.getSession().setAttribute("orderBy", "asc");
 
                 req.getRequestDispatcher(Routes.PAGE_REPORT)
                         .forward(req, resp);

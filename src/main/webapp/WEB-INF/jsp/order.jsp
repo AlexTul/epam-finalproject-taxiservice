@@ -2,10 +2,7 @@
 <%@ taglib prefix="ctg" uri="customtags" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
-<%--Locale--%>
-<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:setBundle basename="resources"/>
-<%--Locale--%>
 
 <html>
 <head>
