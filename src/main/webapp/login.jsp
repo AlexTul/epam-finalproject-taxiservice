@@ -45,10 +45,6 @@
     </div>
     <%-- Register link --%>
 
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
-    </div>
-
     <%--Locale--%>
     <div>
         <form method="post" class="d-flex">
@@ -65,6 +61,10 @@
         </form>
     </div>
     <%--Locale--%>
+
+    <div>
+        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+    </div>
 </div>
 
 </body>

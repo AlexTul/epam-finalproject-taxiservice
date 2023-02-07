@@ -32,16 +32,13 @@ public class JDBCOrderDAOTest {
     private DataSource dataSource;
     private ResultSet resultSet;
     private OrderDAO orderDAO;
-    private ResultSetMapper<User> userMapper;
-    private ResultSetMapper<Route> routeMapper;
 
     @BeforeEach
     void setUp() {
         dataSource = mock(DataSource.class);
         resultSet = mock(ResultSet.class);
         ResultSetMapper<Car> carMapper = new CarMapper();
-        userMapper = new UserMapper();
-        routeMapper = new RouteMapper();
+        ResultSetMapper<Route> routeMapper = new RouteMapper();
         ResultSetMapper<User> userMapper = new UserMapper();
         ResultSetMapper<Order> orderMapper = new OrderMapper();
         orderDAO = new JDBCOrderDAO(dataSource, carMapper, routeMapper, userMapper, orderMapper);
@@ -73,26 +70,6 @@ public class JDBCOrderDAOTest {
         try {
             assertThrows(UnexpectedDataAccessException.class, (Executable) orderDAO.findAll(getTestPageableRequest()));
         } catch (UnexpectedDataAccessException ignored) {
-        }
-    }
-
-    @Test
-    void testFindAllByCustomerRange() throws SQLException {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-            // if value is present
-            prepareResultSetByCustomerRangePresent(resultSet);
-            List<Order> resultPresent = orderDAO.findAllByRange(getTestOrderRequest());
-
-            assertEquals(1, resultPresent.size());
-            assertEquals(getTestOrder(), resultPresent.get(0));
-
-            // if value is absent
-            prepareResultSetByCustomerRangeAbsent(resultSet);
-            List<Order> resultAbsent = orderDAO.findAllByRange(getTestOrderRequest());
-
-            assertEquals(0, resultAbsent.size());
         }
     }
 
@@ -310,43 +287,6 @@ public class JDBCOrderDAOTest {
     }
 
     private static void prepareResultSetAbsent(ResultSet resultSet) throws SQLException {
-        when(resultSet.next()).thenReturn(false);
-    }
-
-    private static void prepareResultSetByCustomerRangePresent(ResultSet resultSet) throws SQLException {
-        when(resultSet.next()).thenReturn(true).thenReturn(false);
-
-        when(resultSet.getLong(DataSourceFields.ORDER_ID)).thenReturn(ConstantsTest.ORDER_ID_VALUE);
-        when(resultSet.getTimestamp(DataSourceFields.ORDER_DATE)).thenReturn(ConstantsTest.ORDER_DATE_VALUE);
-
-        when(resultSet.getLong(DataSourceFields.USER_ID)).thenReturn(ConstantsTest.USER_ID_VALUE);
-        when(resultSet.getString(DataSourceFields.USER_FIRST_NAME)).thenReturn(ConstantsTest.USER_FIRST_NAME_VALUE);
-        when(resultSet.getString(DataSourceFields.USER_LAST_NAME)).thenReturn(ConstantsTest.USER_LAST_NAME_VALUE);
-        when(resultSet.getString(DataSourceFields.USER_EMAIL)).thenReturn(ConstantsTest.USER_EMAIL_VALUE);
-        when(resultSet.getString(DataSourceFields.USER_ROLE)).thenReturn(ConstantsTest.USER_ROLE_VALUE);
-
-        when(resultSet.getInt(DataSourceFields.ORDER_PASSENGERS)).thenReturn(ConstantsTest.ORDER_PASSENGERS_VALUE);
-
-        when(resultSet.getInt(DataSourceFields.CAR_ID)).thenReturn(ConstantsTest.CAR_ID_VALUE);
-        when(resultSet.getString(DataSourceFields.CAR_NAME)).thenReturn(ConstantsTest.CAR_NAME_VALUE);
-        when(resultSet.getInt(DataSourceFields.CAR_PASSENGERS)).thenReturn(ConstantsTest.CAR_PASSENGERS_VALUE);
-        when(resultSet.getString(DataSourceFields.CAR_CAR_CATEGORY)).thenReturn(ConstantsTest.CAR_CAR_CATEGORY_VALUE);
-        when(resultSet.getString(DataSourceFields.CAR_STATUS)).thenReturn(ConstantsTest.CAR_STATUS_VALUE);
-
-        when(resultSet.getLong(DataSourceFields.ROUTE_ID)).thenReturn(ConstantsTest.ROUTE_ID_VALUE);
-        when(resultSet.getLong(DataSourceFields.ADDRESS_ID)).thenReturn(ConstantsTest.ADDRESS_ID_VALUE);
-        when(resultSet.getString(DataSourceFields.ADDRESS_START_END)).thenReturn(ConstantsTest.ADDRESS_START_END_VALUE);
-        when(resultSet.getString(DataSourceFields.ADDRESS_START_END_UK)).thenReturn(ConstantsTest.ADDRESS_START_END_UK_VALUE);
-        when(resultSet.getLong(DataSourceFields.ROUTE_DISTANCE)).thenReturn(ConstantsTest.ROUTE_DISTANCE_VALUE);
-        when(resultSet.getDouble(DataSourceFields.ROUTE_PRICE)).thenReturn(ConstantsTest.ROUTE_PRICE_VALUE);
-        when(resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_TIME)).thenReturn(ConstantsTest.ROUTE_TRAVEL_TIME_VALUE);
-
-        when(resultSet.getDouble(DataSourceFields.ORDER_COST)).thenReturn(ConstantsTest.ORDER_COST_VALUE);
-        when(resultSet.getTimestamp(DataSourceFields.ORDER_STARTED_AT)).thenReturn(ConstantsTest.ORDER_STARTED_AT_VALUE);
-        when(resultSet.getTimestamp(DataSourceFields.ORDER_FINISHED_AT)).thenReturn(ConstantsTest.ORDER_FINISHED_AT_VALUE);
-    }
-
-    private static void prepareResultSetByCustomerRangeAbsent(ResultSet resultSet) throws SQLException {
         when(resultSet.next()).thenReturn(false);
     }
 

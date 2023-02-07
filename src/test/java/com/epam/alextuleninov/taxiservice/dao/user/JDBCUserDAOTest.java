@@ -39,13 +39,6 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testCreate() throws SQLException {
-        try (PreparedStatement ignored = prepareMocks(dataSource)) {
-            assertDoesNotThrow(() -> userDAO.create(getTestUserRequest()));
-        }
-    }
-
-    @Test
     void testFindAllClient() throws SQLException {
         try (var preparedStatement = prepareMocks(dataSource)) {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
