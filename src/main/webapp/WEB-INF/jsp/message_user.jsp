@@ -22,13 +22,13 @@
 
     <%-- Message for user --%>
     <div>
-        <h5>${messageUser}</h5>
+        <h5>${requestScope.messageUser}</h5>
     </div>
     <%-- Message for user --%>
 
     <%-- Log in link --%>
     <div class="text-right">
-        <a class="text-info" href="/">LogIn</a>
+        <a class="text-info" href="${pageContext.request.contextPath}/">LogIn</a>
     </div>
     <%-- Log in link --%>
 

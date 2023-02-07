@@ -23,12 +23,12 @@
         <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
             <fmt:message key="login.register"/></h1>
 
-        <label for="login" class="sr-only">Login Form</label>
+        <label for="login" class="sr-only">Login form</label>
         <input type="text" id="login" name="login" class="form-control"
                placeholder="email@gmail.com"
                minlength="2" maxlength="40" required><br>
 
-        <label for="password" class="sr-only">Password Form</label>
+        <label for="password" class="sr-only">Password form</label>
         <input type="password" id="password" name="password" class="form-control"
                placeholder="<fmt:message key="password"/>"
                minlength="10" maxlength="20" required><br>

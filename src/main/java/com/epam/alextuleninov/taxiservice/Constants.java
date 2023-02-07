@@ -34,10 +34,6 @@ public final class Constants {
     public static final String ADMIN_REPORT_CUSTOM = " by customer of ";
     public static final String ADMIN_REPORT_DATE_UK = " за датою початку ";
     public static final String ADMIN_REPORT_DATE = " by started at date ";
-//    public static final String ADMIN_REPORT_COST_AND_UK = "Відсортовано за вартістю: ";
-//    public static final String ADMIN_REPORT_COST_AND = "Sorted at the cost by: ";
-//    public static final String ADMIN_REPORT_DATE_AND_UK = "Відсортовано за датою: ";
-//    public static final String ADMIN_REPORT_DATE_AND = "Sorted by date by: ";
     public static final String ADMIN_REPORT_SORTED_UK = "Відсортовано за: ";
     public static final String ADMIN_REPORT_SORTED = "Sorted by: ";
     public static final String USER_UK = "Вибачте, ваші дані не валідні.";

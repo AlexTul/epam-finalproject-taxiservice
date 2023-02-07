@@ -23,31 +23,31 @@
 
         <%-- Show route --%>
         <label><fmt:message key="route"/>:</label>
-        <c:out value="${startEnd}"/>
+        <c:out value="${sessionScope.startEnd}"/>
         <br>
         <%-- Show route --%>
 
         <%-- Show number of passengers --%>
         <label><fmt:message key="number.of.passengers"/>:</label>
-        <c:out value="${numberOfPassengers}"/>
+        <c:out value="${sessionScope.numberOfPassengers}"/>
         <br>
         <%-- Show number of passengers --%>
 
         <%-- Show list of cars --%>
         <label><fmt:message key="list.cars"/>:</label>
-        <c:out value="${listOfCars}"/>
+        <c:out value="${sessionScope.listOfCars}"/>
         <br>
         <%-- Show car category --%>
 
         <%-- Show the date for ride --%>
         <label><fmt:message key="date.time.trip"/>:</label>
-        <c:out value="${dateOfRide}"/>
+        <c:out value="${sessionScope.dateOfRide}"/>
         <br>
         <%-- Show the date for ride --%>
 
         <%-- Show the price --%>
         <label><fmt:message key="price.trip"/>, $:</label>
-        <c:out value="${priceOfRide}"/>
+        <c:out value="${sessionScope.priceOfRide}"/>
         <br>
         <%-- Show the price --%>
 

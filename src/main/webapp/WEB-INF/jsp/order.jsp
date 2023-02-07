@@ -26,7 +26,7 @@
         <%-- Choose startEnd --%>
         <label for="carRoutes"><fmt:message key="choose.route"/>:</label><br>
         <select id="carRoutes" name="startEnd">
-            <c:forEach items="${allStartEnd}" var="value">
+            <c:forEach items="${sessionScope.allStartEnd}" var="value">
                 <option value="${value}">${value}</option>
             </c:forEach>
         </select>

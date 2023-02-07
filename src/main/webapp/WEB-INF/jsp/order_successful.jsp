@@ -21,7 +21,7 @@
 
     <%-- Show route --%>
     <label><fmt:message key="date.time.trip"/>:</label>
-    <c:out value="${dateTimeTrip}"/>
+    <c:out value="${requestScope.dateTimeTrip}"/>
     <br>
     <%-- Show route --%>
 

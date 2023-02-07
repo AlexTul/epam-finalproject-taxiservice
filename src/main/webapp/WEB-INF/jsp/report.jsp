@@ -28,11 +28,10 @@
             <form class="form-signing" method="get" action="report">
                 <label for="customersOfOrders"><fmt:message key="choose.order.customer"/>:</label><br>
                 <select id="customersOfOrders" name="customerOfOrders" onchange='submit();'>
-                    <c:forEach items="${customersOfOrders}" var="customer">
+                    <c:forEach items="${sessionScope.customersOfOrders}" var="customer">
                         <option value="${customer}">${customer}</option>
                     </c:forEach>
                 </select>
-                <%--        <input type="submit">--%>
             </form>
         </div>
         <%-- Choose by customer --%>
@@ -42,7 +41,7 @@
             <form class="form-signing" method="get" action="report">
                 <label for="datesOfOrders"><fmt:message key="choose.order.start.end"/>:</label><br>
                 <select id="datesOfOrders" name="dateOfOrders" onchange='submit();'>
-                    <c:forEach items="${datesOfOrders}" var="date">
+                    <c:forEach items="${sessionScope.datesOfOrders}" var="date">
                         <option value="${date}">${date}</option>
                     </c:forEach>
                 </select>
@@ -55,7 +54,7 @@
     <%-- Table of orders --%>
     <div class="tab-pane fade show active" id="users" role="tabpanel"
          aria-labelledby="internet-tab">
-        <h3><fmt:message key="table.orders"/>: ${whoseOrders}. ${sort}</h3>
+        <h3><fmt:message key="table.orders"/>: ${requestScope.whoseOrders}. ${requestScope.sort}</h3>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -95,7 +94,7 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="orderResponse" items="${orders}">
+            <c:forEach var="orderResponse" items="${sessionScope.orders}">
                 <tr>
                     <td>${orderResponse.id}</td>
                     <td>${orderResponse.createdAt}</td>

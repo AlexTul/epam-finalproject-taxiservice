@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import static java.util.Objects.nonNull;
 
@@ -53,8 +52,7 @@ public class AuthenticationFilter implements Filter {
      * @param servletResponse the ServletResponse response
      */
     @Override
-    public void doFilter(ServletRequest servletRequest,
-                         ServletResponse servletResponse,
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) servletRequest;
@@ -80,12 +78,12 @@ public class AuthenticationFilter implements Filter {
 
                 req.getSession().setAttribute("login", login);
                 req.getSession().setAttribute("role", role.toString());
+                log.info("User: " + login + " passed authentication and authorization filter successfully");
 
                 moveToMenu(req, resp, role);
             } else {
                 moveToMenu(req, resp, Role.UNKNOWN);
             }
-            log.info("User: " + login + " passed authentication and authorization filter successfully");
         }
 
         filterChain
@@ -104,8 +102,7 @@ public class AuthenticationFilter implements Filter {
      * @param resp the HttpServletResponse response
      * @param role the role of user
      */
-    private void moveToMenu(HttpServletRequest req,
-                            HttpServletResponse resp,
+    private void moveToMenu(HttpServletRequest req, HttpServletResponse resp,
                             Role role) throws ServletException, IOException {
 
         String locale = (String) req.getSession().getAttribute("locale");
@@ -117,15 +114,14 @@ public class AuthenticationFilter implements Filter {
                 req.getRequestDispatcher(Routes.PAGE_MESSAGE_ADMIN)
                         .forward(req, resp);
             } else {
-                // set attribute for pagination, total_records = all records from database
-                req.setAttribute("total_records", numberRecordsInDatabase);
-
                 // find all users for filter for report`s page
                 var allUsersForFilter = userCRUD.findAllLoginsClient();
 
                 // find all started at dates for report`s page
                 var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
 
+                // set attribute for pagination, total_records = all records from database
+                req.setAttribute("total_records", numberRecordsInDatabase);
                 // set attribute for pagination, current_page = 0
                 int page = 0;
                 req.setAttribute("current_page", page);
@@ -135,21 +131,18 @@ public class AuthenticationFilter implements Filter {
 
                 req.getSession().setAttribute("datesOfOrders", allStartedAtDates);
                 req.getSession().setAttribute("customersOfOrders", allUsersForFilter);
+                req.getSession().setAttribute("orders", allOrders);
+                // set order by for default sorting by the date of order and at the cost of the order
+                req.getSession().setAttribute("orderBy", Constants.SORTING_DESC);
 
                 PageMessageBuilder.buildMessageAdmin(req, locale,
                         "whoseOrders", Constants.ADMIN_REPORT_ALL_UK, Constants.ADMIN_REPORT_ALL);
-
-                req.getSession().setAttribute("listOfSort", Arrays.asList("-----", "without sorting", Constants.SORTING_ASC, Constants.SORTING_DESC));
-                req.getSession().setAttribute("orders", allOrders);
-                // set order by for default sorting by the date of order and at the cost of the order
-                req.getSession().setAttribute("orderBy", "asc");
 
                 req.getRequestDispatcher(Routes.PAGE_REPORT)
                         .forward(req, resp);
             }
         } else if (role.equals(Role.CLIENT)) {
             var allStartEnd = routeCRUD.findAllByLocale(locale);
-
             req.getSession().setAttribute("allStartEnd", allStartEnd);
 
             req.getRequestDispatcher(Routes.PAGE_ORDER)
