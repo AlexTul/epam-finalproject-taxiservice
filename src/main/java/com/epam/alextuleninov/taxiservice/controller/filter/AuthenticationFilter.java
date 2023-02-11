@@ -58,31 +58,35 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
-        String locale = (String) req.getSession().getAttribute("locale");
+        HttpSession session = req.getSession();
+        String locale = (String) session.getAttribute("locale");
 
-        // validation of entered data
-        if (loginValidation(req, resp, locale)) {
-            final String login = req.getParameter("login");
-            final String password = req.getParameter("password");
+        String login = req.getParameter("login");
+        String password = req.getParameter("password");
 
-            final HttpSession session = req.getSession();
-
+        if (login == null) {
             // Logged user
-            if (nonNull(session.getAttribute("login")) &&
-                    nonNull(session.getAttribute("password"))) {
+            if (nonNull(session.getAttribute("login"))) {
                 Role role = (Role) session.getAttribute("role");
-
-                moveToMenu(req, resp, role);
-            } else if (userCRUD.authentication(login, password)) {
-                Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
-
-                req.getSession().setAttribute("login", login);
-                req.getSession().setAttribute("role", role.toString());
-                log.info("User: " + login + " passed authentication and authorization filter successfully");
 
                 moveToMenu(req, resp, role);
             } else {
                 moveToMenu(req, resp, Role.UNKNOWN);
+            }
+        } else {
+            // validation of entered data
+            if (loginValidation(req, resp, locale)) {
+               if (userCRUD.authentication(login, password)) {
+                    Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
+
+                    req.getSession().setAttribute("login", login);
+                    req.getSession().setAttribute("role", role);
+                    log.info("User: " + login + " passed authentication and authorization filter successfully");
+
+                    moveToMenu(req, resp, role);
+                } else {
+                    moveToMenu(req, resp, Role.UNKNOWN);
+                }
             }
         }
 

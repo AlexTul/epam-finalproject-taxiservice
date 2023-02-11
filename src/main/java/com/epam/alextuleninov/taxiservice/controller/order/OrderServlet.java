@@ -48,32 +48,36 @@ public class OrderServlet extends HttpServlet {
     /**
      * To process Get requests from user.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        processRequestGet(req);
+            processRequestGet(req);
 
-        req.getRequestDispatcher(Routes.PAGE_ORDER)
-                .forward(req, resp);
+            req.getRequestDispatcher(Routes.PAGE_ORDER)
+                    .forward(req, resp);
     }
 
     /**
      * To process Post requests from user.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        if (processRequestPost(req, resp)) {
-            req.getRequestDispatcher(Routes.PAGE_CONFIRM)
-                    .forward(req, resp);
+        if (req.getParameter("locale") == null) {
+            if (processRequestPost(req, resp)) {
+                req.getRequestDispatcher(Routes.PAGE_CONFIRM)
+                        .forward(req, resp);
+            }
+        } else {
+            doGet(req, resp);
         }
     }
 
@@ -86,7 +90,7 @@ public class OrderServlet extends HttpServlet {
      * To process Get requests from user:
      * generating a request for un booking the cars
      *
-     * @param req                   HttpServletRequest request
+     * @param req HttpServletRequest request
      */
     private void processRequestGet(HttpServletRequest req) {
         @SuppressWarnings("unchecked")
@@ -103,8 +107,8 @@ public class OrderServlet extends HttpServlet {
      * generating a request for confirming order, calculate loyalty price,
      * setting the attribute in the user`s session.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     private boolean processRequestPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -152,10 +156,10 @@ public class OrderServlet extends HttpServlet {
      * To process Post requests from user:
      * validation an order`s data.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
-     * @param locale                default or current locale of application
-     * @return                      true if user credentials is valid
+     * @param req    HttpServletRequest request
+     * @param resp   HttpServletResponse response
+     * @param locale default or current locale of application
+     * @return true if user credentials is valid
      */
     private boolean orderValidation(HttpServletRequest req, HttpServletResponse resp, String locale)
             throws ServletException, IOException {
@@ -175,8 +179,8 @@ public class OrderServlet extends HttpServlet {
      * To process Post requests from user:
      * validation an order`s data.
      *
-     * @param cars                  list with cars
-     * @return                      string with car`s name
+     * @param cars list with cars
+     * @return string with car`s name
      */
     private String getStringOfCars(List<Car> cars) {
         var stringListOfCars = new StringBuilder();

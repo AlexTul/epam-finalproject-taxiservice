@@ -25,18 +25,18 @@
 <!--        <url-pattern>/*</url-pattern>-->
 <!--    </filter-mapping>-->
 
-<!--    <filter>-->
-<!--        <filter-name>LocaleFilter</filter-name>-->
-<!--        <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.LocaleFilter</filter-class>-->
+    <filter>
+        <filter-name>LocaleFilter</filter-name>
+        <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.LocaleFilter</filter-class>
 <!--        <init-param>-->
 <!--            <param-name>defaultLocale</param-name>-->
 <!--            <param-value>en</param-value>-->
 <!--        </init-param>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>LocaleFilter</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--    </filter-mapping>-->
+    </filter>
+    <filter-mapping>
+        <filter-name>LocaleFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 <!--    <filter>-->
 <!--        <filter-name>AuthenticationFilter</filter-name>-->

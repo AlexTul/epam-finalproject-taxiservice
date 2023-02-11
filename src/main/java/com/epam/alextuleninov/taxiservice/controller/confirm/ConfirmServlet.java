@@ -4,9 +4,11 @@ import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.exceptions.route.RouteExceptions;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -29,25 +31,43 @@ public class ConfirmServlet extends HttpServlet {
 
     private OrderCRUD orderCRUD;
     private CarCRUD carCRUD;
+    private RouteCRUD routeCRUD;
 
     @Override
     public void init() {
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         this.carCRUD = AppContext.getAppContext().getCarCRUD();
+        this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
         log.info(getServletName() + " initialized");
+    }
+
+    /**
+     * To process Get requests from user:
+     * change locale for presentation to the user.
+     *
+     * @param req HttpServletRequest request
+     */
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        processRequestGet(req);
+
+        req.getRequestDispatcher(Routes.PAGE_CONFIRM)
+                .forward(req, resp);
     }
 
     /**
      * To process Post requests from user.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        processRequest(req);
+        processRequestPost(req);
 
         req.getRequestDispatcher(Routes.PAGE_ORDER_SUCCESSFUL)
                 .forward(req, resp);
@@ -59,14 +79,34 @@ public class ConfirmServlet extends HttpServlet {
     }
 
     /**
+     * To process Get requests from user:
+     * change locale for presentation to the user.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processRequestGet(HttpServletRequest req) {
+        String locale = req.getParameter("locale");
+
+        String startEnd;
+        var routeResponse = routeCRUD.findByStartEnd(OrderRequest.getOrderRequest(req, null, null))
+                .orElseThrow(() -> RouteExceptions.routeNotFound(OrderRequest.getOrderRequest(req, null, null)));
+        if (locale.equals("en")) {
+            startEnd = routeResponse.startEnd();
+        } else {
+            startEnd =  routeResponse.startEndUk();
+        }
+        req.getSession().setAttribute("startEnd", startEnd);
+    }
+
+    /**
      * To process Post requests from user:
      * generating a request for creating order to the database
      * and setting the date and un booking the cars
      * and time of the trip in the request for presentation to the user.
      *
-     * @param req                   HttpServletRequest request
+     * @param req HttpServletRequest request
      */
-    private void processRequest(HttpServletRequest req) {
+    private void processRequestPost(HttpServletRequest req) {
         @SuppressWarnings("unchecked")
         var cars = (List<Car>) req.getSession().getAttribute("cars");
 

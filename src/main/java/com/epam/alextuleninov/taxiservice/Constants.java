@@ -24,7 +24,6 @@ public final class Constants {
     public static final int PAGE_SIZE = 2;
     public static final String SORTING_ASC = "asc";
     public static final String SORTING_DESC = "desc";
-    public static final String LOCALE = "locale";
     // endregion pagination settings
 
     // region message
