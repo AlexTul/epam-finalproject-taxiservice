@@ -49,6 +49,10 @@ public class PaginationConfig {
         int currentPage = (Integer) req.getAttribute("current_page");
         long pages = totalRecords / pageSize;
         int lastPage = (int) (pages * pageSize < totalRecords ? pages : pages - 1);
+        // if customer haven`t any orders, because app get customer from DB, customer not really orders
+        if (lastPage < 0) {
+            lastPage = 0;
+        }
         req.setAttribute("last_page", lastPage);
 
         // whether to show in full all links to pages to the left of the current one, or insert an ellipsis
