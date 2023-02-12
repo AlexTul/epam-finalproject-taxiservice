@@ -43,20 +43,20 @@ public interface OrderDAO {
     /**
      * Find all orders by customer from the database.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @param pageable      request with pagination information
      * @return              all users by range from database
      */
-    List<Order> findAllByCustomer(OrderRequest request, PageableRequest pageable);
+    List<Order> findAllByCustomer(String customer, PageableRequest pageable);
 
     /**
      * Find all orders by date start order from the database.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @param pageable      request with pagination information
      * @return              all users by range from database
      */
-    List<Order> findAllByDate(OrderRequest request, PageableRequest pageable);
+    List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable);
 
     /**
      * Find all dates by start order from the database.
@@ -75,18 +75,18 @@ public interface OrderDAO {
     /**
      * Find number of records from the database by customer.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @return              number of record in database
      */
-    long findNumberRecordsByCustomer(OrderRequest request);
+    long findNumberRecordsByCustomer(String customer);
 
     /**
      * Find number of records from the database by date start order.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @return              number of record in database
      */
-    long findNumberRecordsByDateStartedAt(OrderRequest request);
+    long findNumberRecordsByDateStartedAt(LocalDateTime startedAt);
 
     /**
      * Find sum order`s cost by customer from the database.

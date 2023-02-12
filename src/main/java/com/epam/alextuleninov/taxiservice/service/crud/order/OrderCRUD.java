@@ -5,6 +5,7 @@ import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -42,20 +43,20 @@ public interface OrderCRUD {
     /**
      * Find all orders by customer from the database.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
-    List<OrderResponse> findAllByCustomer(OrderRequest request, PageableRequest pageable, String locale);
+    List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable, String locale);
 
     /**
      * Find all orders by date start order from the database.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
-    List<OrderResponse> findAllByDate(OrderRequest request, PageableRequest pageable, String locale);
+    List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable, String locale);
 
     /**
      * Find all dates by start order from the database.
@@ -74,10 +75,10 @@ public interface OrderCRUD {
     /**
      * Find number of records from the database by customer.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @return              number of record in database
      */
-    long findNumberRecordsByCustomer(OrderRequest request);
+    long findNumberRecordsByCustomer(String customer);
 
     /**
      * Find number of records from the database by date start order.
@@ -85,7 +86,7 @@ public interface OrderCRUD {
      * @param request       request with order`s parameters
      * @return              number of record in database
      */
-    long findNumberRecordsByDateStartedAt(OrderRequest request);
+    long findNumberRecordsByDateStartedAt(LocalDateTime startedAt);
 
     /**
      * Find sum order`s cost by customer from the database.

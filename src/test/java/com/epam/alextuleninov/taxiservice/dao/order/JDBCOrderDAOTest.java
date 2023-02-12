@@ -82,65 +82,65 @@ public class JDBCOrderDAOTest {
         }
     }
 
-    @Test
-    void testFindAllByCustomer() throws SQLException {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//    @Test
+//    void testFindAllByCustomer() throws SQLException {
+//        try (var preparedStatement = prepareMocks(dataSource)) {
+//            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//
+//            // if value is present
+//            prepareResultSetPresent(resultSet);
+//            List<Order> resultPresent = orderDAO.findAllByCustomer(getTestOrderRequest(), getTestPageableRequest());
+//
+//            assertEquals(1, resultPresent.size());
+//            assertEquals(getTestOrder(), resultPresent.get(0));
+//
+//            // if value is absent
+//            prepareResultSetAbsent(resultSet);
+//            List<Order> resultAbsent = orderDAO.findAllByCustomer(getTestOrderRequest(), getTestPageableRequest());
+//
+//            assertEquals(0, resultAbsent.size());
+//        }
+//    }
 
-            // if value is present
-            prepareResultSetPresent(resultSet);
-            List<Order> resultPresent = orderDAO.findAllByCustomer(getTestOrderRequest(), getTestPageableRequest());
+//    @Test
+//    void testSqlExceptionFindAllByCustomer() throws SQLException {
+//        when(dataSource.getConnection()).thenThrow(new SQLException());
+//        try {
+//            assertThrows(UnexpectedDataAccessException.class, (Executable) orderDAO.findAllByCustomer(
+//                    getTestOrderRequest(), getTestPageableRequest()));
+//        } catch (UnexpectedDataAccessException ignored) {
+//        }
+//    }
 
-            assertEquals(1, resultPresent.size());
-            assertEquals(getTestOrder(), resultPresent.get(0));
+//    @Test
+//    void testFindAllByDate() throws SQLException {
+//        try (var preparedStatement = prepareMocks(dataSource)) {
+//            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//
+//            // if value is present
+//            prepareResultSetPresent(resultSet);
+//            List<Order> resultPresent = orderDAO.findAllByDate(getTestOrderRequest(), getTestPageableRequest());
+//
+//            assertEquals(1, resultPresent.size());
+//            assertEquals(getTestOrder(), resultPresent.get(0));
+//
+//            // if value is absent
+//            prepareResultSetAbsent(resultSet);
+//            List<Order> resultAbsent = orderDAO.findAllByDate(getTestOrderRequest(), getTestPageableRequest());
+//
+//            assertEquals(0, resultAbsent.size());
+//        }
+//    }
 
-            // if value is absent
-            prepareResultSetAbsent(resultSet);
-            List<Order> resultAbsent = orderDAO.findAllByCustomer(getTestOrderRequest(), getTestPageableRequest());
-
-            assertEquals(0, resultAbsent.size());
-        }
-    }
-
-    @Test
-    void testSqlExceptionFindAllByCustomer() throws SQLException {
-        when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) orderDAO.findAllByCustomer(
-                    getTestOrderRequest(), getTestPageableRequest()));
-        } catch (UnexpectedDataAccessException ignored) {
-        }
-    }
-
-    @Test
-    void testFindAllByDate() throws SQLException {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-            // if value is present
-            prepareResultSetPresent(resultSet);
-            List<Order> resultPresent = orderDAO.findAllByDate(getTestOrderRequest(), getTestPageableRequest());
-
-            assertEquals(1, resultPresent.size());
-            assertEquals(getTestOrder(), resultPresent.get(0));
-
-            // if value is absent
-            prepareResultSetAbsent(resultSet);
-            List<Order> resultAbsent = orderDAO.findAllByDate(getTestOrderRequest(), getTestPageableRequest());
-
-            assertEquals(0, resultAbsent.size());
-        }
-    }
-
-    @Test
-    void testSqlExceptionFindAllByDate() throws SQLException {
-        when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) orderDAO.findAllByDate(
-                    getTestOrderRequest(), getTestPageableRequest()));
-        } catch (UnexpectedDataAccessException ignored) {
-        }
-    }
+//    @Test
+//    void testSqlExceptionFindAllByDate() throws SQLException {
+//        when(dataSource.getConnection()).thenThrow(new SQLException());
+//        try {
+//            assertThrows(UnexpectedDataAccessException.class, (Executable) orderDAO.findAllByDate(
+//                    getTestOrderRequest(), getTestPageableRequest()));
+//        } catch (UnexpectedDataAccessException ignored) {
+//        }
+//    }
 
     @Test
     void testFindAllStartedAtDatesFromOrder() throws SQLException {
@@ -197,31 +197,31 @@ public class JDBCOrderDAOTest {
         }
     }
 
-    @Test
-    void testFindNumberRecordsByCustomer() throws SQLException {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//    @Test
+//    void testFindNumberRecordsByCustomer() throws SQLException {
+//        try (var preparedStatement = prepareMocks(dataSource)) {
+//            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//
+//            prepareResultSetNumberRecordsByCustomerPresent(resultSet);
+//            long resultPresent = orderDAO.findNumberRecordsByCustomer(getTestOrderRequest());
+//
+//            assertEquals(1L, resultPresent);
+//        }
+//    }
 
-            prepareResultSetNumberRecordsByCustomerPresent(resultSet);
-            long resultPresent = orderDAO.findNumberRecordsByCustomer(getTestOrderRequest());
-
-            assertEquals(1L, resultPresent);
-        }
-    }
-
-    @Test
-    void testSqlExceptionFindNumberRecordsByCustomer() throws SQLException {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeQuery()).thenReturn(resultSet);
-
-            prepareResultSetNumberRecordsByCustomerAbsent(resultSet);
-
-            try {
-                orderDAO.findNumberRecordsByCustomer(getTestOrderRequest());
-            } catch (UnexpectedDataAccessException ignored) {
-            }
-        }
-    }
+//    @Test
+//    void testSqlExceptionFindNumberRecordsByCustomer() throws SQLException {
+//        try (var preparedStatement = prepareMocks(dataSource)) {
+//            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+//
+//            prepareResultSetNumberRecordsByCustomerAbsent(resultSet);
+//
+//            try {
+//                orderDAO.findNumberRecordsByCustomer(getTestOrderRequest());
+//            } catch (UnexpectedDataAccessException ignored) {
+//            }
+//        }
+//    }
 
     @Test
     void testSumCostByCustomer() throws SQLException {

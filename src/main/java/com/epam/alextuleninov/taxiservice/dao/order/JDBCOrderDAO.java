@@ -309,18 +309,18 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders by customer from the database.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @param pageable      request with pagination information
      * @return              all users by range from database
      */
     @Override
-    public List<Order> findAllByCustomer(OrderRequest request, PageableRequest pageable) {
+    public List<Order> findAllByCustomer(String customer, PageableRequest pageable) {
         List<Order> result = new ArrayList<>();
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
                 "join routes r on r.id = o.route_id join addresses a on a.id = r.address_id " +
-                "where u.email like '" + request.customer() +
+                "where u.email like '" + customer +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
@@ -330,19 +330,19 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders by date start order from the database.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @param pageable      request with pagination information
      * @return              all users by range from database
      */
     @Override
-    public List<Order> findAllByDate(OrderRequest request, PageableRequest pageable) {
+    public List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
         List<Order> result = new ArrayList<>();
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
                 "join routes r on r.id = o.route_id join addresses a on a.id = r.address_id " +
-                "where o.started_at >= '" + Timestamp.valueOf(request.startedAt()) +
-                "' and o.started_at < '" + Timestamp.valueOf(request.startedAt().plusDays(1)) +
+                "where o.started_at >= '" + Timestamp.valueOf(startedAt) +
+                "' and o.started_at < '" + Timestamp.valueOf(startedAt.plusDays(1)) +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
@@ -405,11 +405,11 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find number of records from the database by customer.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @return              number of record in database
      */
     @Override
-    public long findNumberRecordsByCustomer(OrderRequest request) {
+    public long findNumberRecordsByCustomer(String customer) {
         try (Connection connection = dataSource.getConnection()) {
             try (var getNumberRecordsByCustomer = connection.prepareStatement(
                     """
@@ -419,7 +419,7 @@ public class JDBCOrderDAO implements OrderDAO {
                             """
             )) {
 
-                getNumberRecordsByCustomer.setString(1, request.customer());
+                getNumberRecordsByCustomer.setString(1, customer);
 
                 ResultSet resultSet = getNumberRecordsByCustomer.executeQuery();
                 if (resultSet.next()) {
@@ -436,11 +436,11 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find number of records from the database by date start order.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @return              number of record in database
      */
     @Override
-    public long findNumberRecordsByDateStartedAt(OrderRequest request) {
+    public long findNumberRecordsByDateStartedAt(LocalDateTime startedAt) {
         try (Connection connection = dataSource.getConnection()) {
             try (var getNumberRecordsByCustomer = connection.prepareStatement(
                     """
@@ -449,8 +449,8 @@ public class JDBCOrderDAO implements OrderDAO {
                             """
             )) {
 
-                getNumberRecordsByCustomer.setTimestamp(1, Timestamp.valueOf(request.startedAt()));
-                getNumberRecordsByCustomer.setTimestamp(2, Timestamp.valueOf(request.startedAt().plusDays(1)));
+                getNumberRecordsByCustomer.setTimestamp(1, Timestamp.valueOf(startedAt));
+                getNumberRecordsByCustomer.setTimestamp(2, Timestamp.valueOf(startedAt.plusDays(1)));
 
                 ResultSet resultSet = getNumberRecordsByCustomer.executeQuery();
                 if (resultSet.next()) {

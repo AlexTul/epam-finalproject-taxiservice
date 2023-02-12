@@ -65,13 +65,13 @@ public class OrderService implements OrderCRUD {
     /**
      * Find all orders by customer from the database.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
     @Override
-    public List<OrderResponse> findAllByCustomer(OrderRequest request, PageableRequest pageable, String locale) {
-        return orderDAO.findAllByCustomer(request, pageable)
+    public List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable, String locale) {
+        return orderDAO.findAllByCustomer(customer, pageable)
                 .stream()
                 .map(order -> OrderResponse.fromOrder(order, locale))
                 .toList();
@@ -80,13 +80,13 @@ public class OrderService implements OrderCRUD {
     /**
      * Find all orders by date start order from the database.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
     @Override
-    public List<OrderResponse> findAllByDate(OrderRequest request, PageableRequest pageable, String locale) {
-        return orderDAO.findAllByDate(request, pageable)
+    public List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable, String locale) {
+        return orderDAO.findAllByDate(startedAt, pageable)
                 .stream()
                 .map(order -> OrderResponse.fromOrder(order, locale))
                 .toList();
@@ -123,23 +123,23 @@ public class OrderService implements OrderCRUD {
     /**
      * Find number of records from the database by customer.
      *
-     * @param request       request with order`s parameters
+     * @param customer      customer from request
      * @return              number of record in database
      */
     @Override
-    public long findNumberRecordsByCustomer(OrderRequest request) {
-        return orderDAO.findNumberRecordsByCustomer(request);
+    public long findNumberRecordsByCustomer(String customer) {
+        return orderDAO.findNumberRecordsByCustomer(customer);
     }
 
     /**
      * Find number of records from the database by date start order.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     trip start date and time
      * @return              number of record in database
      */
     @Override
-    public long findNumberRecordsByDateStartedAt(OrderRequest request) {
-        return orderDAO.findNumberRecordsByDateStartedAt(request);
+    public long findNumberRecordsByDateStartedAt(LocalDateTime startedAt) {
+        return orderDAO.findNumberRecordsByDateStartedAt(startedAt);
     }
 
     /**

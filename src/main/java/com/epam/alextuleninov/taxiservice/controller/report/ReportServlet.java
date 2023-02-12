@@ -4,7 +4,6 @@ import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
-import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
@@ -23,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 /**
  * ReportServlet for to process a Http request from a user.
@@ -82,29 +79,20 @@ public class ReportServlet extends HttpServlet {
         String locale = (String) req.getSession().getAttribute("locale");
 
         String customerFromRequest = req.getParameter("customerOfOrders");
-        Object customerFromSession = req.getSession().getAttribute("customerOfOrders");
         String dateFromRequest = req.getParameter("dateOfOrders");
-        Object dateFromSession = req.getSession().getAttribute("dateOfOrders");
         String sortTypeByDateFromRequest = req.getParameter("sortByDate");
         Object sortTypeByDateFromSession = req.getSession().getAttribute("sortByDate");
         String sortTypeByCostFromRequest = req.getParameter("sortByCost");
         Object sortTypeByCostFromSession = req.getSession().getAttribute("sortByCost");
 
-        // configuration for pagination for customer
-        customerFromRequest = configurePagination(
-                customerFromRequest, customerFromSession, req, "customerOfOrders");
-
-        // configuration for pagination for date
-        dateFromRequest = configurePagination(
-                dateFromRequest, dateFromSession, req, "dateOfOrders");
-
-        // put all orders from database after filtering
-        if (nonNull(customerFromRequest) && customerFromRequest.equals("all")
-                || nonNull(dateFromRequest) && dateFromRequest.equals("all")) {
-            customerFromRequest = null;
-            dateFromRequest = null;
-            req.getSession().removeAttribute("customerOfOrders");
-            req.getSession().removeAttribute("dateOfOrders");
+        // filter configuration
+        if (customerFromRequest != null) {
+            req.getSession().setAttribute("filterByCustomer", customerFromRequest);
+            req.getSession().removeAttribute("filterByDate");
+        }
+        if (dateFromRequest != null) {
+            req.getSession().setAttribute("filterByDate", dateFromRequest);
+            req.getSession().removeAttribute("filterByCustomer");
         }
 
         // set current page for pagination
@@ -113,17 +101,17 @@ public class ReportServlet extends HttpServlet {
         var pageableRequest = PageableRequest.getPageableRequest(page);
 
         // put all orders from database or put by dateOfOrders or customerOfOrders
-        var allOrders = putOrdersFromDBToPage(req, customerFromRequest,
-                dateFromRequest, dateFromSession, pageableRequest, locale);
+        var allOrders = putOrdersFromDBToPage(req,
+                pageableRequest, locale);
 
-        // configuration sorting by date
-        if (nonNull(sortTypeByDateFromRequest)) {
+        // sort configuration by date
+        if (sortTypeByDateFromRequest != null) {
             req.getSession().removeAttribute("sortByCost");
             sortTypeByCostFromSession = null;
             sortTypeByDateFromSession = configureSort(sortTypeByDateFromRequest, req, "sortByDate");
         }
-        // configuration sorting by cost
-        if (nonNull(sortTypeByCostFromRequest)) {
+        // sort configuration by cost
+        if (sortTypeByCostFromRequest != null) {
             req.getSession().removeAttribute("sortByDate");
             sortTypeByDateFromSession = null;
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, "sortByCost");
@@ -153,53 +141,28 @@ public class ReportServlet extends HttpServlet {
 
     /**
      * To process Get requests from user:
-     * configuration sorting by date, configuration sorting by cost,
-     * configuration for pagination for customer, configuration for pagination for date,
-     * set current page for pagination, sorting by date, sorting by cost.
-     *
-     * @param fromRequest parameter form the customer`s request (attribute) (customer or date) for search orders in database
-     * @param fromSession parameter form the customer`s session (attribute) (customer or date) for search orders in database
-     * @param req         HttpServletRequest request
-     * @param ofOrders    attribute form the scope with customer`s request parameter
-     */
-    private String configurePagination(String fromRequest, Object fromSession,
-                                       HttpServletRequest req, String ofOrders) {
-        if (fromRequest == null && fromSession != null) {
-            fromRequest = (String) fromSession;
-        }
-        // for choose another date or customer
-        if (fromRequest != null && fromSession != null) {
-            req.getSession().removeAttribute(ofOrders);
-        }
-        return fromRequest;
-    }
-
-    /**
-     * To process Get requests from user:
      * put all orders from database or put by date of orders or customer of orders.
      *
      * @param req                 HttpServletRequest request
-     * @param customerFromRequest customer from customer`s request (attribute) for search orders in database
-     * @param dateFromRequest     date from customer`s request (attribute) for search orders in database
-     * @param dateFromSession     date from customer`s session (attribute) for search orders in database
      * @param pageable            pageable with pagination information
      * @param locale              default or current locale of application
      */
-    private List<OrderResponse> putOrdersFromDBToPage(HttpServletRequest req, String customerFromRequest,
-                                                      String dateFromRequest, Object dateFromSession,
-                                                      PageableRequest pageable, String locale) {
+    private List<OrderResponse> putOrdersFromDBToPage(HttpServletRequest req, PageableRequest pageable, String locale) {
+        String customer = (String) req.getSession().getAttribute("filterByCustomer");
+        String localeDate = (String) req.getSession().getAttribute("filterByDate");
+
         List<OrderResponse> allOrders;
-        if (dateFromRequest == null && customerFromRequest == null) {
-            allOrders = getOrderResponses(req, pageable, locale);
-        } else if (!(customerFromRequest == null) && dateFromSession == null) {
-            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByCustomer(OrderRequest.getRequest(customerFromRequest, null)),
-                    orderCRUD.findAllByCustomer(OrderRequest.getRequest(customerFromRequest, null), pageable, locale),
-                    "customerOfOrders", customerFromRequest, locale, Constants.ADMIN_REPORT_CUSTOM_UK, Constants.ADMIN_REPORT_CUSTOM);
+        if (customer != null && !customer.equals("all")) {
+            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByCustomer(customer),
+                    orderCRUD.findAllByCustomer(customer, pageable, locale),
+                    "customerOfOrders", customer, locale, Constants.ADMIN_REPORT_CUSTOM_UK, Constants.ADMIN_REPORT_CUSTOM);
+        } else if (localeDate != null && !localeDate.equals("all")) {
+            LocalDateTime localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), Constants.FORMATTER);
+            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByDateStartedAt(localeDateTime),
+                    orderCRUD.findAllByDate(localeDateTime, pageable, locale),
+                    "dateOfOrders", localeDate, locale, Constants.ADMIN_REPORT_DATE_UK, Constants.ADMIN_REPORT_DATE);
         } else {
-            assert dateFromRequest != null;
-            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByDateStartedAt(OrderRequest.getRequest(null, LocalDateTime.parse(dateFromRequest.concat(" 00:00"), Constants.FORMATTER))),
-                    orderCRUD.findAllByDate(OrderRequest.getRequest(null, LocalDateTime.parse(dateFromRequest.concat(" 00:00"), Constants.FORMATTER)), pageable, locale),
-                    "dateOfOrders", dateFromRequest, locale, Constants.ADMIN_REPORT_DATE_UK, Constants.ADMIN_REPORT_DATE);
+            allOrders = getOrderResponses(req, pageable, locale);
         }
         return allOrders;
     }
@@ -264,7 +227,7 @@ public class ReportServlet extends HttpServlet {
     private List<OrderResponse> getOrdersResponsesSortBy(Object sortTypeByDateFromSession, Object sortTypeByCostFromSession,
                                                          List<OrderResponse> allOrders) {
         // sorting by date
-        if (nonNull(sortTypeByDateFromSession)) {
+        if (sortTypeByDateFromSession != null) {
             if (sortTypeByDateFromSession.equals(Constants.SORTING_ASC)) {
                 allOrders = allOrders.stream()
                         .sorted(Comparator.comparing(OrderResponse::getCreatedAt))
@@ -277,7 +240,7 @@ public class ReportServlet extends HttpServlet {
         }
 
         // sorting by cost
-        if (nonNull(sortTypeByCostFromSession)) {
+        if (sortTypeByCostFromSession != null) {
             if (sortTypeByCostFromSession.equals(Constants.SORTING_ASC)) {
                 allOrders = allOrders.stream()
                         .sorted(Comparator.comparingDouble(OrderResponse::getCost))
