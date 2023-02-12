@@ -129,11 +129,11 @@ public class ReportServlet extends HttpServlet {
 
         if (sortTypeByDateFromSession != null) {
             // sorting by date
-            allOrders = getOrdersResponsesSortByDate(req, sortTypeByDateFromSession, allOrders, locale);
+            allOrders = getOrdersResponsesSortByDate(sortTypeByDateFromSession, allOrders);
         }
         if (sortTypeByCostFromSession != null) {
             // sorting by cost
-            allOrders = getOrdersResponsesSortByCost(req, sortTypeByCostFromSession, allOrders, locale);
+            allOrders = getOrdersResponsesSortByCost(sortTypeByCostFromSession, allOrders);
         }
 
         req.getSession().setAttribute("orders", allOrders);
@@ -263,31 +263,20 @@ public class ReportServlet extends HttpServlet {
      * To process Get requests from user:
      * sorting by date.
      *
-     * @param req                       HttpServletRequest request
      * @param sortTypeByDateFromSession sort type by date from session (attribute) for sorting orders by date
      * @param allOrders                 all orders (from customer or date)
-     * @param locale                    default or current locale of application
      */
-    private List<OrderResponse> getOrdersResponsesSortByDate(HttpServletRequest req, Object sortTypeByDateFromSession,
-                                                             List<OrderResponse> allOrders, String locale) {
+    private List<OrderResponse> getOrdersResponsesSortByDate(Object sortTypeByDateFromSession, List<OrderResponse> allOrders) {
         if (sortTypeByDateFromSession.equals(Constants.SORTING_ASC)) {
 
             allOrders = allOrders.stream()
                     .sorted(Comparator.comparing(OrderResponse::getCreatedAt))
                     .collect(Collectors.toCollection(ArrayList::new));
-
-            PageMessageBuilder.buildMessageAdmin(req, locale, "sort",
-                    Constants.ADMIN_REPORT_SORTED_UK + Constants.SORTING_ASC,
-                    Constants.ADMIN_REPORT_SORTED + Constants.SORTING_ASC);
         } else if (sortTypeByDateFromSession.equals(Constants.SORTING_DESC)) {
 
             allOrders = allOrders.stream()
                     .sorted(Comparator.comparing(OrderResponse::getCreatedAt).reversed())
                     .collect(Collectors.toCollection(ArrayList::new));
-
-            PageMessageBuilder.buildMessageAdmin(req, locale, "sort",
-                    Constants.ADMIN_REPORT_SORTED_UK + Constants.SORTING_DESC,
-                    Constants.ADMIN_REPORT_SORTED + Constants.SORTING_DESC);
         }
         return allOrders;
     }
@@ -296,31 +285,20 @@ public class ReportServlet extends HttpServlet {
      * To process Get requests from user:
      * sorting by cost.
      *
-     * @param req                       HttpServletRequest request
      * @param sortTypeByCostFromSession sort type by cost from session (attribute) for sorting orders by cost
      * @param allOrders                 all orders (from customer or date)
-     * @param locale                    default or current locale of application
      */
-    private List<OrderResponse> getOrdersResponsesSortByCost(HttpServletRequest req, Object sortTypeByCostFromSession,
-                                                             List<OrderResponse> allOrders, String locale) {
+    private List<OrderResponse> getOrdersResponsesSortByCost(Object sortTypeByCostFromSession, List<OrderResponse> allOrders) {
         if (sortTypeByCostFromSession.equals(Constants.SORTING_ASC)) {
 
             allOrders = allOrders.stream()
                     .sorted(Comparator.comparingDouble(OrderResponse::getCost))
                     .collect(Collectors.toCollection(ArrayList::new));
-
-            PageMessageBuilder.buildMessageAdmin(req, locale, "sort",
-                    Constants.ADMIN_REPORT_SORTED_UK + Constants.SORTING_ASC,
-                    Constants.ADMIN_REPORT_SORTED + Constants.SORTING_ASC);
         } else if (sortTypeByCostFromSession.equals(Constants.SORTING_DESC)) {
 
             allOrders = allOrders.stream()
                     .sorted(Comparator.comparingDouble(OrderResponse::getCost).reversed())
                     .collect(Collectors.toCollection(ArrayList::new));
-
-            PageMessageBuilder.buildMessageAdmin(req, locale, "sort",
-                    Constants.ADMIN_REPORT_SORTED_UK + Constants.SORTING_DESC,
-                    Constants.ADMIN_REPORT_SORTED + Constants.SORTING_DESC);
         }
         return allOrders;
     }

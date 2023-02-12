@@ -46,7 +46,7 @@
 
     <%--Locale--%>
     <div>
-        <form method="post" class="d-flex">
+        <form method="get" class="d-flex">
             <label>
                 <select name="locale" onchange='submit();'>
                     <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
