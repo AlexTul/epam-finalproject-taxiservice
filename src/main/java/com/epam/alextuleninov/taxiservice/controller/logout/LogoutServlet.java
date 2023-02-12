@@ -80,6 +80,7 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute("sort");
         session.removeAttribute("customerOfOrders");
         session.removeAttribute("dateOfOrders");
+        session.removeAttribute("orderBy");
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }

@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 /**
  * ReportServlet for to process a Http request from a user.
  */
@@ -88,19 +90,6 @@ public class ReportServlet extends HttpServlet {
         String sortTypeByCostFromRequest = req.getParameter("sortByCost");
         Object sortTypeByCostFromSession = req.getSession().getAttribute("sortByCost");
 
-        // configuration sorting by date
-        if (sortTypeByDateFromRequest != null) {
-            req.getSession().removeAttribute("sortByCost");
-            sortTypeByCostFromSession = null;
-            sortTypeByDateFromSession = configureSort(sortTypeByDateFromRequest, req, "sortByDate");
-        }
-        // configuration sorting by cost
-        if (sortTypeByCostFromRequest != null) {
-            req.getSession().removeAttribute("sortByDate");
-            sortTypeByDateFromSession = null;
-            sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, "sortByCost");
-        }
-
         // configuration for pagination for customer
         customerFromRequest = configurePagination(
                 customerFromRequest, customerFromSession, req, "customerOfOrders");
@@ -127,14 +116,21 @@ public class ReportServlet extends HttpServlet {
         var allOrders = putOrdersFromDBToPage(req, customerFromRequest,
                 dateFromRequest, dateFromSession, pageableRequest, locale);
 
-        if (sortTypeByDateFromSession != null) {
-            // sorting by date
-            allOrders = getOrdersResponsesSortByDate(sortTypeByDateFromSession, allOrders);
+        // configuration sorting by date
+        if (sortTypeByDateFromRequest != null) {
+            req.getSession().removeAttribute("sortByCost");
+            sortTypeByCostFromSession = null;
+            sortTypeByDateFromSession = configureSort(sortTypeByDateFromRequest, req, "sortByDate");
         }
-        if (sortTypeByCostFromSession != null) {
-            // sorting by cost
-            allOrders = getOrdersResponsesSortByCost(sortTypeByCostFromSession, allOrders);
+        // configuration sorting by cost
+        if (sortTypeByCostFromRequest != null) {
+            req.getSession().removeAttribute("sortByDate");
+            sortTypeByDateFromSession = null;
+            sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, "sortByCost");
         }
+
+        // sorting by date or sorting by cost
+        allOrders = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
 
         req.getSession().setAttribute("orders", allOrders);
     }
@@ -151,10 +147,8 @@ public class ReportServlet extends HttpServlet {
      */
     private Object configureSort(String sortTypeFromRequest, HttpServletRequest req, String sortBy) {
         req.getSession().setAttribute(sortBy, sortTypeFromRequest);
-        Object sortTypeFromSession = req.getSession().getAttribute(sortBy);
         req.getSession().setAttribute("orderBy", sortTypeFromRequest);
-
-        return sortTypeFromSession;
+        return req.getSession().getAttribute(sortBy);
     }
 
     /**
@@ -264,41 +258,35 @@ public class ReportServlet extends HttpServlet {
      * sorting by date.
      *
      * @param sortTypeByDateFromSession sort type by date from session (attribute) for sorting orders by date
-     * @param allOrders                 all orders (from customer or date)
-     */
-    private List<OrderResponse> getOrdersResponsesSortByDate(Object sortTypeByDateFromSession, List<OrderResponse> allOrders) {
-        if (sortTypeByDateFromSession.equals(Constants.SORTING_ASC)) {
-
-            allOrders = allOrders.stream()
-                    .sorted(Comparator.comparing(OrderResponse::getCreatedAt))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        } else if (sortTypeByDateFromSession.equals(Constants.SORTING_DESC)) {
-
-            allOrders = allOrders.stream()
-                    .sorted(Comparator.comparing(OrderResponse::getCreatedAt).reversed())
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        return allOrders;
-    }
-
-    /**
-     * To process Get requests from user:
-     * sorting by cost.
-     *
      * @param sortTypeByCostFromSession sort type by cost from session (attribute) for sorting orders by cost
      * @param allOrders                 all orders (from customer or date)
      */
-    private List<OrderResponse> getOrdersResponsesSortByCost(Object sortTypeByCostFromSession, List<OrderResponse> allOrders) {
-        if (sortTypeByCostFromSession.equals(Constants.SORTING_ASC)) {
+    private List<OrderResponse> getOrdersResponsesSortBy(Object sortTypeByDateFromSession, Object sortTypeByCostFromSession,
+                                                         List<OrderResponse> allOrders) {
+        // sorting by date
+        if (nonNull(sortTypeByDateFromSession)) {
+            if (sortTypeByDateFromSession.equals(Constants.SORTING_ASC)) {
+                allOrders = allOrders.stream()
+                        .sorted(Comparator.comparing(OrderResponse::getCreatedAt))
+                        .collect(Collectors.toCollection(ArrayList::new));
+            } else {
+                allOrders = allOrders.stream()
+                        .sorted(Comparator.comparing(OrderResponse::getCreatedAt).reversed())
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
+        }
 
-            allOrders = allOrders.stream()
-                    .sorted(Comparator.comparingDouble(OrderResponse::getCost))
-                    .collect(Collectors.toCollection(ArrayList::new));
-        } else if (sortTypeByCostFromSession.equals(Constants.SORTING_DESC)) {
-
-            allOrders = allOrders.stream()
-                    .sorted(Comparator.comparingDouble(OrderResponse::getCost).reversed())
-                    .collect(Collectors.toCollection(ArrayList::new));
+        // sorting by cost
+        if (nonNull(sortTypeByCostFromSession)) {
+            if (sortTypeByCostFromSession.equals(Constants.SORTING_ASC)) {
+                allOrders = allOrders.stream()
+                        .sorted(Comparator.comparingDouble(OrderResponse::getCost))
+                        .collect(Collectors.toCollection(ArrayList::new));
+            } else {
+                allOrders = allOrders.stream()
+                        .sorted(Comparator.comparingDouble(OrderResponse::getCost).reversed())
+                        .collect(Collectors.toCollection(ArrayList::new));
+            }
         }
         return allOrders;
     }
