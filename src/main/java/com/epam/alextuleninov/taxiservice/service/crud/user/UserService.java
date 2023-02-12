@@ -62,7 +62,7 @@ public class UserService implements UserCRUD {
         var listLoginsClient = userDAO.findAllClient().stream()
                 .map(User::getEmail)
                 .collect(Collectors.toCollection(LinkedList::new));
-        listLoginsClient.addAll(0, Arrays.asList("--------------------------", "all orders"));
+        listLoginsClient.addAll(0, Arrays.asList("--------------------------", "all"));
 
         return listLoginsClient;
     }

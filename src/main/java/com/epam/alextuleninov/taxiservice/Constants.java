@@ -21,7 +21,7 @@ public final class Constants {
     // endregion to format date and time
 
     // region pagination settings
-    public static final int PAGE_SIZE = 2;
+    public static final int PAGE_SIZE = 5;
     public static final String SORTING_ASC = "asc";
     public static final String SORTING_DESC = "desc";
     // endregion pagination settings

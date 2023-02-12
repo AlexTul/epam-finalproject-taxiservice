@@ -99,8 +99,8 @@ public class ReportServlet extends HttpServlet {
                 dateFromRequest, dateFromSession, req, "dateOfOrders");
 
         // put all orders from database after filtering
-        if (customerFromRequest != null && customerFromRequest.equals("all orders")
-                || dateFromRequest != null && dateFromRequest.equals("all orders")) {
+        if (nonNull(customerFromRequest) && customerFromRequest.equals("all")
+                || nonNull(dateFromRequest) && dateFromRequest.equals("all")) {
             customerFromRequest = null;
             dateFromRequest = null;
             req.getSession().removeAttribute("customerOfOrders");
@@ -117,13 +117,13 @@ public class ReportServlet extends HttpServlet {
                 dateFromRequest, dateFromSession, pageableRequest, locale);
 
         // configuration sorting by date
-        if (sortTypeByDateFromRequest != null) {
+        if (nonNull(sortTypeByDateFromRequest)) {
             req.getSession().removeAttribute("sortByCost");
             sortTypeByCostFromSession = null;
             sortTypeByDateFromSession = configureSort(sortTypeByDateFromRequest, req, "sortByDate");
         }
         // configuration sorting by cost
-        if (sortTypeByCostFromRequest != null) {
+        if (nonNull(sortTypeByCostFromRequest)) {
             req.getSession().removeAttribute("sortByDate");
             sortTypeByDateFromSession = null;
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, "sortByCost");

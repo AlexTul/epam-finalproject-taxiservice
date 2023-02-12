@@ -1,12 +1,10 @@
 package com.epam.alextuleninov.taxiservice.service.crud.order;
 
 import com.epam.alextuleninov.taxiservice.dao.order.OrderDAO;
-import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
  * @version 01
  */
 public class OrderService implements OrderCRUD {
-
-    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
 
     private final OrderDAO orderDAO;
 
@@ -109,7 +105,7 @@ public class OrderService implements OrderCRUD {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toCollection(LinkedList::new));
-        listStartedAtDates.addAll(0, Arrays.asList("--------------------------", "all orders"));
+        listStartedAtDates.addAll(0, Arrays.asList("--------------------------", "all"));
 
         return listStartedAtDates;
     }
