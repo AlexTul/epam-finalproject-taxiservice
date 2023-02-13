@@ -1,7 +1,10 @@
 <%@ taglib prefix="ctg" uri="customtags" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
+<%--Locale--%>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:setBundle basename="resources"/>
+<%--Locale--%>
 
 <html>
 <head>
@@ -122,6 +125,23 @@
         <a class="text-info" href="logout"><fmt:message key="logout"/></a>
     </div>
     <%-- Log out link --%>
+
+    <%--Locale--%>
+    <div>
+        <form method="get" class="d-flex">
+            <label>
+                <select name="locale" onchange='submit();'>
+                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
+                        <fmt:message key="en"/>
+                    </option>
+                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
+                        <fmt:message key="ua"/>
+                    </option>
+                </select>
+            </label>
+        </form>
+    </div>
+    <%--Locale--%>
 
     <div>
         <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
