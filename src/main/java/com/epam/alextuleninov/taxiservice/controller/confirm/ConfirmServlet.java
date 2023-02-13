@@ -69,8 +69,13 @@ public class ConfirmServlet extends HttpServlet {
 
         processRequestPost(req);
 
-        req.getRequestDispatcher(Routes.PAGE_ORDER_SUCCESSFUL)
-                .forward(req, resp);
+        if (req.getSession().getAttribute("updateOrderID") != null) {
+            req.getSession().removeAttribute("updateOrderID");
+            resp.sendRedirect("/auth");
+        } else {
+            req.getRequestDispatcher(Routes.PAGE_ORDER_SUCCESSFUL)
+                    .forward(req, resp);
+        }
     }
 
     @Override
@@ -93,20 +98,25 @@ public class ConfirmServlet extends HttpServlet {
         if (locale.equals("en")) {
             startEnd = routeResponse.startEnd();
         } else {
-            startEnd =  routeResponse.startEndUk();
+            startEnd = routeResponse.startEndUk();
         }
         req.getSession().setAttribute("startEnd", startEnd);
     }
 
     /**
-     * To process Post requests from user:
+     * To process Post requests:
+     * - if it is creat a new order:
      * generating a request for creating order to the database
      * and setting the date and un booking the cars
      * and time of the trip in the request for presentation to the user.
+     * - if it is change of order - update order by ID in the database and on the order page.
      *
      * @param req HttpServletRequest request
      */
     private void processRequestPost(HttpServletRequest req) {
+        String locale = (String) req.getSession().getAttribute("locale");
+        String orderID = (String) req.getSession().getAttribute("updateOrderID");
+
         @SuppressWarnings("unchecked")
         var cars = (List<Car>) req.getSession().getAttribute("cars");
 
@@ -115,11 +125,14 @@ public class ConfirmServlet extends HttpServlet {
 
         var orderRequest = OrderRequest.getOrderRequest(req, cars, dateTimeOfRide);
 
-        var order = orderCRUD.create(orderRequest);
-        log.info("User with login = " + orderRequest.customer() + " was registered.");
+        if (orderID == null) {
+            orderCRUD.create(orderRequest, locale);
+        } else {
+            orderCRUD.updateByID(Long.parseLong(orderID), orderRequest);
+        }
 
         carCRUD.changeCarStatus(orderRequest);
 
-        req.setAttribute("dateTimeTrip", order.getStartedAt().format(Constants.FORMATTER));
+        req.setAttribute("dateTimeTrip", orderRequest.startedAt().format(Constants.FORMATTER));
     }
 }

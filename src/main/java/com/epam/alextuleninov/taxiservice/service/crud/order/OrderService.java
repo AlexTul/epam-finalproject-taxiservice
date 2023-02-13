@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.epam.alextuleninov.taxiservice.exceptions.order.OrderExceptions.orderNotFound;
 
 /**
  * Class CRUD for Order.
@@ -34,8 +37,8 @@ public class OrderService implements OrderCRUD {
      * @return              the created order from database
      */
     @Override
-    public Order create(OrderRequest request) {
-        return orderDAO.create(request);
+    public OrderResponse create(OrderRequest request, String locale) {
+        return OrderResponse.fromOrder(orderDAO.create(request), locale);
     }
 
     /**
@@ -154,12 +157,23 @@ public class OrderService implements OrderCRUD {
     }
 
     /**
+     * Update the order from database.
+     *
+     * @param id            id of order
+     * @param orderRequest  request with parameter
+     */
+    @Override
+    public void updateByID(long id, OrderRequest orderRequest) {
+        orderDAO.updateByID(id, orderRequest);
+    }
+
+    /**
      * Delete the order from database.
      *
      * @param id            id of category
      */
     @Override
-    public void deleteById(long id) {
+    public void deleteByID(long id) {
         orderDAO.deleteById(id);
     }
 }

@@ -6,6 +6,7 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
 import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
@@ -32,6 +33,7 @@ public class OrderServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(OrderServlet.class);
 
     private CarCRUD carCRUD;
+    private RouteCRUD routeCRUD;
     private Loyalty loyaltyService;
     private VerifyOrder verifyOrderOrderService;
     private DateTimeRide dateTimeRideService;
@@ -39,6 +41,7 @@ public class OrderServlet extends HttpServlet {
     @Override
     public void init() {
         this.carCRUD = AppContext.getAppContext().getCarCRUD();
+        this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
         this.loyaltyService = AppContext.getAppContext().getLoyaltyService();
         this.verifyOrderOrderService = AppContext.getAppContext().getVerifyService();
         this.dateTimeRideService = AppContext.getAppContext().getDateTimeRide();
@@ -55,10 +58,13 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-            processRequestGet(req);
+        String orderID = req.getParameter("id");
+        req.getSession().setAttribute("updateOrderID", orderID);
 
-            req.getRequestDispatcher(Routes.PAGE_ORDER)
-                    .forward(req, resp);
+        processRequestGet(req);
+
+        req.getRequestDispatcher(Routes.PAGE_ORDER)
+                .forward(req, resp);
     }
 
     /**
@@ -87,8 +93,9 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
-     * To process Get requests from user:
-     * generating a request for un booking the cars
+     * To process Get requests:
+     * - if it`s cancellation of car reservation - generating a request and un booking the cars;
+     * - if it is a change of order - request routes from the database and from the order page
      *
      * @param req HttpServletRequest request
      */
@@ -96,9 +103,14 @@ public class OrderServlet extends HttpServlet {
         @SuppressWarnings("unchecked")
         var cars = (List<Car>) req.getSession().getAttribute("cars");
 
-        var orderRequest = OrderRequest.getOrderRequest(req, cars, null);
-
-        carCRUD.changeCarStatus(orderRequest);
+        if (cars != null) {
+            var orderRequest = OrderRequest.getOrderRequest(req, cars, null);
+            carCRUD.changeCarStatus(orderRequest);
+        } else {
+            String locale = (String) req.getSession().getAttribute("locale");
+            var allStartEnd = routeCRUD.findAllByLocale(locale);
+            req.getSession().setAttribute("allStartEnd", allStartEnd);
+        }
     }
 
     /**

@@ -113,7 +113,8 @@
                     <td>${orderResponse.startedAt}</td>
                     <td>${orderResponse.finishedAt}</td>
                     <td>
-                        <form method="get" action="${pageContext.request.contextPath}/report?id=${orderResponse.id}">
+                        <form method="get" action="order">
+                            <input type="number" hidden name="id" value="${orderResponse.id}"/>
                             <button type="submit" class="btn btn-warning btn-lg"></button>
                         </form>
                     </td>

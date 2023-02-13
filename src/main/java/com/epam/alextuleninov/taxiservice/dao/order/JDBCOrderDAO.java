@@ -498,6 +498,71 @@ public class JDBCOrderDAO implements OrderDAO {
     }
 
     /**
+     * Update the order from database.
+     *
+     * @param id            id of order
+     * @param request       request with parameter
+     */
+    @Override
+    public void updateByID(long id, OrderRequest request) {
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try (var getRoute = connection.prepareStatement(
+                    """
+                            select * from routes r
+                            join addresses a on a.id = r.address_id
+                            where a.start_end like ? or a.start_end_uk like ?
+                            """
+            );
+                    var updateOrderByID = connection.prepareStatement(
+                    """
+                            update orders o
+                            set order_passengers = ?, route_id = ?, cost = ?, started_at = ?, finished_at = ?
+                            where o.id = ?
+                            """
+            )) {
+
+                // get route from database
+                getRoute.setString(1, request.startEnd());
+                getRoute.setString(2, request.startEnd());
+                ResultSet resultSetRoute = getRoute.executeQuery();
+                Route route = null;
+                if (resultSetRoute.next()) {
+                    route = routeMapper.map(resultSetRoute);
+                }
+
+                // init, check and count start route`s time
+                LocalDateTime startRoute = request.startedAt();
+
+                // count finish route`s time
+                assert route != null;
+                LocalDateTime finishRoute = request.startedAt().plusSeconds(route.getTravelTime());
+
+                // insert data to create order table
+                updateOrderByID.setInt(1, request.numberOfPassengers());
+                updateOrderByID.setLong(2, route.getId());
+                updateOrderByID.setDouble(3, request.loyaltyPrice());
+                updateOrderByID.setTimestamp(4, Timestamp.valueOf(startRoute));
+                updateOrderByID.setTimestamp(5, Timestamp.valueOf(finishRoute));
+                updateOrderByID.setLong(6, id);
+
+                updateOrderByID.executeUpdate();
+
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw new UnexpectedDataAccessException(e);
+            } finally {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
      * Delete the order from database.
      *
      * @param id id of order

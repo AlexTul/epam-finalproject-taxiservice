@@ -7,6 +7,7 @@ import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface CRUD for Order.
@@ -22,7 +23,7 @@ public interface OrderCRUD {
      * @param request       request with order parameters
      * @return              the created order from database
      */
-    Order create(OrderRequest request);
+    OrderResponse create(OrderRequest request, String locale);
 
     /**
      * Find all orders from the database with pagination information.
@@ -83,7 +84,7 @@ public interface OrderCRUD {
     /**
      * Find number of records from the database by date start order.
      *
-     * @param request       request with order`s parameters
+     * @param startedAt     started the trip
      * @return              number of record in database
      */
     long findNumberRecordsByDateStartedAt(LocalDateTime startedAt);
@@ -97,9 +98,17 @@ public interface OrderCRUD {
     double sumCostByCustomer(OrderRequest request);
 
     /**
+     * Update the order from database.
+     *
+     * @param id            id of order
+     * @param orderRequest  request with parameter
+     */
+    void updateByID(long id, OrderRequest orderRequest);
+
+    /**
      * Delete the order from database.
      *
      * @param id            id of order
      */
-    void deleteById(long id);
+    void deleteByID(long id);
 }

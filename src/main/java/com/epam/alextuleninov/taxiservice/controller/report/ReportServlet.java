@@ -266,7 +266,7 @@ public class ReportServlet extends HttpServlet {
             throws IOException {
 
         String id = req.getParameter("id");
-        orderCRUD.deleteById(Long.parseLong(id));
+        orderCRUD.deleteByID(Long.parseLong(id));
 
         resp.sendRedirect("/report");
     }

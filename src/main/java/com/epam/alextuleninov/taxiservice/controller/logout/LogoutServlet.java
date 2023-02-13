@@ -81,6 +81,7 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute("customerOfOrders");
         session.removeAttribute("dateOfOrders");
         session.removeAttribute("orderBy");
+        session.removeAttribute("updateOrderID");
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }
