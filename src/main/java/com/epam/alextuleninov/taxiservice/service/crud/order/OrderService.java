@@ -152,4 +152,14 @@ public class OrderService implements OrderCRUD {
     public double sumCostByCustomer(OrderRequest request) {
         return orderDAO.sumCostByCustomer(request);
     }
+
+    /**
+     * Delete the order from database.
+     *
+     * @param id            id of category
+     */
+    @Override
+    public void deleteById(long id) {
+        orderDAO.deleteById(id);
+    }
 }

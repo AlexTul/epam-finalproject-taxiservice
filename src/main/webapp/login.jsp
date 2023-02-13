@@ -17,7 +17,7 @@
 
 <div>
     <%-- Forma for enter login`s credential --%>
-    <form class="form-signing" method="post" action="auth">
+    <form class="form-signing" method="post" action="/auth">
         <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
         <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
             <fmt:message key="login.register"/></h1>

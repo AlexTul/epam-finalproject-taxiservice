@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.controller.filter;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import java.io.IOException;
  * The filter pre-processes the request before it reaches the servlet.
  * LocaleFilter sets the locale.
  */
-//@WebFilter(filterName = "LocaleFilter", urlPatterns = {"/*", "/auth"})
+//@WebFilter(filterName = "LocaleFilter", urlPatterns = "/*")
 public class LocaleFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(LocaleFilter.class);

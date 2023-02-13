@@ -95,4 +95,11 @@ public interface OrderDAO {
      * @return              sum order`s cost by customer
      */
     double sumCostByCustomer(OrderRequest request);
+
+    /**
+     * Delete the category in the database.
+     *
+     * @param id            id of order
+     */
+    void deleteById(long id);
 }

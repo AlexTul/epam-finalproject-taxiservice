@@ -95,4 +95,11 @@ public interface OrderCRUD {
      * @return              sum order`s cost by customer
      */
     double sumCostByCustomer(OrderRequest request);
+
+    /**
+     * Delete the order from database.
+     *
+     * @param id            id of order
+     */
+    void deleteById(long id);
 }

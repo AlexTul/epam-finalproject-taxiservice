@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 /**
  * ReportServlet for to process a Http request from a user.
  */
-@WebServlet(name = "ReportServlet", urlPatterns = {"/report"})
+@WebServlet(name = "ReportServlet", urlPatterns = "/report")
 public class ReportServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(ReportServlet.class);
@@ -42,8 +42,8 @@ public class ReportServlet extends HttpServlet {
     /**
      * To process Get requests from user.
      *
-     * @param req  HttpServletRequest request
-     * @param resp HttpServletResponse response
+     * @param req                   HttpServletRequest request
+     * @param resp                  HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -73,7 +73,7 @@ public class ReportServlet extends HttpServlet {
      * configuration for pagination for customer, configuration for pagination for date,
      * set current page for pagination, sorting by date, sorting by cost.
      *
-     * @param req HttpServletRequest request
+     * @param req                   HttpServletRequest request
      */
     private void processRequest(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute("locale");
@@ -171,9 +171,9 @@ public class ReportServlet extends HttpServlet {
      * To process Get requests from user:
      * get all orders from database (if dateFromRequest == null && customerFromRequest == null)
      *
-     * @param req      HttpServletRequest request
-     * @param pageable pageable with pagination information
-     * @param locale   default or current locale of application
+     * @param req               HttpServletRequest request
+     * @param pageable          pageable with pagination information
+     * @param locale            default or current locale of application
      */
     private List<OrderResponse> getOrderResponses(HttpServletRequest req, PageableRequest pageable, String locale) {
         List<OrderResponse> allOrders;
@@ -252,5 +252,22 @@ public class ReportServlet extends HttpServlet {
             }
         }
         return allOrders;
+    }
+
+    /**
+     * To process Post requests from user:
+     * delete the order from database.
+     *
+     * @param req                       HttpServletRequest request
+     * @param resp                      HttpServletResponse response
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        String id = req.getParameter("id");
+        orderCRUD.deleteById(Long.parseLong(id));
+
+        resp.sendRedirect("/report");
     }
 }

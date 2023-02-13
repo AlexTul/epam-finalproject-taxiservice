@@ -46,8 +46,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Create the order in the database.
      *
-     * @param request       request with order parameters
-     * @return              created order from database
+     * @param request request with order parameters
+     * @return created order from database
      */
     @Override
     public Order create(OrderRequest request) {
@@ -172,8 +172,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders from the database with pagination information.
      *
-     * @param pageable      pageable with pagination information
-     * @return              all orders from database with pagination information
+     * @param pageable pageable with pagination information
+     * @return all orders from database with pagination information
      */
     @Override
     public List<Order> findAll(PageableRequest pageable) {
@@ -205,8 +205,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders by range from the database.
      *
-     * @param request       request with order`s parameters
-     * @return              all users by range from database
+     * @param request request with order`s parameters
+     * @return all users by range from database
      */
     @Override
     public List<Order> findAllByRange(OrderRequest request) {
@@ -309,9 +309,9 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders by customer from the database.
      *
-     * @param customer      customer from request
-     * @param pageable      request with pagination information
-     * @return              all users by range from database
+     * @param customer customer from request
+     * @param pageable request with pagination information
+     * @return all users by range from database
      */
     @Override
     public List<Order> findAllByCustomer(String customer, PageableRequest pageable) {
@@ -330,9 +330,9 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders by date start order from the database.
      *
-     * @param startedAt     trip start date and time
-     * @param pageable      request with pagination information
-     * @return              all users by range from database
+     * @param startedAt trip start date and time
+     * @param pageable  request with pagination information
+     * @return all users by range from database
      */
     @Override
     public List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
@@ -352,7 +352,7 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all dates by start order from the database.
      *
-     * @return              all dates by start order from database
+     * @return all dates by start order from database
      */
     @Override
     public Set<LocalDateTime> findAllStartedAtDatesFromOrder() {
@@ -379,7 +379,7 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find number of records from the database.
      *
-     * @return              number of record in database
+     * @return number of record in database
      */
     @Override
     public long findNumberRecords() {
@@ -405,8 +405,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find number of records from the database by customer.
      *
-     * @param customer      customer from request
-     * @return              number of record in database
+     * @param customer customer from request
+     * @return number of record in database
      */
     @Override
     public long findNumberRecordsByCustomer(String customer) {
@@ -436,8 +436,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find number of records from the database by date start order.
      *
-     * @param startedAt     trip start date and time
-     * @return              number of record in database
+     * @param startedAt trip start date and time
+     * @return number of record in database
      */
     @Override
     public long findNumberRecordsByDateStartedAt(LocalDateTime startedAt) {
@@ -467,8 +467,8 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find sum order`s cost by customer from the database.
      *
-     * @param request       request with order`s parameters
-     * @return              sum order`s cost by customer
+     * @param request request with order`s parameters
+     * @return sum order`s cost by customer
      */
     @Override
     public double sumCostByCustomer(OrderRequest request) {
@@ -498,10 +498,39 @@ public class JDBCOrderDAO implements OrderDAO {
     }
 
     /**
+     * Delete the order from database.
+     *
+     * @param id id of order
+     */
+    public void deleteById(long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var psOrderCar = connection.prepareStatement(
+                    """
+                            delete from order_car oc where oc.o_id = ?
+                            """
+            );
+                 var psOrder = connection.prepareStatement(
+                         """
+                                 delete from orders o where o.id = ?
+                                 """
+                 )) {
+
+                psOrderCar.setLong(1, id);
+                psOrderCar.executeUpdate();
+
+                psOrder.setLong(1, id);
+                psOrder.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
      * Find all orders from the database by SQL.
      *
-     * @param sql           database query
-     * @return              query result
+     * @param sql database query
+     * @return query result
      */
     private List<Order> findOrders(List<Order> result, String sql) {
         try (Connection connection = dataSource.getConnection()) {

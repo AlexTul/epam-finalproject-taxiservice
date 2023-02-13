@@ -93,7 +93,12 @@
                 <th scope="col">
                     <fmt:message key="finishesAt"/>
                 </th>
-                <th scope="col"></th>
+                <th scope="col">
+                    Edit
+                </th>
+                <th scope="col">
+                    Delete
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -107,6 +112,16 @@
                     <td>${orderResponse.cost}</td>
                     <td>${orderResponse.startedAt}</td>
                     <td>${orderResponse.finishedAt}</td>
+                    <td>
+                        <form method="get" action="${pageContext.request.contextPath}/report?id=${orderResponse.id}">
+                            <button type="submit" class="btn btn-warning btn-lg"></button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="report?id=${orderResponse.id}">
+                            <button type="submit" class="btn btn-danger btn-lg"></button>
+                        </form>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
