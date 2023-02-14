@@ -3,10 +3,7 @@ package com.epam.alextuleninov.taxiservice.controller.filter;
 import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
-import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
-import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
-import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
@@ -35,13 +32,11 @@ public class AuthenticationFilter implements Filter {
 
     private UserCRUD userCRUD;
     private RouteCRUD routeCRUD;
-    private OrderCRUD orderCRUD;
 
     @Override
     public void init(FilterConfig filterConfig) {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
-        this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         log.info("Authentication and authorization filter initialized");
     }
 
@@ -112,39 +107,9 @@ public class AuthenticationFilter implements Filter {
         String locale = (String) req.getSession().getAttribute("locale");
 
         if (role.equals(Role.ADMINISTRATOR)) {
-            long numberRecordsInDatabase = orderCRUD.findNumberRecords();
 
-            if (numberRecordsInDatabase == 0) {
-                req.getRequestDispatcher(Routes.PAGE_MESSAGE_ADMIN)
-                        .forward(req, resp);
-            } else {
-                // find all users for filter for report`s page
-                var allUsersForFilter = userCRUD.findAllLoginsClient();
-
-                // find all started at dates for report`s page
-                var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
-
-                // set attribute for pagination, total_records = all records from database
-                req.setAttribute("total_records", numberRecordsInDatabase);
-                // set attribute for pagination, current_page = 0
-                int page = 0;
-                req.setAttribute("current_page", page);
-                // find all orders with pagination for report`s page
-                new PaginationConfig().config(req);
-                var allOrders = orderCRUD.findAll(PageableRequest.getPageableRequest(page), locale);
-
-                req.getSession().setAttribute("datesOfOrders", allStartedAtDates);
-                req.getSession().setAttribute("customersOfOrders", allUsersForFilter);
-                req.getSession().setAttribute("orders", allOrders);
-                // set order by for default sorting by the date of order and at the cost of the order
-                req.getSession().setAttribute("orderBy", Constants.SORTING_DESC);
-
-                PageMessageBuilder.buildMessageAdmin(req, locale,
-                        "whoseOrders", Constants.ADMIN_REPORT_ALL_UK, Constants.ADMIN_REPORT_ALL);
-
-                req.getRequestDispatcher(Routes.PAGE_REPORT)
-                        .forward(req, resp);
-            }
+            req.getRequestDispatcher(Routes.PAGE_ADMIN)
+                    .forward(req, resp);
         } else if (role.equals(Role.CLIENT)) {
             var allStartEnd = routeCRUD.findAllByLocale(locale);
             req.getSession().setAttribute("allStartEnd", allStartEnd);

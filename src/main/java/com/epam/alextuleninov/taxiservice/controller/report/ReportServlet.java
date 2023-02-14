@@ -7,6 +7,7 @@ import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,9 +33,11 @@ public class ReportServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(ReportServlet.class);
 
     private OrderCRUD orderCRUD;
+    private UserCRUD userCRUD;
 
     @Override
     public void init() {
+        this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         log.info(getServletName() + " initialized");
     }
@@ -55,7 +58,7 @@ public class ReportServlet extends HttpServlet {
             req.getRequestDispatcher(Routes.PAGE_MESSAGE_ADMIN)
                     .forward(req, resp);
         } else {
-            processRequest(req);
+            processRequest(req, numberRecordsInDatabase);
 
             req.getRequestDispatcher(Routes.PAGE_REPORT)
                     .forward(req, resp);
@@ -75,9 +78,32 @@ public class ReportServlet extends HttpServlet {
      *
      * @param req                   HttpServletRequest request
      */
-    private void processRequest(HttpServletRequest req) {
+    private void processRequest(HttpServletRequest req, long numberRecordsInDatabase) {
         String locale = (String) req.getSession().getAttribute("locale");
 
+        // find all users for filter for report`s page
+        var allUsersForFilter = userCRUD.findAllLoginsClient();
+
+        // find all started at dates for report`s page
+        var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
+
+        // set attribute for pagination, total_records = all records from database
+        req.setAttribute("total_records", numberRecordsInDatabase);
+        // set current page for pagination
+        int page = new PaginationConfig().configPage(req);
+        // find all orders with pagination for report`s page
+        new PaginationConfig().config(req);
+        var allOrders = orderCRUD.findAll(PageableRequest.getPageableRequest(page), locale);
+
+        req.getSession().setAttribute("datesOfOrders", allStartedAtDates);
+        req.getSession().setAttribute("customersOfOrders", allUsersForFilter);
+        req.getSession().setAttribute("orders", allOrders);
+        // set order by for default sorting by the date of order and at the cost of the order
+        req.getSession().setAttribute("orderBy", Constants.SORTING_DESC);
+        PageMessageBuilder.buildMessageAdmin(req, locale,
+                "whoseOrders", Constants.ADMIN_REPORT_ALL_UK, Constants.ADMIN_REPORT_ALL);
+
+        // section for configuration report page
         String customerFromRequest = req.getParameter("customerOfOrders");
         String dateFromRequest = req.getParameter("dateOfOrders");
         String sortTypeByDateFromRequest = req.getParameter("sortByDate");
@@ -95,13 +121,11 @@ public class ReportServlet extends HttpServlet {
             req.getSession().removeAttribute("filterByCustomer");
         }
 
-        // set current page for pagination
-        int page = new PaginationConfig().configPage(req);
         // configure the request for pagination
         var pageableRequest = PageableRequest.getPageableRequest(page);
 
         // put all orders from database or put by dateOfOrders or customerOfOrders
-        var allOrders = putOrdersFromDBToPage(req,
+        allOrders = putOrdersFromDBToPage(req,
                 pageableRequest, locale);
 
         // sort configuration by date

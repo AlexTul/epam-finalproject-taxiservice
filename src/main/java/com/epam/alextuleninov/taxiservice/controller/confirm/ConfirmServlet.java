@@ -65,13 +65,13 @@ public class ConfirmServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
 
         processRequestPost(req);
 
         if (req.getSession().getAttribute("updateOrderID") != null) {
             req.getSession().removeAttribute("updateOrderID");
-            resp.sendRedirect("/auth");
+            resp.sendRedirect("/report");
         } else {
             resp.sendRedirect("/successful");
         }
@@ -132,6 +132,6 @@ public class ConfirmServlet extends HttpServlet {
 
         carCRUD.changeCarStatus(orderRequest);
 
-        req.setAttribute("dateTimeTrip", orderRequest.startedAt().format(Constants.FORMATTER));
+        req.getSession().setAttribute("dateTimeTrip", orderRequest.startedAt().format(Constants.FORMATTER));
     }
 }
