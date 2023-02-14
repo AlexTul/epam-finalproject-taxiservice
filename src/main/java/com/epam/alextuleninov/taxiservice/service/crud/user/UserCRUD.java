@@ -1,6 +1,8 @@
 package com.epam.alextuleninov.taxiservice.service.crud.user;
 
+import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
+import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 
 import java.util.List;
 
@@ -19,6 +21,14 @@ public interface UserCRUD {
      * @return              created user from database
      */
     boolean register(UserRequest request);
+
+    /**
+     * Find all clients from database.
+     *
+     * @param pageable       request with pagination information
+     * @return               list with clients
+     */
+    List<UserResponse> findAllClients(PageableRequest pageable);
 
     /**
      * Find all logins of clients.
@@ -45,4 +55,18 @@ public interface UserCRUD {
      * @return              user from database
      */
     String findRoleByEmail(String email);
+
+    /**
+     * Find number of records from the database.
+     *
+     * @return              number of record in database
+     */
+    long findNumberRecords();
+
+    /**
+     * Delete the user from database.
+     *
+     * @param id            id of user
+     */
+    void deleteByID(long id);
 }

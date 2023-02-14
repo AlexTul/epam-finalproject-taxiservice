@@ -94,10 +94,10 @@
                     <fmt:message key="finishesAt"/>
                 </th>
                 <th scope="col">
-                    Edit
+                    <fmt:message key="edit"/>
                 </th>
                 <th scope="col">
-                    Delete
+                    <fmt:message key="delete"/>
                 </th>
             </tr>
             </thead>

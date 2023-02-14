@@ -65,6 +65,23 @@ public class ReportServlet extends HttpServlet {
         }
     }
 
+    /**
+     * To process Post requests from user:
+     * delete the order from database.
+     *
+     * @param req                       HttpServletRequest request
+     * @param resp                      HttpServletResponse response
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        String id = req.getParameter("id");
+        orderCRUD.deleteByID(Long.parseLong(id));
+
+        resp.sendRedirect("/report");
+    }
+
     @Override
     public void destroy() {
         log.info(getServletName() + " destroyed");
@@ -276,22 +293,5 @@ public class ReportServlet extends HttpServlet {
             }
         }
         return allOrders;
-    }
-
-    /**
-     * To process Post requests from user:
-     * delete the order from database.
-     *
-     * @param req                       HttpServletRequest request
-     * @param resp                      HttpServletResponse response
-     */
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-
-        String id = req.getParameter("id");
-        orderCRUD.deleteByID(Long.parseLong(id));
-
-        resp.sendRedirect("/report");
     }
 }

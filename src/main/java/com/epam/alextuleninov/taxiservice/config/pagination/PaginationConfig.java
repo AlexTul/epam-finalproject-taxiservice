@@ -66,6 +66,5 @@ public class PaginationConfig {
         req.setAttribute("N_PAGES_LAST", N_PAGES_LAST);
         req.setAttribute("showAllPrev", showAllPrev);
         req.setAttribute("showAllNext", showAllNext);
-        req.setAttribute("url", "report");
     }
 }

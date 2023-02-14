@@ -2,14 +2,15 @@ package com.epam.alextuleninov.taxiservice.service.crud.user;
 
 import com.epam.alextuleninov.taxiservice.config.security.PasswordEncoderConfig;
 import com.epam.alextuleninov.taxiservice.dao.user.UserDAO;
+import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
+import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.model.user.User;
+import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +51,20 @@ public class UserService implements UserCRUD {
             ));
         }
         return true;
+    }
+
+    /**
+     * Find all clients from database.
+     *
+     * @param pageable     request with pagination information
+     * @return              list with clients
+     */
+    @Override
+    public List<UserResponse> findAllClients(PageableRequest pageable) {
+        return userDAO.findAllClientWithPagination(pageable).stream()
+                .filter(user -> user.getRole().equals(Role.CLIENT))
+                .sorted(Comparator.comparingLong(User::getId))
+                .map(UserResponse::formUser).toList();
     }
 
     /**
@@ -103,5 +118,25 @@ public class UserService implements UserCRUD {
     @Override
     public String findRoleByEmail(String email) {
         return userDAO.findRoleByEmail(email);
+    }
+
+    /**
+     * Find number of records from the database.
+     *
+     * @return             number of record in database
+     */
+    @Override
+    public long findNumberRecords() {
+        return userDAO.findNumberRecords();
+    }
+
+    /**
+     * Delete the user from database.
+     *
+     * @param id            id of user
+     */
+    @Override
+    public void deleteByID(long id) {
+        userDAO.deleteByID(id);
     }
 }

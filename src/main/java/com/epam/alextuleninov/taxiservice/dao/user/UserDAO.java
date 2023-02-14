@@ -1,9 +1,11 @@
 package com.epam.alextuleninov.taxiservice.dao.user;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -29,6 +31,13 @@ public interface UserDAO {
      * @return              all users from database
      */
     Set<User> findAllClient();
+
+    /**
+     * Find all users by client from the database with pagination.
+     *
+     * @return              all users from database
+     */
+    Set<User> findAllClientWithPagination(PageableRequest pageable);
 
     /**
      * Find user by email from the database.
@@ -62,4 +71,18 @@ public interface UserDAO {
      * @return              true if user exists in database
      */
     boolean existsByEmailPassword(String email, String password);
+
+    /**
+     * Find number of records from the database.
+     *
+     * @return              number of record in database
+     */
+    long findNumberRecords();
+
+    /**
+     * Delete the user from database.
+     *
+     * @param id            id of user
+     */
+    void deleteByID(long id);
 }

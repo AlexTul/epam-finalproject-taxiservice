@@ -3,6 +3,7 @@ package com.epam.alextuleninov.taxiservice.dao.user;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.user.User;
@@ -97,6 +98,31 @@ public class JDBCUserDAO implements UserDAO {
                             select * from users u
                             where u.role like 'CLIENT'
                             """
+            )) {
+
+                ResultSet resultSet = getUsers.executeQuery();
+
+                while (resultSet.next()) {
+                    users.add(mapper.map(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+        return users;
+    }
+
+    @Override
+    public Set<User> findAllClientWithPagination(PageableRequest pageable) {
+        Set<User> users = new TreeSet<>();
+
+        String sql = "select * from users u " +
+                " order by u." + pageable.sortField() + " " + pageable.orderBy() +
+                " limit " + pageable.limit() + " offset " + pageable.offset();
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (var getUsers = connection.prepareStatement(
+                    sql
             )) {
 
                 ResultSet resultSet = getUsers.executeQuery();
@@ -239,5 +265,52 @@ public class JDBCUserDAO implements UserDAO {
             throw new UnexpectedDataAccessException(e);
         }
         return true;
+    }
+
+    /**
+     * Find number of records from the database.
+     *
+     * @return number of record in database
+     */
+    @Override
+    public long findNumberRecords() {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var getNumberRecords = connection.prepareStatement(
+                    """
+                            select count(u.id) as result from users u
+                            """
+            )) {
+
+                ResultSet resultSet = getNumberRecords.executeQuery();
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                } else {
+                    throw new UnexpectedDataAccessException("Number of users records not found");
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Delete the user from database.
+     *
+     * @param id            id of user
+     */
+    public void deleteByID(long id){
+        try (Connection connection = dataSource.getConnection()) {
+            try (var ps = connection.prepareStatement(
+                         """
+                                 delete from users u where u.id = ?
+                                 """
+                 )) {
+
+                ps.setLong(1, id);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
     }
 }
