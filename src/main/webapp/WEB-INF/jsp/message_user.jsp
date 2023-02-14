@@ -22,7 +22,7 @@
 
     <%-- Message for user --%>
     <div>
-        <h5>${requestScope.messageUser}</h5>
+        <h5>${sessionScope.messageUser}</h5>
     </div>
     <%-- Message for user --%>
 

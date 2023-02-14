@@ -73,8 +73,7 @@ public class ConfirmServlet extends HttpServlet {
             req.getSession().removeAttribute("updateOrderID");
             resp.sendRedirect("/auth");
         } else {
-            req.getRequestDispatcher(Routes.PAGE_ORDER_SUCCESSFUL)
-                    .forward(req, resp);
+            resp.sendRedirect("/successful");
         }
     }
 

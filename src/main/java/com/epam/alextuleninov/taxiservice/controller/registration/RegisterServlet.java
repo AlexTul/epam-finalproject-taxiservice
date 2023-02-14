@@ -57,7 +57,7 @@ public class RegisterServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
         String locale = (String) req.getSession().getAttribute("locale");
 
         if (registerValidation(req, resp, locale)) {
@@ -68,15 +68,13 @@ public class RegisterServlet extends HttpServlet {
                 PageMessageBuilder.buildMessageUser(req, locale,
                         Constants.USER_FAIL_REGISTER_UK, Constants.USER_FAIL_REGISTER);
 
-                req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
-                        .forward(req, resp);
+                resp.sendRedirect("/messageuser");
             } else {
                 log.info("User successfully registered");
                 PageMessageBuilder.buildMessageUser(req, locale,
                         Constants.USER_SUCC_REGISTER_UK, Constants.USER_SUCC_REGISTER);
 
-                req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
-                        .forward(req, resp);
+                resp.sendRedirect("/messageuser");
             }
         }
     }
@@ -96,14 +94,13 @@ public class RegisterServlet extends HttpServlet {
      * @return                      true if user credentials is valid
      */
     private boolean registerValidation(HttpServletRequest req, HttpServletResponse resp, String locale)
-            throws ServletException, IOException {
+            throws IOException {
         if (!(DataValidator.initRegisterValidation(req))) {
             log.info("User credentials not validated");
 
             PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_UK, Constants.USER);
 
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
-                    .forward(req, resp);
+            resp.sendRedirect("/messageuser");
             return false;
         }
         return true;

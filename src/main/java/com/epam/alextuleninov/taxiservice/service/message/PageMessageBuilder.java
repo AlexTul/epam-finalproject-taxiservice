@@ -18,9 +18,9 @@ public class PageMessageBuilder {
     public static void buildMessageUser(HttpServletRequest req, String locale,
                                         String messageUK, String message) {
         if (locale.equals("uk_UA")) {
-            req.setAttribute("messageUser", messageUK);
+            req.getSession().setAttribute("messageUser", messageUK);
         } else {
-            req.setAttribute("messageUser", message);
+            req.getSession().setAttribute("messageUser", message);
         }
     }
 
