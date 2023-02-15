@@ -33,7 +33,7 @@
 
         <label for="carName" class="sr-only">Car name form</label>
         <input type="text" id="carName" name="carName" class="form-control"
-               placeholder="<fmt:message key="car.name"/>"
+               placeholder="${requestScope.car.carName}"
                minlength="3" maxlength="20" required><br>
 
         <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>

@@ -8,6 +8,8 @@ import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Class CRUD for Car.
@@ -47,8 +49,19 @@ public class CarService implements CarCRUD {
      * @return              all cars from the database
      */
     @Override
-    public List<Car> findAllByCategoryStatus(OrderRequest request) {
+    public Set<Car> findAllByCategoryStatus(OrderRequest request) {
         return carDAO.findAllByCategoryStatus(request);
+    }
+
+    /**
+     * Find car by ID from the database.
+     *
+     * @param id            id of car
+     * @return              car from the database
+     */
+    @Override
+    public Optional<CarResponse> findByID(int id) {
+        return carDAO.findByID(id).map(CarResponse::fromCar);
     }
 
     /**

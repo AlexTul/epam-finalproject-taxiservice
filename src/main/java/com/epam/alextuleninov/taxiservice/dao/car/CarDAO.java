@@ -6,6 +6,7 @@ import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -37,7 +38,15 @@ public interface CarDAO {
      * @param request       request with order`s parameters
      * @return              all cars from the database
      */
-    List<Car> findAllByCategoryStatus(OrderRequest request);
+    Set<Car> findAllByCategoryStatus(OrderRequest request);
+
+    /**
+     * Find car by ID from the database.
+     *
+     * @param id            id of car
+     * @return              car from the database
+     */
+    Optional<Car> findByID(int id);
 
     /**
      * Change car status int the database.

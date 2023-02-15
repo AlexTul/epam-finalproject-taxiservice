@@ -6,17 +6,10 @@ import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
-import com.epam.alextuleninov.taxiservice.model.route.Route;
-import com.epam.alextuleninov.taxiservice.model.user.User;
-import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Class DAO for Car.
@@ -103,11 +96,12 @@ public class JDBCCarDAO implements CarDAO {
             )) {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
-
                 while (resultSet.next()) {
                     result.add(mapper.map(resultSet));
                 }
             }
+        } catch (NullPointerException e) {
+            return result;
         } catch (SQLException e) {
             throw new UnexpectedDataAccessException(e);
         }
@@ -121,8 +115,8 @@ public class JDBCCarDAO implements CarDAO {
      * @return all cars from the database
      */
     @Override
-    public List<Car> findAllByCategoryStatus(OrderRequest request) {
-        List<Car> result = new ArrayList<>();
+    public Set<Car> findAllByCategoryStatus(OrderRequest request) {
+        Set<Car> result = new TreeSet<>();
 
         try (Connection connection = dataSource.getConnection()) {
 
@@ -144,6 +138,36 @@ public class JDBCCarDAO implements CarDAO {
             throw new UnexpectedDataAccessException(e);
         }
         return result;
+    }
+
+    /**
+     * Find car by ID from the database.
+     *
+     * @param id id of car
+     * @return car from the database
+     */
+    @Override
+    public Optional<Car> findByID(int id) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var psGetCar = connection.prepareStatement(
+                    """
+                            select * from cars c
+                            where c.car_id = ?
+                            """
+            )) {
+
+                psGetCar.setInt(1, id);
+
+                ResultSet resultSet = psGetCar.executeQuery();
+                if (resultSet.next()) {
+                    return Optional.of(mapper.map(resultSet));
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
     }
 
     /**
@@ -285,8 +309,8 @@ public class JDBCCarDAO implements CarDAO {
                 }
 
                 // delete orders by id
-                for (int i = 0; i < result.size(); i++) {
-                    psDeleteOrders.setLong(1, result.get(i));
+                for (Long aLong : result) {
+                    psDeleteOrders.setLong(1, aLong);
                     psDeleteOrders.executeUpdate();
                 }
 

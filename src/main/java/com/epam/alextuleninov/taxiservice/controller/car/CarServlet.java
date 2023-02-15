@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.epam.alextuleninov.taxiservice.exceptions.car.CarExceptions.carNotFound;
+
 @WebServlet(name = "CarServlet", urlPatterns = "/car/*")
 public class CarServlet extends HttpServlet {
 
@@ -40,7 +42,10 @@ public class CarServlet extends HttpServlet {
                     .forward(req, resp);
         } else if (actionAdd.endsWith("update")) {
             String updateCarID = req.getParameter("id");
+            int id = Integer.parseInt(updateCarID);
             req.getSession().setAttribute("updateCarID", updateCarID);
+            var car = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
+            req.setAttribute("car", car);
             req.getRequestDispatcher(Routes.PAGE_CAR_ACTION)
                     .forward(req, resp);
         } else {
@@ -63,7 +68,7 @@ public class CarServlet extends HttpServlet {
         // delete car in the database
         String carID = req.getParameter("id");
 
-        if (carName != null) {
+        if (carName != null && updateCarID == null) {
             carCRUD.create(CarRequest.getCarRequest(req));
         } else if (updateCarID != null) {
             carCRUD.updateByID(Integer.parseInt(updateCarID), CarRequest.getCarRequest(req));

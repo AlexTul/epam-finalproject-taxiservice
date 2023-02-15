@@ -177,7 +177,6 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAll(PageableRequest pageable) {
-        List<Order> result = new ArrayList<>();
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
@@ -185,21 +184,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 " order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        try (Connection connection = dataSource.getConnection()) {
-            try (var getAllOrder = connection.prepareStatement(
-                    sql
-            )) {
-
-                ResultSet resultSet = getAllOrder.executeQuery();
-
-                while (resultSet.next()) {
-                    result.add(orderMapper.map(resultSet));
-                }
-            }
-        } catch (SQLException e) {
-            throw new UnexpectedDataAccessException(e);
-        }
-        return result;
+        return findOrders(sql);
     }
 
     /**
@@ -315,7 +300,6 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByCustomer(String customer, PageableRequest pageable) {
-        List<Order> result = new ArrayList<>();
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
@@ -324,7 +308,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return findOrders(result, sql);
+        return findOrders(sql);
     }
 
     /**
@@ -336,7 +320,6 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
-        List<Order> result = new ArrayList<>();
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
@@ -346,7 +329,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return findOrders(result, sql);
+        return findOrders(sql);
     }
 
     /**
@@ -628,13 +611,15 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param sql database query
      * @return query result
      */
-    private List<Order> findOrders(List<Order> result, String sql) {
+    private List<Order> findOrders(String sql) {
+        List<Order> result = new ArrayList<>();
+
         try (Connection connection = dataSource.getConnection()) {
-            try (var getAllByCustomer = connection.prepareStatement(
+            try (var psGetAllByCustomer = connection.prepareStatement(
                     sql
             )) {
 
-                ResultSet resultSet = getAllByCustomer.executeQuery();
+                ResultSet resultSet = psGetAllByCustomer.executeQuery();
                 while (resultSet.next()) {
                     result.add(orderMapper.map(resultSet));
                 }
