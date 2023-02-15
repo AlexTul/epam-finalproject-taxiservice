@@ -13,7 +13,7 @@ import java.io.IOException;
  * The filter pre-processes the request before it reaches the servlet.
  * AuthorizationFilter checks authorization.
  */
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = "/report/*")
+@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {"/admin", "/report/*"})
 public class AuthorizationFilter implements Filter {
 
     @Override

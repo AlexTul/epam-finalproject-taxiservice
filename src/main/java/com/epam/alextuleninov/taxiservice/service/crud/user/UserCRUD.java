@@ -68,5 +68,5 @@ public interface UserCRUD {
      *
      * @param id            id of user
      */
-    void deleteByID(long id);
+    void deleteById(long id);
 }

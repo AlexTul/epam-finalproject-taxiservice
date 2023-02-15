@@ -8,6 +8,6 @@ package com.epam.alextuleninov.taxiservice.model.car.status;
  */
 public enum CarStatus {
 
-    AVAILABLE, BOOKED, ROUTE, INACTIVE
+    AVAILABLE, BOOKED, INACTIVE
 
 }

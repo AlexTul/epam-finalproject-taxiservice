@@ -7,8 +7,6 @@ import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -136,7 +134,7 @@ public class UserService implements UserCRUD {
      * @param id            id of user
      */
     @Override
-    public void deleteByID(long id) {
-        userDAO.deleteByID(id);
+    public void deleteById(long id) {
+        userDAO.deleteById(id);
     }
 }

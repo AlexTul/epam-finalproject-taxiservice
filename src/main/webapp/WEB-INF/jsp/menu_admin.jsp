@@ -29,10 +29,10 @@
             <div class="col-md-4 pt-3" >
                 <div class="card" style="background-color:white;">
                     <div class="card-body">
-                        <h4 class="card-title">Orders</h4>
-                        <p class="card-text">Manage section</p>
+                        <h4 class="card-title"><fmt:message key="orders"/></h4>
+                        <p class="card-text"><fmt:message key="manage.section"/></p>
                         <form method="get" action="report">
-                            <button type="submit" class="btn btn-primary">Manage</button>
+                            <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
                         </form>
                     </div>
                 </div>
@@ -40,10 +40,10 @@
             <div class="col-md-4 pt-3" >
                 <div class="card" style="background-color:white;">
                     <div class="card-body">
-                        <h4 class="card-title">Users</h4>
-                        <p class="card-text">Manage section</p>
+                        <h4 class="card-title"><fmt:message key="users"/></h4>
+                        <p class="card-text"><fmt:message key="manage.section"/></p>
                         <form method="get" action="user">
-                            <button type="submit" class="btn btn-primary">Manage</button>
+                            <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
                         </form>
                     </div>
                 </div>
@@ -51,10 +51,10 @@
             <div class="col-md-4 pt-3" >
                 <div class="card" style="background-color:white;">
                     <div class="card-body">
-                        <h4 class="card-title">Cars</h4>
-                        <p class="card-text">Manage section</p>
+                        <h4 class="card-title"><fmt:message key="cars"/></h4>
+                        <p class="card-text"><fmt:message key="manage.section"/></p>
                         <form method="get" action="car">
-                            <button type="submit" class="btn btn-primary">Manage</button>
+                            <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
                         </form>
                     </div>
                 </div>
@@ -62,6 +62,13 @@
         </div>
     </div>
     <!--Main layout-->
+
+    <br>
+    <%-- Log out link --%>
+    <div id="nav-link" class="text-right">
+        <a class="text-info" href="logout"><fmt:message key="logout"/></a>
+    </div>
+    <%-- Log out link --%>
 
     <%--Locale--%>
     <div>

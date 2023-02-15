@@ -41,7 +41,7 @@ create table if not exists orders
 (
     id               bigserial primary key,
     date             timestamp not null,
-    customer_id      bigint    not null references users (id),
+    customer_id      bigint    not null references users (id) on delete cascade,
     order_passengers bigint    not null check ( order_passengers > 0 ),
     route_id         bigint    not null references routes (id),
     cost             decimal   not null check ( cost > 0.0 ),
@@ -53,6 +53,6 @@ create table if not exists orders
 
 create table order_car
 (
-    o_id bigserial not null references orders (id),
-    c_id bigserial not null references cars (car_id)
+    o_id bigserial not null references orders (id) on delete cascade,
+    c_id bigserial not null references cars (car_id) on delete cascade
 );

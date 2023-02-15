@@ -21,7 +21,7 @@
     </div>
 
     <div>
-        <h3><fmt:message key="no.orders"/></h3>
+        <h3><fmt:message key="no.data"/></h3>
     </div>
 
     <%-- Report link--%>

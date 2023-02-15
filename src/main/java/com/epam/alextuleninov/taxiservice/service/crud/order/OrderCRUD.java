@@ -7,7 +7,6 @@ import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface CRUD for Order.
@@ -101,14 +100,14 @@ public interface OrderCRUD {
      * Update the order from database.
      *
      * @param id            id of order
-     * @param orderRequest  request with parameter
+     * @param request       request with parameter
      */
-    void updateByID(long id, OrderRequest orderRequest);
+    void updateById(long id, OrderRequest request);
 
     /**
      * Delete the order from database.
      *
      * @param id            id of order
      */
-    void deleteByID(long id);
+    void deleteById(long id);
 }

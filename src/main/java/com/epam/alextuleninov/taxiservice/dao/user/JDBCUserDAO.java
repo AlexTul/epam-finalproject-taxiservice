@@ -90,7 +90,7 @@ public class JDBCUserDAO implements UserDAO {
      */
     @Override
     public Set<User> findAllClient() {
-        Set<User> users = new TreeSet<>();
+        Set<User> result = new TreeSet<>();
 
         try (Connection connection = dataSource.getConnection()) {
             try (var getUsers = connection.prepareStatement(
@@ -103,13 +103,13 @@ public class JDBCUserDAO implements UserDAO {
                 ResultSet resultSet = getUsers.executeQuery();
 
                 while (resultSet.next()) {
-                    users.add(mapper.map(resultSet));
+                    result.add(mapper.map(resultSet));
                 }
             }
         } catch (SQLException e) {
             throw new UnexpectedDataAccessException(e);
         }
-        return users;
+        return result;
     }
 
     @Override
@@ -298,7 +298,7 @@ public class JDBCUserDAO implements UserDAO {
      *
      * @param id            id of user
      */
-    public void deleteByID(long id){
+    public void deleteById(long id){
         try (Connection connection = dataSource.getConnection()) {
             try (var ps = connection.prepareStatement(
                          """

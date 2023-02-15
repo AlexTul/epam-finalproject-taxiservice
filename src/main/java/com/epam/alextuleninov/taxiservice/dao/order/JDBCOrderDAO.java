@@ -500,11 +500,11 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Update the order from database.
      *
-     * @param id            id of order
-     * @param request       request with parameter
+     * @param id      id of order
+     * @param request request with parameter
      */
     @Override
-    public void updateByID(long id, OrderRequest request) {
+    public void updateById(long id, OrderRequest request) {
         try (Connection connection = dataSource.getConnection()) {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
@@ -516,13 +516,20 @@ public class JDBCOrderDAO implements OrderDAO {
                             where a.start_end like ? or a.start_end_uk like ?
                             """
             );
-                    var updateOrderByID = connection.prepareStatement(
-                    """
-                            update orders o
-                            set order_passengers = ?, route_id = ?, cost = ?, started_at = ?, finished_at = ?
-                            where o.id = ?
-                            """
-            )) {
+                 var updateOrderByID = connection.prepareStatement(
+                         """
+                                 update orders o
+                                 set order_passengers = ?, route_id = ?, cost = ?, started_at = ?, finished_at = ?
+                                 where o.id = ?
+                                 """
+                 );
+                 var updateOrderCarByID = connection.prepareStatement(
+                         """
+                                 update order_car oc
+                                 set c_id = ?
+                                 where o_id = ?
+                                 """
+                 )) {
 
                 // get route from database
                 getRoute.setString(1, request.startEnd());
@@ -540,7 +547,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 assert route != null;
                 LocalDateTime finishRoute = request.startedAt().plusSeconds(route.getTravelTime());
 
-                // insert data to create order table
+                // insert data to order table
                 updateOrderByID.setInt(1, request.numberOfPassengers());
                 updateOrderByID.setLong(2, route.getId());
                 updateOrderByID.setDouble(3, request.loyaltyPrice());
@@ -549,6 +556,30 @@ public class JDBCOrderDAO implements OrderDAO {
                 updateOrderByID.setLong(6, id);
 
                 updateOrderByID.executeUpdate();
+
+                // insert data to order_car table
+                updateOrderCarByID.setInt(1, request.cars().get(0).getId());
+                updateOrderCarByID.setLong(2, id);
+
+                updateOrderCarByID.executeUpdate();
+
+                // insert data to create order_car table another cars
+                if (request.cars().size() > 1) {
+                    for (int i = 1; i < request.cars().size(); i++) {
+                        try (var updateOrderCarByIDAnother = connection.prepareStatement(
+                                """
+                                        update order_car oc
+                                        set c_id = ?
+                                        where o_id = ?
+                                        """
+                        )) {
+                            updateOrderCarByIDAnother.setInt(1, request.cars().get(i).getId());
+                            updateOrderCarByIDAnother.setLong(2, id);
+
+                            updateOrderCarByIDAnother.executeUpdate();
+                        }
+                    }
+                }
 
                 connection.commit();
             } catch (Exception e) {

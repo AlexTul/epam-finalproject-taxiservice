@@ -5,7 +5,6 @@ import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -84,5 +83,5 @@ public interface UserDAO {
      *
      * @param id            id of user
      */
-    void deleteByID(long id);
+    void deleteById(long id);
 }

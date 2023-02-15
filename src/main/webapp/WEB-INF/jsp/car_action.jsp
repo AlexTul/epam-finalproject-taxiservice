@@ -1,0 +1,99 @@
+<%@ page import="com.epam.alextuleninov.taxiservice.model.car.category.CarCategory" %>
+<%@ page import="com.epam.alextuleninov.taxiservice.model.car.status.CarStatus" %>
+<%@ taglib prefix="ctg" uri="customtags" %>
+<%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
+<%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
+<%--Locale--%>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setBundle basename="resources"/>
+<%--Locale--%>
+
+<html>
+<head>
+    <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Cars add</title>
+</head>
+<body class="text-center">
+
+<div>
+    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
+    <div>
+        <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
+    </div>
+
+    <form class="form-signing" method="post" action="car">
+        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
+        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
+            <fmt:message key="enter.data"/></h1>
+
+        <label for="carName" class="sr-only">Car name form</label>
+        <input type="text" id="carName" name="carName" class="form-control"
+               placeholder="<fmt:message key="car.name"/>"
+               minlength="3" maxlength="20" required><br>
+
+        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
+        <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
+               placeholder="<fmt:message key="enter.passengers"/>"
+               min="1" minlength="1" maxlength="1" required>
+        <br>
+
+        <label for="carCategory"><fmt:message key="choose.car.category"/>:</label>
+        <select id="carCategory" name="carCategory">
+            <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
+            <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
+        </select>
+        <br><br>
+
+        <label for="carStatus"><fmt:message key="choose.car.status"/>:</label>
+        <select id="carStatus" name="carStatus">
+            <option value="<%=CarStatus.AVAILABLE.toString()%>"><fmt:message key="available"/></option>
+            <option value="<%=CarStatus.INACTIVE.toString()%>"><fmt:message key="inactive"/></option>
+        </select>
+        <br><br>
+
+        <%-- Register button --%>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>
+        <%-- Register button --%>
+    </form>
+
+    <%-- Admin menu link --%>
+    <div id="nav-link" class="text-right">
+        <a class="text-info" href="/car"><fmt:message key="cars"/></a>
+    </div>
+    <%-- Admin menu link --%>
+
+    <%-- Log out link --%>
+    <div id="nav-link" class="text-right">
+        <a class="text-info" href="${pageContext.request.contextPath}/logout"><fmt:message key="logout"/></a>
+    </div>
+    <%-- Log out link --%>
+
+    <%--Locale--%>
+    <div>
+        <form method="get" class="d-flex">
+            <label>
+                <select name="locale" onchange='submit();'>
+                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
+                        <fmt:message key="en"/>
+                    </option>
+                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
+                        <fmt:message key="ua"/>
+                    </option>
+                </select>
+            </label>
+        </form>
+    </div>
+    <%--Locale--%>
+
+    <div>
+        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+    </div>
+</div>
+
+</body>
+</html>

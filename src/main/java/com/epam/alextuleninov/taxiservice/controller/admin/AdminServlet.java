@@ -1,8 +1,6 @@
 package com.epam.alextuleninov.taxiservice.controller.admin;
 
 import com.epam.alextuleninov.taxiservice.Routes;
-import com.epam.alextuleninov.taxiservice.config.context.AppContext;
-import com.epam.alextuleninov.taxiservice.controller.confirm.ConfirmServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +21,12 @@ public class AdminServlet extends HttpServlet {
         log.info(getServletName() + " initialized");
     }
 
-
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        req.getRequestDispatcher(Routes.PAGE_ADMIN)
+                .forward(req, resp);
+    }
 
     @Override
     public void destroy() {

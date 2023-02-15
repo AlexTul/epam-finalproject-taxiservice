@@ -14,7 +14,7 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Users</title>
+    <title>Cars</title>
 </head>
 <body class="text-center">
 
@@ -24,8 +24,12 @@
         <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
     </div>
 
+    <form method="get" action="car/add">
+        <button type="submit" class="btn btn-primary">Add car</button>
+    </form>
+
     <%-- Table of users --%>
-    <div class="tab-pane fade show active" id="users" role="tabpanel"
+    <div class="tab-pane fade show active" id="cars" role="tabpanel"
          aria-labelledby="internet-tab">
         <table class="table table-striped">
             <thead>
@@ -34,16 +38,19 @@
                     Id
                 </th>
                 <th scope="col">
-                    <fmt:message key="first.name"/>
+                    <fmt:message key="name"/>
                 </th>
                 <th scope="col">
-                    <fmt:message key="last.name"/>
+                    <fmt:message key="passengers"/>
                 </th>
                 <th scope="col">
-                    <fmt:message key="email"/>
+                    <fmt:message key="car.category"/>
                 </th>
                 <th scope="col">
-                    <fmt:message key="role"/>
+                    <fmt:message key="car.status"/>
+                </th>
+                <th scope="col">
+                    <fmt:message key="edit"/>
                 </th>
                 <th scope="col">
                     <fmt:message key="delete"/>
@@ -51,15 +58,21 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach var="userResponse" items="${sessionScope.userResponses}">
+            <c:forEach var="carResponse" items="${sessionScope.carResponses}">
                 <tr>
-                    <td>${userResponse.id}</td>
-                    <td>${userResponse.firstName}</td>
-                    <td>${userResponse.lastName}</td>
-                    <td>${userResponse.email}</td>
-                    <td>${userResponse.role}</td>
+                    <td>${carResponse.id}</td>
+                    <td>${carResponse.carName}</td>
+                    <td>${carResponse.numberOfPassengers}</td>
+                    <td>${carResponse.carCategory}</td>
+                    <td>${carResponse.carStatus}</td>
                     <td>
-                        <form method="post" action="user?id=${userResponse.id}">
+                        <form method="get" action="car/update">
+                            <input type="number" hidden name="id" value="${carResponse.id}"/>
+                            <button type="submit" class="btn btn-warning btn-lg"></button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="car?id=${carResponse.id}">
                             <button type="submit" class="btn btn-danger btn-lg"></button>
                         </form>
                     </td>

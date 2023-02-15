@@ -43,7 +43,7 @@ public class UserServlet extends HttpServlet {
             throws IOException {
 
         String userID = req.getParameter("id");
-        userCRUD.deleteByID(Long.parseLong(userID));
+        userCRUD.deleteById(Long.parseLong(userID));
 
         resp.sendRedirect("/user");
     }

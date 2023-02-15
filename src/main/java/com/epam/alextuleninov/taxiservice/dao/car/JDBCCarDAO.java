@@ -1,16 +1,22 @@
 package com.epam.alextuleninov.taxiservice.dao.car;
 
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
+import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
+import com.epam.alextuleninov.taxiservice.model.route.Route;
+import com.epam.alextuleninov.taxiservice.model.user.User;
+import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Class DAO for Car.
@@ -29,10 +35,90 @@ public class JDBCCarDAO implements CarDAO {
     }
 
     /**
+     * Create the car in the database.
+     *
+     * @param request request with order parameters
+     * @return the created car from database
+     */
+    @Override
+    public Car create(CarRequest request) {
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement createCar = connection.prepareStatement(
+                    """
+                            insert into cars (car_name, car_passengers, car_category, car_status)
+                            values (?, ?, ?, ?)
+                            """,
+                    Statement.RETURN_GENERATED_KEYS)) {
+
+                createCar.setString(1, request.carName());
+                createCar.setInt(2, request.numberOfPassengers());
+                createCar.setString(3, request.carCategory());
+                createCar.setString(4, request.carStatus());
+
+                createCar.executeUpdate();
+
+                ResultSet generatedKeys = createCar.getGeneratedKeys();
+                generatedKeys.next();
+                int id = generatedKeys.getInt(1);
+
+                connection.commit();
+
+                return new Car(
+                        id,
+                        request.carName(),
+                        request.numberOfPassengers(),
+                        request.carCategory(),
+                        request.carStatus()
+                );
+            } catch (Exception e) {
+                connection.rollback();
+                throw new UnexpectedDataAccessException(e);
+            } finally {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Find all cars from the database with pagination.
+     *
+     * @return all cars from database
+     */
+    @Override
+    public Set<Car> findAll(PageableRequest pageable) {
+        Set<Car> result = new TreeSet<>();
+
+        String sql = "select * from cars c " +
+                " order by c." + pageable.sortField() + " " + pageable.orderBy() +
+                " limit " + pageable.limit() + " offset " + pageable.offset();
+
+        try (Connection connection = dataSource.getConnection()) {
+            try (var preparedStatement = connection.prepareStatement(
+                    sql
+            )) {
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    result.add(mapper.map(resultSet));
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+        return result;
+    }
+
+    /**
      * Find all cars by category status from the database.
      *
-     * @param request       request with order`s parameters
-     * @return              all cars from the database
+     * @param request request with order`s parameters
+     * @return all cars from the database
      */
     @Override
     public List<Car> findAllByCategoryStatus(OrderRequest request) {
@@ -63,7 +149,7 @@ public class JDBCCarDAO implements CarDAO {
     /**
      * Change car status int the database.
      *
-     * @param request       request with order`s parameters
+     * @param request request with order`s parameters
      */
     @Override
     public void changeCarStatus(OrderRequest request) {
@@ -90,6 +176,123 @@ public class JDBCCarDAO implements CarDAO {
                 throw new UnexpectedDataAccessException(e);
             } finally {
                 connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Find number of records from the database.
+     *
+     * @return number of record in database
+     */
+    @Override
+    public long findNumberRecords() {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var getNumberRecords = connection.prepareStatement(
+                    """
+                            select count(c.car_id) as result from cars c
+                            """
+            )) {
+
+                ResultSet resultSet = getNumberRecords.executeQuery();
+                if (resultSet.next()) {
+                    return resultSet.getLong(1);
+                } else {
+                    throw new UnexpectedDataAccessException("Number of cars records not found");
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Update the car from database.
+     *
+     * @param id      id of car
+     * @param request request with parameter
+     */
+    @Override
+    public void updateById(int id, CarRequest request) {
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try (var updateCarByID = connection.prepareStatement(
+                    """
+                            update cars c
+                            set car_name = ?, car_passengers = ?, car_category = ?, car_status = ?
+                            where car_id = ?
+                            """
+            )) {
+
+                updateCarByID.setString(1, request.carName());
+                updateCarByID.setInt(2, request.numberOfPassengers());
+                updateCarByID.setString(3, request.carCategory());
+                updateCarByID.setString(4, request.carStatus());
+                updateCarByID.setInt(5, id);
+
+                updateCarByID.executeUpdate();
+
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw new UnexpectedDataAccessException(e);
+            } finally {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Delete the car from database.
+     *
+     * @param id id of car
+     */
+    @Override
+    public void deleteById(int id) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var psFindOrders = connection.prepareStatement(
+                    """
+                            select * from orders o
+                            join order_car oc on o.id = oc.o_id
+                            where oc.c_id = ?
+                            """
+            );
+                 var psDeleteOrders = connection.prepareStatement(
+                         """
+                                 delete from orders o
+                                 where o.id = ?
+                                 """
+                 );
+                 var psDeleteCars = connection.prepareStatement(
+                         """
+                                 delete from cars c
+                                 where c.car_id = ?
+                                 """
+                 )) {
+
+                // find orders by car`s id
+                List<Long> result = new ArrayList<>();
+                psFindOrders.setLong(1, id);
+                ResultSet resultSet = psFindOrders.executeQuery();
+                while (resultSet.next()) {
+                    result.add(resultSet.getLong(1));
+                }
+
+                // delete orders by id
+                for (int i = 0; i < result.size(); i++) {
+                    psDeleteOrders.setLong(1, result.get(i));
+                    psDeleteOrders.executeUpdate();
+                }
+
+                // delete car by id
+                psDeleteCars.setInt(1, id);
+                psDeleteCars.executeUpdate();
             }
         } catch (SQLException e) {
             throw new UnexpectedDataAccessException(e);

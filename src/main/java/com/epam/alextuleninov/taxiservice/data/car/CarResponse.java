@@ -1,17 +1,8 @@
-package com.epam.alextuleninov.taxiservice.model.car;
+package com.epam.alextuleninov.taxiservice.data.car;
 
-import com.epam.alextuleninov.taxiservice.model.user.User;
-import org.jetbrains.annotations.NotNull;
+import com.epam.alextuleninov.taxiservice.model.car.Car;
 
-import java.util.Objects;
-
-/**
- * Class for Car entity.
- *
- * @author Oleksandr Tuleninov
- * @version 01
- */
-public class Car implements Comparable {
+public class CarResponse {
 
     private int id;
 
@@ -23,7 +14,7 @@ public class Car implements Comparable {
 
     private String carStatus;
 
-    public Car(int id, String carName, int numberOfPassengers, String carCategory, String carStatus) {
+    public CarResponse(int id, String carName, int numberOfPassengers, String carCategory, String carStatus) {
         this.id = id;
         this.carName = carName;
         this.numberOfPassengers = numberOfPassengers;
@@ -71,21 +62,19 @@ public class Car implements Comparable {
         this.carStatus = carStatus;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Car car = (Car) o;
-        return id == car.id && Objects.equals(carName, car.carName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, carName);
-    }
-
-    @Override
-    public int compareTo(@NotNull Object o) {
-        return this.getId() - ((Car) o).getId();
+    /**
+     * Create the new class from Car.
+     *
+     * @param car           user entity
+     * @return              class from car
+     */
+    public static CarResponse fromCar(Car car) {
+        return new CarResponse(
+                car.getId(),
+                car.getCarName(),
+                car.getNumberOfPassengers(),
+                car.getCarCategory(),
+                car.getCarStatus()
+        );
     }
 }

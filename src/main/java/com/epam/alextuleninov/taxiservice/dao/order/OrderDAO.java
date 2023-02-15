@@ -1,13 +1,11 @@
 package com.epam.alextuleninov.taxiservice.dao.order;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
-import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -104,7 +102,7 @@ public interface OrderDAO {
      * @param id            id of order
      * @param orderRequest  request with parameter
      */
-    void updateByID(long id, OrderRequest orderRequest);
+    void updateById(long id, OrderRequest orderRequest);
 
     /**
      * Delete the category in the database.

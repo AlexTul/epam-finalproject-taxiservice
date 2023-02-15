@@ -55,7 +55,7 @@
     <%-- Choose section --%>
 
     <%-- Table of orders --%>
-    <div class="tab-pane fade show active" id="users" role="tabpanel"
+    <div class="tab-pane fade show active" id="reports" role="tabpanel"
          aria-labelledby="internet-tab">
         <h3><fmt:message key="table.orders"/>: ${requestScope.whoseOrders}. ${requestScope.sort}</h3>
         <table class="table table-striped">
@@ -135,6 +135,12 @@
         <jsp:include page="/WEB-INF/templates/_pager.jsp"></jsp:include>
     </div>
     <%-- Pager --%>
+
+    <%-- Admin menu link --%>
+    <div id="nav-link" class="text-right">
+        <a class="text-info" href="admin"><fmt:message key="menu.admin"/></a>
+    </div>
+    <%-- Admin menu link --%>
 
     <%-- Log out link --%>
     <div id="nav-link" class="text-right">

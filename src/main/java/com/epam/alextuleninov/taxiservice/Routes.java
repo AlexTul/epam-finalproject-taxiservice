@@ -17,6 +17,8 @@ public final class Routes {
     public static final String PAGE_ADMIN = "/WEB-INF/jsp/menu_admin.jsp";
     public static final String PAGE_REPORT = "/WEB-INF/jsp/report.jsp";
     public static final String PAGE_USER = "/WEB-INF/jsp/admin_user.jsp";
+    public static final String PAGE_CAR = "/WEB-INF/jsp/admin_car.jsp";
+    public static final String PAGE_CAR_ACTION = "/WEB-INF/jsp/car_action.jsp";
     public static final String PAGE_MESSAGE_ADMIN = "/WEB-INF/jsp/message_admin.jsp";
     public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message_user.jsp";
 }

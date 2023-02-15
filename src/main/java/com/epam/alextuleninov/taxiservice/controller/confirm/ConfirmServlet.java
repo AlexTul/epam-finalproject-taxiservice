@@ -127,7 +127,7 @@ public class ConfirmServlet extends HttpServlet {
         if (orderID == null) {
             orderCRUD.create(orderRequest, locale);
         } else {
-            orderCRUD.updateByID(Long.parseLong(orderID), orderRequest);
+            orderCRUD.updateById(Long.parseLong(orderID), orderRequest);
         }
 
         carCRUD.changeCarStatus(orderRequest);

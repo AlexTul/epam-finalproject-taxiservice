@@ -58,8 +58,8 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String orderID = req.getParameter("id");
-        req.getSession().setAttribute("updateOrderID", orderID);
+        String orderId = req.getParameter("id");
+        req.getSession().setAttribute("updateOrderID", orderId);
 
         processRequestGet(req);
 
