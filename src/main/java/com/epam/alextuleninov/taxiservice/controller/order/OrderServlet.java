@@ -6,10 +6,10 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
-import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
 import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
+import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 import com.epam.alextuleninov.taxiservice.service.verifyorder.VerifyOrder;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.ServletException;
@@ -33,18 +33,18 @@ public class OrderServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(OrderServlet.class);
 
     private CarCRUD carCRUD;
-    private RouteCRUD routeCRUD;
     private Loyalty loyaltyService;
     private VerifyOrder verifyOrderOrderService;
     private DateTimeRide dateTimeRideService;
+    private RouteCharacteristics routeCharacteristics;
 
     @Override
     public void init() {
         this.carCRUD = AppContext.getAppContext().getCarCRUD();
-        this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
         this.loyaltyService = AppContext.getAppContext().getLoyaltyService();
         this.verifyOrderOrderService = AppContext.getAppContext().getVerifyService();
         this.dateTimeRideService = AppContext.getAppContext().getDateTimeRide();
+        this.routeCharacteristics = AppContext.getAppContext().getRouteCharacteristics();
         log.info(getServletName() + " initialized");
     }
 
@@ -58,8 +58,10 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String orderId = req.getParameter("id");
-        req.getSession().setAttribute("updateOrderID", orderId);
+        if (req.getSession().getAttribute("updateOrderID") == null) {
+            String updateOrderID = req.getParameter("id");
+            req.getSession().setAttribute("updateOrderID", updateOrderID);
+        }
 
         processRequestGet(req);
 
@@ -106,10 +108,6 @@ public class OrderServlet extends HttpServlet {
         if (cars != null) {
             var orderRequest = OrderRequest.getOrderRequest(req, cars, null);
             carCRUD.changeCarStatus(orderRequest);
-        } else {
-            String locale = (String) req.getSession().getAttribute("locale");
-            var allStartEnd = routeCRUD.findAllByLocale(locale);
-            req.getSession().setAttribute("allStartEnd", allStartEnd);
         }
     }
 
@@ -131,35 +129,40 @@ public class OrderServlet extends HttpServlet {
         }
 
         // calculate the date and time of the trip, taking into account the time the car was delivered
-        var dateTimeOfRide = dateTimeRideService
-                .count(LocalDateTime.parse(req.getParameter("dateOfRide")));
+        var dateTimeOfTravel = dateTimeRideService
+                .count(LocalDateTime.parse(req.getParameter("dateOfTravel")));
 
-        var saveOrderRequest = OrderRequest.getOrderRequest(req, dateTimeOfRide);
+        var request = OrderRequest.getOrderRequest(req, dateTimeOfTravel);
 
-        var cars = verifyOrderOrderService.checkOrder(saveOrderRequest);
+        var cars = verifyOrderOrderService.checkOrder(request);
 
         if (cars.size() == 0) {
             log.info("No available cars, order cancellation");
 
             PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_CANCEL_ORDER_UK, Constants.USER_CANCEL_ORDER);
 
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
+            req.getRequestDispatcher(Routes.PAGE_MESSAGE_ORDER_USER)
                     .forward(req, resp);
             return false;
         }
 
         var stringOfCars = getStringOfCars(cars);
 
-        var loyaltyPrice = loyaltyService.getLoyaltyPrice(saveOrderRequest);
+        var routeChar = routeCharacteristics.getRouteCharacteristics(request);
+
+        var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
 
         req.getSession().setAttribute("cars", cars);
         req.getSession().setAttribute("loyaltyPrice", loyaltyPrice.loyaltyPrice());
 
-        req.getSession().setAttribute("startEnd", req.getParameter("startEnd"));
+        req.getSession().setAttribute("startTravel", req.getParameter("startTravel"));
+        req.getSession().setAttribute("endTravel", req.getParameter("endTravel"));
+        req.getSession().setAttribute("travelDistance", routeChar.travelDistance());
+        req.getSession().setAttribute("travelDuration", routeChar.travelDuration());
         req.getSession().setAttribute("numberOfPassengers", req.getParameter("numberOfPassengers"));
         req.getSession().setAttribute("listOfCars", stringOfCars);
-        req.getSession().setAttribute("dateOfRide", dateTimeOfRide.format(Constants.FORMATTER));
-        req.getSession().setAttribute("priceOfRide", loyaltyPrice.loyaltyPrice());
+        req.getSession().setAttribute("dateOfTravel", dateTimeOfTravel.format(Constants.FORMATTER));
+        req.getSession().setAttribute("priceOfTravel", loyaltyPrice.loyaltyPrice());
 
         return true;
     }

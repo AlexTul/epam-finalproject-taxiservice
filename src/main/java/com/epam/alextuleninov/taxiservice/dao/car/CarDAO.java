@@ -5,7 +5,6 @@ import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

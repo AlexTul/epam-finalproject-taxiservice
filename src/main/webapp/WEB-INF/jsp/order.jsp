@@ -18,26 +18,27 @@
 <body class="text-center">
 
 <div>
-
+    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
     <%-- Customer order --%>
     <form class="form-signing" method="post" action="order">
-        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
-            <fmt:message key="make.order"/></h1>
-        <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
 
-        <%-- Choose startEnd --%>
-        <label for="carRoutes"><fmt:message key="choose.route"/>:</label><br>
-        <select id="carRoutes" name="startEnd">
-            <c:forEach items="${sessionScope.allStartEnd}" var="value">
-                <option value="${value}">${value}</option>
-            </c:forEach>
-        </select>
-        <br><br>
-        <%-- Choose startEnd --%>
+        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/>, <fmt:message key="make.order"/></h2>
+        <ctg:hello userLogin="${login}"/>
+
+        <%-- Choose start, end of travel --%>
+        <label for="start" class="sr-only">Start travel form</label>
+        <input type="text" id="start" name="startTravel" class="form-control"
+               placeholder="<fmt:message key="start.travel"/>"
+               minlength="2" required><br>
+
+        <label for="end" class="sr-only">Start travel form</label>
+        <input type="text" id="end" name="endTravel" class="form-control"
+               placeholder="<fmt:message key="end.travel"/>"
+               minlength="2" required><br>
+        <%-- Choose start, end of travel --%>
 
         <%-- Choose number of passengers --%>
-        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
+<%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
         <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
                placeholder="<fmt:message key="enter.passengers"/>"
                min="1" minlength="1" maxlength="1" required>
@@ -55,8 +56,8 @@
 
         <%-- Choose the date for ride --%>
         <label for="dateRide"><fmt:message key="enter.date.time.trip"/>:</label>
-        <input type="datetime-local" id="dateRide" name="dateOfRide"><br>
-        <label><fmt:message key="car.delivery.time"/></label><br><br>
+        <input type="datetime-local" id="dateRide" name="dateOfTravel"><br>
+        <label><fmt:message key="car.delivery.time"/></label><br>
         <%-- Choose the date for ride --%>
 
         <%-- To order button --%>

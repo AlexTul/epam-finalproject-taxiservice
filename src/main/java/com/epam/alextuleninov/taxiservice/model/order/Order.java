@@ -1,7 +1,6 @@
 package com.epam.alextuleninov.taxiservice.model.order;
 
 import com.epam.alextuleninov.taxiservice.model.car.Car;
-import com.epam.alextuleninov.taxiservice.model.route.Route;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,10 @@ public class Order {
     private User customer;
     private int numberOfPassengers;
     List<Car> cars;
-    private Route route;
+    private String startTravel;
+    private String endTravel;
+    private double travelDistance;
+    private int travelDuration;
     private double cost;
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
@@ -29,15 +31,18 @@ public class Order {
     public Order() {
     }
 
-    public Order(long id, LocalDateTime createdAt, User customer,
-                 int numberOfPassengers, List<Car> cars, Route route,
-                 double cost, LocalDateTime startedAt, LocalDateTime finishedAt) {
+    public Order(long id, LocalDateTime createdAt, User customer, int numberOfPassengers,
+                 List<Car> cars, String startTravel, String endTravel, double travelDistance,
+                 int travelDuration, double cost, LocalDateTime startedAt, LocalDateTime finishedAt) {
         this.id = id;
         this.createdAt = createdAt;
         this.customer = customer;
         this.numberOfPassengers = numberOfPassengers;
         this.cars = cars;
-        this.route = route;
+        this.startTravel = startTravel;
+        this.endTravel = endTravel;
+        this.travelDistance = travelDistance;
+        this.travelDuration = travelDuration;
         this.cost = cost;
         this.startedAt = startedAt;
         this.finishedAt = finishedAt;
@@ -83,12 +88,36 @@ public class Order {
         this.cars = cars;
     }
 
-    public Route getRoute() {
-        return route;
+    public String getStartTravel() {
+        return startTravel;
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
+    public void setStartTravel(String startTravel) {
+        this.startTravel = startTravel;
+    }
+
+    public String getEndTravel() {
+        return endTravel;
+    }
+
+    public void setEndTravel(String endTravel) {
+        this.endTravel = endTravel;
+    }
+
+    public double getTravelDistance() {
+        return travelDistance;
+    }
+
+    public void setTravelDistance(double travelDistance) {
+        this.travelDistance = travelDistance;
+    }
+
+    public int getTravelDuration() {
+        return travelDuration;
+    }
+
+    public void setTravelDuration(int travelDuration) {
+        this.travelDuration = travelDuration;
     }
 
     public double getCost() {

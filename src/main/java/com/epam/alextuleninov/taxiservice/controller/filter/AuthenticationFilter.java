@@ -4,7 +4,6 @@ import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
-import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
@@ -31,12 +30,10 @@ public class AuthenticationFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     private UserCRUD userCRUD;
-    private RouteCRUD routeCRUD;
 
     @Override
     public void init(FilterConfig filterConfig) {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
-        this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
         log.info("Authentication and authorization filter initialized");
     }
 
@@ -104,15 +101,11 @@ public class AuthenticationFilter implements Filter {
     private void moveToMenu(HttpServletRequest req, HttpServletResponse resp,
                             Role role) throws ServletException, IOException {
 
-        String locale = (String) req.getSession().getAttribute("locale");
-
         if (role.equals(Role.ADMINISTRATOR)) {
 
             req.getRequestDispatcher(Routes.PAGE_ADMIN)
                     .forward(req, resp);
         } else if (role.equals(Role.CLIENT)) {
-            var allStartEnd = routeCRUD.findAllByLocale(locale);
-            req.getSession().setAttribute("allStartEnd", allStartEnd);
 
             req.getRequestDispatcher(Routes.PAGE_ORDER)
                     .forward(req, resp);

@@ -22,7 +22,7 @@ public interface OrderCRUD {
      * @param request       request with order parameters
      * @return              the created order from database
      */
-    OrderResponse create(OrderRequest request, String locale);
+    OrderResponse create(OrderRequest request);
 
     /**
      * Find all orders from the database with pagination information.
@@ -30,7 +30,7 @@ public interface OrderCRUD {
      * @param pageable      pageable with pagination information
      * @return              all orders from database with pagination information in response format
      */
-    List<OrderResponse> findAll(PageableRequest pageable, String locale);
+    List<OrderResponse> findAll(PageableRequest pageable);
 
     /**
      * Find all orders by range from the database.
@@ -47,7 +47,7 @@ public interface OrderCRUD {
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
-    List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable, String locale);
+    List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable);
 
     /**
      * Find all orders by date start order from the database.
@@ -56,7 +56,7 @@ public interface OrderCRUD {
      * @param pageable      request with pagination information
      * @return              all users by range from database in response format
      */
-    List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable, String locale);
+    List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable);
 
     /**
      * Find all dates by start order from the database.

@@ -68,8 +68,11 @@ public class LogoutServlet extends HttpServlet {
 
         session.removeAttribute("locale");
         session.removeAttribute("cars");
+        session.removeAttribute("travelDistance");
+        session.removeAttribute("travelDuration");
         session.removeAttribute("loyaltyPrice");
-        session.removeAttribute("startEnd");
+        session.removeAttribute("startTravel");
+        session.removeAttribute("endTravel");
         session.removeAttribute("numberOfPassengers");
         session.removeAttribute("listOfCars");
         session.removeAttribute("dateOfRide");

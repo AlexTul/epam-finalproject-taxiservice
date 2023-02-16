@@ -18,6 +18,9 @@ import java.io.IOException;
 
 import static com.epam.alextuleninov.taxiservice.exceptions.car.CarExceptions.carNotFound;
 
+/**
+ * CarServlet for to process a Http request from admin.
+ */
 @WebServlet(name = "CarServlet", urlPatterns = "/car/*")
 public class CarServlet extends HttpServlet {
 
@@ -31,6 +34,14 @@ public class CarServlet extends HttpServlet {
         log.info(getServletName() + " initialized");
     }
 
+    /**
+     * To process Get requests from admin:
+     * - forward on action car`s page for add car in the database;
+     * - forward on action car`s page for update car in the database;
+     * - forward on car`s page for show all cars in the database
+     *
+     * @param req HttpServletRequest request
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -57,6 +68,15 @@ public class CarServlet extends HttpServlet {
         }
     }
 
+    /**
+     * To process Post requests from admin:
+     * - create car in the database;
+     * - update car in the database;
+     * - delete car from the database
+     *
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
@@ -65,7 +85,7 @@ public class CarServlet extends HttpServlet {
         String carName = req.getParameter("carName");
         // update car in the database
         String updateCarID = (String) req.getSession().getAttribute("updateCarID");
-        // delete car in the database
+        // delete car from the database
         String carID = req.getParameter("id");
 
         if (carName != null && updateCarID == null) {
@@ -85,6 +105,12 @@ public class CarServlet extends HttpServlet {
         log.info(getServletName() + " destroyed");
     }
 
+    /**
+     * To process Get requests from admin:
+     * - forward on car`s page for show all cars in the database
+     *
+     * @param req HttpServletRequest request
+     */
     private void processRequestGet(HttpServletRequest req) {
         long numberRecordsCarsInDatabase = carCRUD.findNumberRecords();
         // set attribute for pagination, total_records = all records from database

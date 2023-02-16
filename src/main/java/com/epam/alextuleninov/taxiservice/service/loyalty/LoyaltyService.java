@@ -1,10 +1,12 @@
 package com.epam.alextuleninov.taxiservice.service.loyalty;
 
+import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.data.loyalty.LoyaltyRatio;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
-import com.epam.alextuleninov.taxiservice.exceptions.route.RouteExceptions;
+import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
-import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
+import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
+import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristicsService;
 
 /**
  * Interface for count loyalty price.
@@ -15,28 +17,36 @@ import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 public class LoyaltyService implements Loyalty {
 
     private final OrderCRUD orderCRUD;
-    private final RouteCRUD routeCRUD;
+    private final RouteCharacteristics routeCharacteristics;
 
-    public LoyaltyService(OrderCRUD orderCRUD, RouteCRUD routeCRUD) {
+    public LoyaltyService(OrderCRUD orderCRUD, RouteCharacteristics routeCharacteristics) {
         this.orderCRUD = orderCRUD;
-        this.routeCRUD = routeCRUD;
+        this.routeCharacteristics = routeCharacteristics;
     }
 
     /**
      * Count loyalty price.
      *
-     * @param orderRequest  request with order`s parameters
+     * @param request  request with order`s parameters
      * @return              loyalty price
      */
     @Override
-    public LoyaltyRatio getLoyaltyPrice(OrderRequest orderRequest) {
-        var countCost = orderCRUD.sumCostByCustomer(orderRequest);
+    public LoyaltyRatio getLoyaltyPrice(OrderRequest request) {
+        var countCost = orderCRUD.sumCostByCustomer(request);
         var loyaltyRatio = calculateRatio(countCost);
 
-        var routeResponse = routeCRUD.findByStartEnd(orderRequest)
-                .orElseThrow(() -> RouteExceptions.routeNotFound(orderRequest));
+        var routeCharacteristics = new RouteCharacteristics() {
+            @Override
+            public RouteCharacteristicsResponse getRouteCharacteristics(OrderRequest request) {
+                return new RouteCharacteristicsService().getRouteCharacteristics(request);
+            }
+        };
+        var routeCharacteristicsResp = routeCharacteristics.getRouteCharacteristics(request);
+        double price = routeCharacteristicsResp.travelDistance() * Constants.TRIP_PRICE_KILOMETER;
+        // if the price is less than the minimum
+        price = Math.max(price, Constants.TRIP_PRICE_MINIMAL);
 
-        return new LoyaltyRatio(loyaltyRatio * routeResponse.price());
+        return new LoyaltyRatio(loyaltyRatio * price);
     }
 
     private double calculateRatio(double countCost) {

@@ -16,7 +16,7 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Cars add</title>
+    <title>Cars action</title>
 </head>
 <body class="text-center">
 
@@ -27,8 +27,7 @@
     </div>
 
     <form class="form-signing" method="post" action="car">
-        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
+        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/>
             <fmt:message key="enter.data"/></h1>
 
         <label for="carName" class="sr-only">Car name form</label>

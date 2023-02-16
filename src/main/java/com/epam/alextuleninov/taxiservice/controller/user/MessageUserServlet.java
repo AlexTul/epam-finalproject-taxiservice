@@ -1,6 +1,8 @@
-package com.epam.alextuleninov.taxiservice.controller.admin;
+package com.epam.alextuleninov.taxiservice.controller.user;
 
 import com.epam.alextuleninov.taxiservice.Routes;
+import com.epam.alextuleninov.taxiservice.config.context.AppContext;
+import com.epam.alextuleninov.taxiservice.controller.registration.RegisterServlet;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,30 +13,21 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-/**
- * AdminServlet for to process a Http request from admin.
- */
-@WebServlet(name = "AdminServlet", urlPatterns = "/admin")
-public class AdminServlet extends HttpServlet {
+@WebServlet(name = "MessageUserServlet", urlPatterns = "/messageuser")
+public class MessageUserServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageUserServlet.class);
 
     @Override
     public void init() {
         log.info(getServletName() + " initialized");
     }
 
-    /**
-     * To process Get requests from admin:
-     * - forward on admin page.
-     *
-     * @param req HttpServletRequest request
-     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(Routes.PAGE_ADMIN)
+        req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
                 .forward(req, resp);
     }
 

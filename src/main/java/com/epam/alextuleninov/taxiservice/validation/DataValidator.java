@@ -13,7 +13,7 @@ public final class DataValidator {
     private final static String REGEX_CHECK_FOR_NAME = "^[a-zA-Zа-яА-Я\\s]{2,20}$";
     private final static String REGEX_EMAIL = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
     private final static String REGEX_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,20}$";
-    private final static String REGEX_NUMBER = "\\d";
+    private final static String REGEX_NUMBER = "[0-9]+";
     private final static String REGEX_LOCAL_DATE_TIME = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}";
 
     /**
@@ -48,7 +48,7 @@ public final class DataValidator {
      */
     public static boolean initOrderValidation(HttpServletRequest req) {
         return validateNumber(req.getParameter("numberOfPassengers"))
-                && validateLocalDateTime(req.getParameter("dateOfRide"));
+                && validateLocalDateTime(req.getParameter("dateOfTravel"));
     }
 
     /**

@@ -4,11 +4,9 @@ import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
-import com.epam.alextuleninov.taxiservice.exceptions.route.RouteExceptions;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
-import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -31,13 +29,11 @@ public class ConfirmServlet extends HttpServlet {
 
     private OrderCRUD orderCRUD;
     private CarCRUD carCRUD;
-    private RouteCRUD routeCRUD;
 
     @Override
     public void init() {
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         this.carCRUD = AppContext.getAppContext().getCarCRUD();
-        this.routeCRUD = AppContext.getAppContext().getRouteCRUD();
         log.info(getServletName() + " initialized");
     }
 
@@ -89,17 +85,17 @@ public class ConfirmServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processRequestGet(HttpServletRequest req) {
-        String locale = req.getParameter("locale");
-
-        String startEnd;
-        var routeResponse = routeCRUD.findByStartEnd(OrderRequest.getOrderRequest(req, null, null))
-                .orElseThrow(() -> RouteExceptions.routeNotFound(OrderRequest.getOrderRequest(req, null, null)));
-        if (locale.equals("en")) {
-            startEnd = routeResponse.startEnd();
-        } else {
-            startEnd = routeResponse.startEndUk();
-        }
-        req.getSession().setAttribute("startEnd", startEnd);
+//        String locale = req.getParameter("locale");
+//
+//        String startEnd;
+//        var routeResponse = routeCRUD.findByStartEnd(OrderRequest.getOrderRequest(req, null, null))
+//                .orElseThrow(() -> RouteExceptions.routeNotFound(OrderRequest.getOrderRequest(req, null, null)));
+//        if (locale.equals("en")) {
+//            startEnd = routeResponse.startEnd();
+//        } else {
+//            startEnd = routeResponse.startEndUk();
+//        }
+//        req.getSession().setAttribute("startEnd", startEnd);
     }
 
     /**
@@ -113,25 +109,24 @@ public class ConfirmServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processRequestPost(HttpServletRequest req) {
-        String locale = (String) req.getSession().getAttribute("locale");
-        String orderID = (String) req.getSession().getAttribute("updateOrderID");
+        String updateOrderID = (String) req.getSession().getAttribute("updateOrderID");
 
         @SuppressWarnings("unchecked")
         var cars = (List<Car>) req.getSession().getAttribute("cars");
 
-        var dateTimeOfRide = LocalDateTime.parse(
-                (CharSequence) req.getSession().getAttribute("dateOfRide"), Constants.FORMATTER);
+        var dateTimeOfTravel = LocalDateTime.parse(
+                (CharSequence) req.getSession().getAttribute("dateOfTravel"), Constants.FORMATTER);
 
-        var orderRequest = OrderRequest.getOrderRequest(req, cars, dateTimeOfRide);
+        var request = OrderRequest.getOrderRequest(req, cars, dateTimeOfTravel);
 
-        if (orderID == null) {
-            orderCRUD.create(orderRequest, locale);
+        if (updateOrderID == null) {
+            orderCRUD.create(request);
         } else {
-            orderCRUD.updateById(Long.parseLong(orderID), orderRequest);
+            orderCRUD.updateById(Long.parseLong(updateOrderID), request);
         }
 
-        carCRUD.changeCarStatus(orderRequest);
+        carCRUD.changeCarStatus(request);
 
-        req.getSession().setAttribute("dateTimeTrip", orderRequest.startedAt().format(Constants.FORMATTER));
+        req.getSession().setAttribute("dateTimeTravel", request.startedAt().format(Constants.FORMATTER));
     }
 }

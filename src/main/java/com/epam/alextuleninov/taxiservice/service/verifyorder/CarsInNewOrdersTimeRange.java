@@ -30,21 +30,21 @@ public class CarsInNewOrdersTimeRange {
     /**
      * Get cars from orders that are in the new order's time range.
      *
-     * @param orderRequest  orderRequest with order`s parameters
+     * @param request  request with order`s parameters
      * @return              list with cars from orders
      */
-    public List<Car> getCarsInNewOrdersTimeRange(OrderRequest orderRequest) {
+    public List<Car> getCarsInNewOrdersTimeRange(OrderRequest request) {
 
-        var allOrdersByNow = orderCRUD.findAllByRange(orderRequest);
+        var allOrdersByRange = orderCRUD.findAllByRange(request);
 
         // add to the car`s collection the cars that have orders that overlap with the new order
         Set<Car> bookingCars = new HashSet<>();
-        for (Order variable : allOrdersByNow) {
+        for (Order variable : allOrdersByRange) {
             bookingCars.addAll(variable.getCars());
         }
 
         //add to the car`s collection the cars without orders, but available
-        var allAvailableCars = carCRUD.findAllByCategoryStatus(orderRequest);
+        var allAvailableCars = carCRUD.findAllByCategoryStatus(request);
         // delete booking cars
         allAvailableCars.removeAll(bookingCars);
 

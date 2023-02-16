@@ -21,29 +21,16 @@ create table if not exists cars
     car_status     text   not null
 );
 
-create table if not exists addresses
-(
-    id           bigserial primary key,
-    start_end    text not null unique,
-    start_end_uk text not null unique
-);
-
-create table if not exists routes
-(
-    id          bigserial primary key,
-    address_id  bigint  not null references addresses (id),
-    distance    bigint  not null check ( distance > 0 ),
-    route_price decimal not null check ( route_price > 0.0 ),
-    travel_time bigint  not null check ( travel_time > 0 )
-);
-
 create table if not exists orders
 (
     id               bigserial primary key,
     date             timestamp not null,
     customer_id      bigint    not null references users (id) on delete cascade,
     order_passengers bigint    not null check ( order_passengers > 0 ),
-    route_id         bigint    not null references routes (id),
+    start_travel     text      not null,
+    end_travel       text      not null,
+    travel_distance  decimal   not null check ( travel_distance > 0.0 ),
+    travel_duration  decimal   not null check ( travel_duration > 0.0 ),
     cost             decimal   not null check ( cost > 0.0 ),
     started_at       timestamp not null,
     finished_at      timestamp not null,

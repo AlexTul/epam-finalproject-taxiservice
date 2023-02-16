@@ -45,32 +45,25 @@ public class ReportServlet extends HttpServlet {
     /**
      * To process Get requests from user.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        long numberRecordsInDatabase = orderCRUD.findNumberRecords();
+        processRequest(req);
 
-        if (numberRecordsInDatabase == 0) {
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_ADMIN)
-                    .forward(req, resp);
-        } else {
-            processRequest(req, numberRecordsInDatabase);
-
-            req.getRequestDispatcher(Routes.PAGE_REPORT)
-                    .forward(req, resp);
-        }
+        req.getRequestDispatcher(Routes.PAGE_REPORT)
+                .forward(req, resp);
     }
 
     /**
      * To process Post requests from user:
      * delete the order from database.
      *
-     * @param req                       HttpServletRequest request
-     * @param resp                      HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -93,9 +86,9 @@ public class ReportServlet extends HttpServlet {
      * configuration for pagination for customer, configuration for pagination for date,
      * set current page for pagination, sorting by date, sorting by cost.
      *
-     * @param req                   HttpServletRequest request
+     * @param req HttpServletRequest request
      */
-    private void processRequest(HttpServletRequest req, long numberRecordsInDatabase) {
+    private void processRequest(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute("locale");
 
         // find all users for filter for report`s page
@@ -105,12 +98,13 @@ public class ReportServlet extends HttpServlet {
         var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
 
         // set attribute for pagination, total_records = all records from database
+        long numberRecordsInDatabase = orderCRUD.findNumberRecords();
         req.setAttribute("total_records", numberRecordsInDatabase);
         // set current page for pagination
         int page = new PaginationConfig().configPage(req);
         // find all orders with pagination for report`s page
         new PaginationConfig().config(req);
-        var allOrders = orderCRUD.findAll(PageableRequest.getPageableRequest(page), locale);
+        var allOrders = orderCRUD.findAll(PageableRequest.getPageableRequest(page));
 
         req.getSession().setAttribute("datesOfOrders", allStartedAtDates);
         req.getSession().setAttribute("customersOfOrders", allUsersForFilter);
@@ -184,9 +178,9 @@ public class ReportServlet extends HttpServlet {
      * To process Get requests from user:
      * put all orders from database or put by date of orders or customer of orders.
      *
-     * @param req                 HttpServletRequest request
-     * @param pageable            pageable with pagination information
-     * @param locale              default or current locale of application
+     * @param req      HttpServletRequest request
+     * @param pageable pageable with pagination information
+     * @param locale   default or current locale of application
      */
     private List<OrderResponse> putOrdersFromDBToPage(HttpServletRequest req, PageableRequest pageable, String locale) {
         String customer = (String) req.getSession().getAttribute("filterByCustomer");
@@ -195,12 +189,12 @@ public class ReportServlet extends HttpServlet {
         List<OrderResponse> allOrders;
         if (customer != null && !customer.equals("all")) {
             allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByCustomer(customer),
-                    orderCRUD.findAllByCustomer(customer, pageable, locale),
+                    orderCRUD.findAllByCustomer(customer, pageable),
                     "customerOfOrders", customer, locale, Constants.ADMIN_REPORT_CUSTOM_UK, Constants.ADMIN_REPORT_CUSTOM);
         } else if (localeDate != null && !localeDate.equals("all")) {
             LocalDateTime localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), Constants.FORMATTER);
             allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByDateStartedAt(localeDateTime),
-                    orderCRUD.findAllByDate(localeDateTime, pageable, locale),
+                    orderCRUD.findAllByDate(localeDateTime, pageable),
                     "dateOfOrders", localeDate, locale, Constants.ADMIN_REPORT_DATE_UK, Constants.ADMIN_REPORT_DATE);
         } else {
             allOrders = getOrderResponses(req, pageable, locale);
@@ -212,16 +206,16 @@ public class ReportServlet extends HttpServlet {
      * To process Get requests from user:
      * get all orders from database (if dateFromRequest == null && customerFromRequest == null)
      *
-     * @param req               HttpServletRequest request
-     * @param pageable          pageable with pagination information
-     * @param locale            default or current locale of application
+     * @param req      HttpServletRequest request
+     * @param pageable pageable with pagination information
+     * @param locale   default or current locale of application
      */
     private List<OrderResponse> getOrderResponses(HttpServletRequest req, PageableRequest pageable, String locale) {
         List<OrderResponse> allOrders;
         req.setAttribute("total_records", orderCRUD.findNumberRecords());
         new PaginationConfig().config(req);
 
-        allOrders = orderCRUD.findAll(pageable, locale);
+        allOrders = orderCRUD.findAll(pageable);
 
         PageMessageBuilder.buildMessageAdmin(req, locale, "whoseOrders",
                 Constants.ADMIN_REPORT_ALL_UK, Constants.ADMIN_REPORT_ALL);

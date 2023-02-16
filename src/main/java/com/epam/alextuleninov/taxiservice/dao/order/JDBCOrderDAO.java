@@ -8,7 +8,6 @@ import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
-import com.epam.alextuleninov.taxiservice.model.route.Route;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 
 import javax.sql.DataSource;
@@ -26,18 +25,15 @@ public class JDBCOrderDAO implements OrderDAO {
 
     private final DataSource dataSource;
     private final ResultSetMapper<Car> carMapper;
-    private final ResultSetMapper<Route> routeMapper;
     private final ResultSetMapper<User> userMapper;
     private final ResultSetMapper<Order> orderMapper;
 
     public JDBCOrderDAO(DataSource dataSource,
                         ResultSetMapper<Car> carMapper,
-                        ResultSetMapper<Route> routeMapper,
                         ResultSetMapper<User> userMapper,
                         ResultSetMapper<Order> orderMapper) {
         this.dataSource = dataSource;
         this.carMapper = carMapper;
-        this.routeMapper = routeMapper;
         this.userMapper = userMapper;
         this.orderMapper = orderMapper;
 
@@ -55,15 +51,7 @@ public class JDBCOrderDAO implements OrderDAO {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (var getRoute = connection.prepareStatement(
-                    """
-                            select * from routes r
-                            join addresses a on a.id = r.address_id
-                            where a.start_end like ? or a.start_end_uk like ?
-                            """
-            );
-
-                 var getUserByEmail = connection.prepareStatement(
+            try (var getUserByEmail = connection.prepareStatement(
                          """
                                  select * from users as u where u.email like ?
                                  """
@@ -72,8 +60,9 @@ public class JDBCOrderDAO implements OrderDAO {
                  var createOrder = connection.prepareStatement(
                          """
                                  insert into orders (
-                                 date, customer_id, order_passengers, route_id, cost, started_at, finished_at)
-                                 values (?, ?, ?, ?, ?, ?, ?)
+                                 date, customer_id, order_passengers, start_travel, end_travel,
+                                 travel_distance, travel_duration, cost, started_at, finished_at)
+                                 values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                                  """,
                          Statement.RETURN_GENERATED_KEYS);
 
@@ -82,14 +71,6 @@ public class JDBCOrderDAO implements OrderDAO {
                                  insert into order_car (o_id, c_id) values (?, ?)
                                  """
                  )) {
-
-                getRoute.setString(1, request.startEnd());
-                getRoute.setString(2, request.startEnd());
-                ResultSet resultSetRoute = getRoute.executeQuery();
-                Route route = null;
-                if (resultSetRoute.next()) {
-                    route = routeMapper.map(resultSetRoute);
-                }
 
                 getUserByEmail.setString(1, request.customer());
                 ResultSet resultSetUser = getUserByEmail.executeQuery();
@@ -104,18 +85,20 @@ public class JDBCOrderDAO implements OrderDAO {
                 LocalDateTime startRoute = request.startedAt();
 
                 // count finish route`s time
-                assert route != null;
-                LocalDateTime finishRoute = request.startedAt().plusSeconds(route.getTravelTime());
+                LocalDateTime finishRoute = request.startedAt().plusSeconds(request.travelDuration());
 
                 // insert data to create order table
                 assert user != null;
                 createOrder.setTimestamp(1, Timestamp.valueOf(createdOn));
                 createOrder.setLong(2, user.getId());
                 createOrder.setInt(3, request.numberOfPassengers());
-                createOrder.setLong(4, route.getId());
-                createOrder.setDouble(5, request.loyaltyPrice());
-                createOrder.setTimestamp(6, Timestamp.valueOf(startRoute));
-                createOrder.setTimestamp(7, Timestamp.valueOf(finishRoute));
+                createOrder.setString(4, request.startTravel());
+                createOrder.setString(5, request.endTravel());
+                createOrder.setDouble(6, request.travelDistance());
+                createOrder.setInt(7, request.travelDuration());
+                createOrder.setDouble(8, request.loyaltyPrice());
+                createOrder.setTimestamp(9, Timestamp.valueOf(startRoute));
+                createOrder.setTimestamp(10, Timestamp.valueOf(finishRoute));
 
                 createOrder.executeUpdate();
 
@@ -153,7 +136,10 @@ public class JDBCOrderDAO implements OrderDAO {
                         user,
                         request.numberOfPassengers(),
                         null,
-                        route,
+                        request.startTravel(),
+                        request.endTravel(),
+                        request.travelDistance(),
+                        request.travelDuration(),
                         request.loyaltyPrice(),
                         startRoute,
                         finishRoute
@@ -180,7 +166,6 @@ public class JDBCOrderDAO implements OrderDAO {
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
-                "join routes r on r.id = o.route_id join addresses a on a.id = r.address_id " +
                 " order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
@@ -198,15 +183,7 @@ public class JDBCOrderDAO implements OrderDAO {
         List<Order> orders = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
-            try (var getRoute = connection.prepareStatement(
-                    """
-                            select * from routes r
-                            join addresses a on a.id = r.address_id
-                            where a.start_end like ? or a.start_end_uk like ?
-                            """
-            );
-
-                 var getAllOrdersIDByNow = connection.prepareStatement(
+            try (var getAllOrdersIDByNow = connection.prepareStatement(
                          """
                                  select o.id from orders o
                                  where o.started_at < ? and finished_at > ?
@@ -225,24 +202,13 @@ public class JDBCOrderDAO implements OrderDAO {
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
-                                 join routes r on r.id = o.route_id
-                                 join addresses a on a.id = r.address_id
                                  where o.started_at < ? and finished_at > ?
                                  """
                  )) {
 
-                getRoute.setString(1, request.startEnd());
-                getRoute.setString(2, request.startEnd());
-
-                ResultSet resultSet = getRoute.executeQuery();
-                Route route = new Route();
-                if (resultSet.next()) {
-                    route = routeMapper.map(resultSet);
-                }
-
                 // calculate startAt and finishAt by request with a range that takes into account the delivery time of the car
                 LocalDateTime startedAt = request.startedAt().minusSeconds(Constants.CAR_DELIVERY_TIME_SECOND)
-                        .plusSeconds(route.getTravelTime() + 2 * Constants.CAR_DELIVERY_TIME_SECOND);
+                        .plusSeconds(request.travelDuration() + 2 * Constants.CAR_DELIVERY_TIME_SECOND);
                 LocalDateTime finishedAt = request.startedAt().minusSeconds(Constants.CAR_DELIVERY_TIME_SECOND);
 
                 getAllOrdersIDByNow.setTimestamp(1, Timestamp.valueOf(startedAt));
@@ -276,7 +242,10 @@ public class JDBCOrderDAO implements OrderDAO {
                                     userMapper.map(rsAllOrdersByNow),
                                     rsAllOrdersByNow.getInt(DataSourceFields.ORDER_PASSENGERS),
                                     mapOrderCars.get(rsAllOrdersByNow.getLong(DataSourceFields.ORDER_ID)),
-                                    routeMapper.map(rsAllOrdersByNow),
+                                    rsAllOrdersByNow.getString(DataSourceFields.ROUTE_START_TRAVEL),
+                                    rsAllOrdersByNow.getString(DataSourceFields.ROUTE_END_TRAVEL),
+                                    rsAllOrdersByNow.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
+                                    rsAllOrdersByNow.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
                                     rsAllOrdersByNow.getDouble(DataSourceFields.ORDER_COST),
                                     rsAllOrdersByNow.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
                                     rsAllOrdersByNow.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
@@ -303,7 +272,6 @@ public class JDBCOrderDAO implements OrderDAO {
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
-                "join routes r on r.id = o.route_id join addresses a on a.id = r.address_id " +
                 "where u.email like '" + customer +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
@@ -323,7 +291,6 @@ public class JDBCOrderDAO implements OrderDAO {
 
         String sql = "select * from orders o " +
                 "join users u on u.id = o.customer_id " +
-                "join routes r on r.id = o.route_id join addresses a on a.id = r.address_id " +
                 "where o.started_at >= '" + Timestamp.valueOf(startedAt) +
                 "' and o.started_at < '" + Timestamp.valueOf(startedAt.plusDays(1)) +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
@@ -492,17 +459,11 @@ public class JDBCOrderDAO implements OrderDAO {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (var getRoute = connection.prepareStatement(
-                    """
-                            select * from routes r
-                            join addresses a on a.id = r.address_id
-                            where a.start_end like ? or a.start_end_uk like ?
-                            """
-            );
-                 var updateOrderByID = connection.prepareStatement(
+            try (var updateOrderByID = connection.prepareStatement(
                          """
                                  update orders o
-                                 set order_passengers = ?, route_id = ?, cost = ?, started_at = ?, finished_at = ?
+                                 set order_passengers = ?, start_travel = ?, end_travel = ?, travel_distance = ?,
+                                 travel_duration = ?, cost = ?, started_at = ?, finished_at = ?
                                  where o.id = ?
                                  """
                  );
@@ -514,29 +475,22 @@ public class JDBCOrderDAO implements OrderDAO {
                                  """
                  )) {
 
-                // get route from database
-                getRoute.setString(1, request.startEnd());
-                getRoute.setString(2, request.startEnd());
-                ResultSet resultSetRoute = getRoute.executeQuery();
-                Route route = null;
-                if (resultSetRoute.next()) {
-                    route = routeMapper.map(resultSetRoute);
-                }
-
                 // init, check and count start route`s time
                 LocalDateTime startRoute = request.startedAt();
 
                 // count finish route`s time
-                assert route != null;
-                LocalDateTime finishRoute = request.startedAt().plusSeconds(route.getTravelTime());
+                LocalDateTime finishRoute = request.startedAt().plusSeconds(request.travelDuration());
 
                 // insert data to order table
                 updateOrderByID.setInt(1, request.numberOfPassengers());
-                updateOrderByID.setLong(2, route.getId());
-                updateOrderByID.setDouble(3, request.loyaltyPrice());
-                updateOrderByID.setTimestamp(4, Timestamp.valueOf(startRoute));
-                updateOrderByID.setTimestamp(5, Timestamp.valueOf(finishRoute));
-                updateOrderByID.setLong(6, id);
+                updateOrderByID.setString(2, request.startTravel());
+                updateOrderByID.setString(3, request.endTravel());
+                updateOrderByID.setDouble(4, request.travelDistance());
+                updateOrderByID.setInt(5, request.travelDuration());
+                updateOrderByID.setDouble(6, request.loyaltyPrice());
+                updateOrderByID.setTimestamp(7, Timestamp.valueOf(startRoute));
+                updateOrderByID.setTimestamp(8, Timestamp.valueOf(finishRoute));
+                updateOrderByID.setLong(9, id);
 
                 updateOrderByID.executeUpdate();
 

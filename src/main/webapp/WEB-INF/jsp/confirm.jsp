@@ -20,13 +20,12 @@
     <%-- Customer order --%>
     <form class="form-signing" method="post" action="confirm">
         <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
-            <fmt:message key="confirm.cancel"/></h1>
-        <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
+        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/>, <fmt:message key="confirm.cancel"/></h2>
+        <ctg:hello userLogin="${login}"/>
 
         <%-- Show route --%>
         <label><fmt:message key="route"/>:</label>
-        <c:out value="${sessionScope.startEnd}"/>
+        <c:out value="${sessionScope.startTravel} - ${sessionScope.endTravel}"/>
         <br>
         <%-- Show route --%>
 
@@ -43,14 +42,14 @@
         <%-- Show car category --%>
 
         <%-- Show the date for ride --%>
-        <label><fmt:message key="date.time.trip"/>:</label>
-        <c:out value="${sessionScope.dateOfRide}"/>
+        <label><fmt:message key="date.time.travel"/>:</label>
+        <c:out value="${sessionScope.dateOfTravel}"/>
         <br>
         <%-- Show the date for ride --%>
 
         <%-- Show the price --%>
-        <label><fmt:message key="price.trip"/>, $:</label>
-        <c:out value="${sessionScope.priceOfRide}"/>
+        <label><fmt:message key="price.travel"/>, $:</label>
+        <c:out value="${sessionScope.priceOfTravel}"/>
         <br>
         <%-- Show the price --%>
 

@@ -23,10 +23,10 @@ public final class DataSourceFields {
     // endregion car
 
     // region route
-    public static final String ROUTE_ID = "id";
-    public static final String ROUTE_START_END = "start_end";
-    public static final String ROUTE_DISTANCE = "distance";
-    public static final String ROUTE_PRICE = "route_price";
+    public static final String ROUTE_START_TRAVEL = "start_travel";
+    public static final String ROUTE_END_TRAVEL = "end_travel";
+    public static final String ROUTE_TRAVEL_DISTANCE = "travel_distance";
+    public static final String ROUTE_TRAVEL_DURATION = "travel_duration";
     public static final String ROUTE_TRAVEL_TIME = "travel_time";
     // endregion route
 

@@ -20,12 +20,10 @@ public class OrderResponse {
     private String customerPassword;
     private String customerRole;
     private int numberOfPassengers;
-    private long routeId;
-    private long addressesId;
-    private String startEndLocale;
-    private long routeDistance;
-    private double routePrice;
-    private int routeTravelTime;
+    private String startTravel;
+    private String endTravel;
+    private double travelDistance;
+    private int travelDuration;
     private double cost;
     private String startedAt;
     private String finishedAt;
@@ -35,9 +33,9 @@ public class OrderResponse {
 
     public OrderResponse(long id, String createdAt, long customerId, String customerFirstName,
                          String customerLastName, String customerEmail, String customerPassword,
-                         String customerRole, int numberOfPassengers, long routeId, long addressesId,
-                         String startEndLocale, long routeDistance, double routePrice,
-                         int routeTravelTime, double cost, String startedAt, String finishedAt) {
+                         String customerRole, int numberOfPassengers, String startTravel,
+                         String endTravel, double travelDistance, int travelDuration, double cost,
+                         String startedAt, String finishedAt) {
         this.id = id;
         this.createdAt = createdAt;
         this.customerId = customerId;
@@ -47,12 +45,10 @@ public class OrderResponse {
         this.customerPassword = customerPassword;
         this.customerRole = customerRole;
         this.numberOfPassengers = numberOfPassengers;
-        this.routeId = routeId;
-        this.addressesId = addressesId;
-        this.startEndLocale = startEndLocale;
-        this.routeDistance = routeDistance;
-        this.routePrice = routePrice;
-        this.routeTravelTime = routeTravelTime;
+        this.startTravel = startTravel;
+        this.endTravel = endTravel;
+        this.travelDistance = travelDistance;
+        this.travelDuration = travelDuration;
         this.cost = cost;
         this.startedAt = startedAt;
         this.finishedAt = finishedAt;
@@ -130,52 +126,36 @@ public class OrderResponse {
         this.numberOfPassengers = numberOfPassengers;
     }
 
-    public long getRouteId() {
-        return routeId;
+    public String getStartTravel() {
+        return startTravel;
     }
 
-    public void setRouteId(long routeId) {
-        this.routeId = routeId;
+    public void setStartTravel(String startTravel) {
+        this.startTravel = startTravel;
     }
 
-    public long getAddressesId() {
-        return addressesId;
+    public String getEndTravel() {
+        return endTravel;
     }
 
-    public void setAddressesId(long addressesId) {
-        this.addressesId = addressesId;
+    public void setEndTravel(String endTravel) {
+        this.endTravel = endTravel;
     }
 
-    public String getStartEndLocale() {
-        return startEndLocale;
+    public double getTravelDistance() {
+        return travelDistance;
     }
 
-    public void setStartEndLocale(String startEnd) {
-        this.startEndLocale = startEnd;
+    public void setTravelDistance(double travelDistance) {
+        this.travelDistance = travelDistance;
     }
 
-    public long getRouteDistance() {
-        return routeDistance;
+    public int getTravelDuration() {
+        return travelDuration;
     }
 
-    public void setRouteDistance(long routeDistance) {
-        this.routeDistance = routeDistance;
-    }
-
-    public double getRoutePrice() {
-        return routePrice;
-    }
-
-    public void setRoutePrice(double routePrice) {
-        this.routePrice = routePrice;
-    }
-
-    public int getRouteTravelTime() {
-        return routeTravelTime;
-    }
-
-    public void setRouteTravelTime(int routeTravelTime) {
-        this.routeTravelTime = routeTravelTime;
+    public void setTravelDuration(int travelDuration) {
+        this.travelDuration = travelDuration;
     }
 
     public double getCost() {
@@ -206,17 +186,9 @@ public class OrderResponse {
      * Create a new object for OrderRequest given the selected locale.
      *
      * @param order             the order
-     * @param locale            the locale
      * @return                  new object
      */
-    public static OrderResponse fromOrder(Order order, String locale) {
-        String startEndLocale;
-        if (locale.equals("uk_UA")) {
-            startEndLocale = order.getRoute().getAddress().startEndUk();
-        } else {
-            startEndLocale = order.getRoute().getAddress().startEnd();
-        }
-
+    public static OrderResponse fromOrder(Order order) {
         return new OrderResponse(
                 order.getId(),
                 order.getCreatedAt().format(Constants.FORMATTER),
@@ -227,12 +199,10 @@ public class OrderResponse {
                 order.getCustomer().getPassword(),
                 order.getCustomer().getRole().toString(),
                 order.getNumberOfPassengers(),
-                order.getRoute().getId(),
-                order.getRoute().getAddress().id(),
-                startEndLocale,
-                order.getRoute().getDistance(),
-                order.getRoute().getPrice(),
-                order.getRoute().getTravelTime(),
+                order.getStartTravel(),
+                order.getEndTravel(),
+                order.getTravelDistance(),
+                order.getTravelDuration(),
                 order.getCost(),
                 order.getStartedAt().format(Constants.FORMATTER),
                 order.getFinishedAt().format(Constants.FORMATTER)

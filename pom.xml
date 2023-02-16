@@ -103,6 +103,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20220320</version>
+    </dependency>
+
     <!--        todo check this dependencies-->
     <dependency>
       <groupId>org.jetbrains</groupId>

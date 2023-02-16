@@ -12,7 +12,6 @@ public class AppContextTest {
         assertDoesNotThrow(AppContext::createAppContext);
         AppContext appContext = AppContext.getAppContext();
         assertNotNull(appContext.getUserCRUD());
-        assertNotNull(appContext.getRouteCRUD());
         assertNotNull(appContext.getOrderCRUD());
         assertNotNull(appContext.getCarCRUD());
         assertNotNull(appContext.getLoyaltyService());

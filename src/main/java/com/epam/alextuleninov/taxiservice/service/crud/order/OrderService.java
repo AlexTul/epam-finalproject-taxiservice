@@ -34,8 +34,8 @@ public class OrderService implements OrderCRUD {
      * @return              the created order from database
      */
     @Override
-    public OrderResponse create(OrderRequest request, String locale) {
-        return OrderResponse.fromOrder(orderDAO.create(request), locale);
+    public OrderResponse create(OrderRequest request) {
+        return OrderResponse.fromOrder(orderDAO.create(request));
     }
 
     /**
@@ -45,9 +45,9 @@ public class OrderService implements OrderCRUD {
      * @return              all orders from database with pagination information in response format
      */
     @Override
-    public List<OrderResponse> findAll(PageableRequest pageable, String locale) {
+    public List<OrderResponse> findAll(PageableRequest pageable) {
         return orderDAO.findAll(pageable).stream()
-                .map(order -> OrderResponse.fromOrder(order, locale))
+                .map(order -> OrderResponse.fromOrder(order))
                 .toList();
     }
 
@@ -70,10 +70,10 @@ public class OrderService implements OrderCRUD {
      * @return              all users by range from database in response format
      */
     @Override
-    public List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable, String locale) {
+    public List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable) {
         return orderDAO.findAllByCustomer(customer, pageable)
                 .stream()
-                .map(order -> OrderResponse.fromOrder(order, locale))
+                .map(order -> OrderResponse.fromOrder(order))
                 .toList();
     }
 
@@ -85,10 +85,10 @@ public class OrderService implements OrderCRUD {
      * @return              all users by range from database in response format
      */
     @Override
-    public List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable, String locale) {
+    public List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
         return orderDAO.findAllByDate(startedAt, pageable)
                 .stream()
-                .map(order -> OrderResponse.fromOrder(order, locale))
+                .map(order -> OrderResponse.fromOrder(order))
                 .toList();
     }
 

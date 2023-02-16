@@ -44,17 +44,10 @@ public class OrderMapper implements ResultSetMapper<Order> {
                 ),
                 resultSet.getInt(DataSourceFields.ORDER_PASSENGERS),
                 null,
-                new Route(
-                        resultSet.getLong(DataSourceFields.ROUTE_ID),
-                        new Address(
-                                resultSet.getLong(DataSourceFields.ADDRESS_ID),
-                                resultSet.getString(DataSourceFields.ADDRESS_START_END),
-                                resultSet.getString(DataSourceFields.ADDRESS_START_END_UK)
-                        ),
-                        resultSet.getLong(DataSourceFields.ROUTE_DISTANCE),
-                        resultSet.getDouble(DataSourceFields.ROUTE_PRICE),
-                        resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_TIME)
-                ),
+                resultSet.getString(DataSourceFields.ROUTE_START_TRAVEL),
+                resultSet.getString(DataSourceFields.ROUTE_END_TRAVEL),
+                resultSet.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
+                resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
                 resultSet.getDouble(DataSourceFields.ORDER_COST),
                 resultSet.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
                 resultSet.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()

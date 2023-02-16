@@ -79,7 +79,10 @@
                     <fmt:message key="passengers"/>
                 </th>
                 <th scope="col">
-                    <fmt:message key="route"/>
+                    <fmt:message key="start.travel"/>
+                </th>
+                <th scope="col">
+                    <fmt:message key="end.travel"/>
                 </th>
                 <th scope="col">
                     <a href="report?sortByCost=${orderBy}" class="list-group-item">
@@ -108,7 +111,8 @@
                     <td>${orderResponse.createdAt}</td>
                     <td>${orderResponse.customerEmail}</td>
                     <td>${orderResponse.numberOfPassengers}</td>
-                    <td>${orderResponse.startEndLocale}</td>
+                    <td>${orderResponse.startTravel}</td>
+                    <td>${orderResponse.endTravel}</td>
                     <td>${orderResponse.cost}</td>
                     <td>${orderResponse.startedAt}</td>
                     <td>${orderResponse.finishedAt}</td>

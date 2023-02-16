@@ -18,7 +18,10 @@ public record OrderRequest(
         String customer,
         List<Car> cars,
         double loyaltyPrice,
-        String startEnd,
+        String startTravel,
+        String endTravel,
+        double travelDistance,
+        int travelDuration,
         int numberOfPassengers,
         String carCategory,
         LocalDateTime startedAt,
@@ -28,19 +31,22 @@ public record OrderRequest(
     /**
      * Create the new record for OrderRequest.
      *
-     * @param req               HttpServletRequest request
-     * @param dateTimeOfRide    date and time of ride
+     * @param req       HttpServletRequest request
+     * @param startedAt date and time of travel
      * @return new record
      */
-    public static OrderRequest getOrderRequest(HttpServletRequest req, LocalDateTime dateTimeOfRide) {
+    public static OrderRequest getOrderRequest(HttpServletRequest req, LocalDateTime startedAt) {
         return new OrderRequest(
                 (String) req.getSession().getAttribute("login"),
                 null,
                 0.0,
-                req.getParameter("startEnd"),
+                req.getParameter("startTravel"),
+                req.getParameter("endTravel"),
+                0.0,
+                0,
                 Integer.parseInt(req.getParameter("numberOfPassengers")),
                 req.getParameter("carCategory"),
-                dateTimeOfRide,
+                startedAt,
                 CarStatus.AVAILABLE.toString()
         );
     }
@@ -48,34 +54,24 @@ public record OrderRequest(
     /**
      * Create the new record for OrderRequest.
      *
-     * @param req               HttpServletRequest request
-     * @param cars              cars for OrderRequest from the database
-     * @param dateTimeOfRide    date and time of ride
+     * @param req       HttpServletRequest request
+     * @param cars      cars for OrderRequest from the database
+     * @param startedAt date and time of travel
      * @return new record
      */
-    public static OrderRequest getOrderRequest(HttpServletRequest req, List<Car> cars, LocalDateTime dateTimeOfRide) {
+    public static OrderRequest getOrderRequest(HttpServletRequest req, List<Car> cars, LocalDateTime startedAt) {
         return new OrderRequest(
                 (String) req.getSession().getAttribute("login"),
                 cars,
                 req.getSession().getAttribute("loyaltyPrice") == null ? 0 : (double) req.getSession().getAttribute("loyaltyPrice"),
-                (String) req.getSession().getAttribute("startEnd"),
+                (String) req.getSession().getAttribute("startTravel"),
+                (String) req.getSession().getAttribute("endTravel"),
+                req.getSession().getAttribute("travelDistance") == null ? 0.0 : (Double) req.getSession().getAttribute("travelDistance"),
+                req.getSession().getAttribute("travelDuration") == null ? 0 : (Integer) req.getSession().getAttribute("travelDuration"),
                 req.getSession().getAttribute("numberOfPassengers") == null ? 0 : Integer.parseInt((String) req.getSession().getAttribute("numberOfPassengers")),
                 (String) req.getSession().getAttribute("carCategory"),
-                dateTimeOfRide,
+                startedAt,
                 CarStatus.AVAILABLE.toString()
-        );
-    }
-
-    /**
-     * Create the new record for OrderRequest.
-     *
-     * @param customerFromRequest   cars for OrderRequest from the database
-     * @param date                  date of ride
-     * @return new record
-     */
-    public static OrderRequest getRequest(String customerFromRequest, LocalDateTime date) {
-        return new OrderRequest(
-                customerFromRequest, null, 0.0, null, 0, null, date, null
         );
     }
 }
