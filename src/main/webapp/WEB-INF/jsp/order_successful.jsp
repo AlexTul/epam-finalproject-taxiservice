@@ -16,7 +16,7 @@
 <div>
 
     <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-    <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br>
+    <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br>
         <fmt:message key="order.successfully"/></h1>
 
     <%-- Show route --%>

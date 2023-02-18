@@ -13,56 +13,77 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <title>Login</title>
 </head>
-<body class="text-center">
+<body>
 
-<div>
+<div class="container-fluid" style="text-align: center">
+    <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
+
     <%-- Forma for enter login`s credential --%>
-    <form class="form-signing" method="post" action="/auth">
-        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/><br>
-            <fmt:message key="login.register"/></h1>
+    <div class="row">
+        <div class="col-lg-5"></div>
 
-        <label for="login" class="sr-only">Login form</label>
-        <input type="text" id="login" name="login" class="form-control"
-               placeholder="email@gmail.com"
-               minlength="2" maxlength="40" required><br>
+        <div class="col-lg-2">
+            <form class="form-signing" method="post" action="/auth">
+                <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br><fmt:message
+                        key="please"/><br>
+                    <fmt:message key="login.register"/></h1>
 
-        <label for="password" class="sr-only">Password form</label>
-        <input type="password" id="password" name="password" class="form-control"
-               placeholder="<fmt:message key="password"/>"
-               minlength="10" maxlength="20" required><br>
+                <label for="login" class="sr-only">Login form</label>
+                <input type="text" id="login" name="login" class="form-control"
+                       placeholder="email@gmail.com"
+                       minlength="2" maxlength="40" required><br>
 
-        <%-- Log In button --%>
-        <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="login"/></button>
-        <%-- Log In button --%>
-    </form>
-    <%-- Forma for enter login`s credential --%>
+                <label for="password" class="sr-only">Password form</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="<fmt:message key="password"/>"
+                       minlength="10" maxlength="20" required><br>
 
-    <%-- Register link --%>
-    <div id="register-link" class="text-right">
-        <a class="text-info" href="register"><fmt:message key="register"/></a>
+                <%-- Log In button --%>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="login"/></button>
+                <%-- Log In button --%>
+            </form>
+            <%-- Forma for enter login`s credential --%>
+        </div>
+
+        <div class="col-lg-5"></div>
     </div>
-    <%-- Register link --%>
+    <br>
 
-    <%--Locale--%>
-    <div>
-        <form method="get" class="d-flex">
-            <label>
-                <select name="locale" onchange='submit();'>
-                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                        <fmt:message key="en"/>
-                    </option>
-                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                        <fmt:message key="ua"/>
-                    </option>
-                </select>
-            </label>
-        </form>
+    <%--Locale and Register--%>
+    <div class="row">
+        <div class="col-lg-5"></div>
+
+        <div class="col-lg-1">
+            <%--Locale--%>
+            <form method="get" class="d-flex">
+                <label>
+                    <select name="locale" onchange='submit();'>
+                        <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
+                            <fmt:message key="en"/>
+                        </option>
+                        <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
+                            <fmt:message key="ua"/>
+                        </option>
+                    </select>
+                </label>
+            </form>
+            <%--Locale--%>
+        </div>
+
+        <div class="col-lg-1">
+            <%-- Register link --%>
+            <div id="register-link" class="text-right">
+                <a class="text-info" href="register"><fmt:message key="register"/></a>
+            </div>
+            <%-- Register link --%>
+        </div>
+
+        <div class="col-lg-5"></div>
     </div>
-    <%--Locale--%>
+    <%--Locale and Register--%>
 
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+    <div class="row">
+        <p class="col-lg-12">&copy;<fmt:message key="reserved"/>. 2023</p>
     </div>
 </div>
 

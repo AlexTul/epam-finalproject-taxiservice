@@ -3,6 +3,8 @@ package com.epam.alextuleninov.taxiservice.config.pagination;
 import com.epam.alextuleninov.taxiservice.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+
 /**
  * To customize the pagination.
  */
@@ -27,14 +29,14 @@ public class PaginationConfig {
      * @return              number current page
      */
     public int configPage(HttpServletRequest req) {
-        String pageFromRequest = req.getParameter("page");
+        String pageFromRequest = req.getParameter(SCOPE_PAGE);
         int page;
         if (pageFromRequest == null) {
             page = 0;
         } else {
             page = Integer.parseInt(pageFromRequest);
         }
-        req.setAttribute("current_page", page);
+        req.setAttribute(SCOPE_CURRENT_PAGE, page);
         return page;
     }
 
@@ -44,16 +46,16 @@ public class PaginationConfig {
      * @param req           HttpServletRequest request
      */
     public void config(HttpServletRequest req) {
-        long totalRecords = (long) req.getAttribute("total_records");
+        long totalRecords = (long) req.getAttribute(SCOPE_TOTAL_RECORDS);
         int pageSize = Constants.PAGE_SIZE;
-        int currentPage = (Integer) req.getAttribute("current_page");
+        int currentPage = (Integer) req.getAttribute(SCOPE_CURRENT_PAGE);
         long pages = totalRecords / pageSize;
         int lastPage = (int) (pages * pageSize < totalRecords ? pages : pages - 1);
         // if customer haven`t any orders, because app get customer from DB, customer not really orders
         if (lastPage < 0) {
             lastPage = 0;
         }
-        req.setAttribute("last_page", lastPage);
+        req.setAttribute(SCOPE_LAST_PAGE, lastPage);
 
         // whether to show in full all links to pages to the left of the current one, or insert an ellipsis
         boolean showAllPrev = N_PAGES_FIRST >= (currentPage - N_PAGES_PREV);

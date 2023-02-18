@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.admin;
 
-import com.epam.alextuleninov.taxiservice.Routes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,10 +10,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.epam.alextuleninov.taxiservice.Routes.*;
+
 /**
  * AdminServlet for to process a Http request from admin.
  */
-@WebServlet(name = "AdminServlet", urlPatterns = "/admin")
+@WebServlet(name = "AdminServlet", urlPatterns = URL_ADMIN)
 public class AdminServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(AdminServlet.class);
@@ -34,7 +35,7 @@ public class AdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(Routes.PAGE_ADMIN)
+        req.getRequestDispatcher(PAGE_ADMIN)
                 .forward(req, resp);
     }
 

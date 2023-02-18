@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.user;
 
-import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
@@ -15,7 +14,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet(name = "UserServlet", urlPatterns = "/user")
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.PAGE_USER;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_USER;
+
+@WebServlet(name = "UserServlet", urlPatterns = URL_USER)
 public class UserServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UserServlet.class);
@@ -34,7 +37,7 @@ public class UserServlet extends HttpServlet {
 
         processRequestGet(req);
 
-        req.getRequestDispatcher(Routes.PAGE_USER)
+        req.getRequestDispatcher(PAGE_USER)
                 .forward(req, resp);
     }
 
@@ -42,10 +45,10 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        String userID = req.getParameter("id");
+        String userID = req.getParameter(SCOPE_ID);
         userCRUD.deleteById(Long.parseLong(userID));
 
-        resp.sendRedirect("/user");
+        resp.sendRedirect(URL_USER);
     }
 
     @Override
@@ -57,13 +60,13 @@ public class UserServlet extends HttpServlet {
         long numberRecordsUsersInDatabase = userCRUD.findNumberRecords();
 
         // set attribute for pagination, total_records = all records from database - 1 (admin records)
-        req.setAttribute("total_records", numberRecordsUsersInDatabase - 1);
+        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsUsersInDatabase - 1);
         // set current page for pagination
         int page = new PaginationConfig().configPage(req);
         // find all orders with pagination for report`s page
         new PaginationConfig().config(req);
 
         var allClients = userCRUD.findAllClients(PageableRequest.getPageableRequest(page));
-        req.getSession().setAttribute("userResponses", allClients);
+        req.getSession().setAttribute(SCOPE_USER_RESPONSES, allClients);
     }
 }

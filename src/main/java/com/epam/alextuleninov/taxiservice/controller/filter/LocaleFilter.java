@@ -1,12 +1,13 @@
 package com.epam.alextuleninov.taxiservice.controller.filter;
 
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_LOCALE;
 
 /**
  * LocaleFilter for intercepts the request.
@@ -27,12 +28,12 @@ public class LocaleFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String localeFromRequest = httpRequest.getParameter("locale");
+        String localeFromRequest = httpRequest.getParameter(SCOPE_LOCALE);
         if (isNotBlank(localeFromRequest)) {
-            httpRequest.getSession().setAttribute("locale", localeFromRequest);
+            httpRequest.getSession().setAttribute(SCOPE_LOCALE, localeFromRequest);
         } else if (!isNotBlank(localeFromRequest) && !isNotBlank((String) httpRequest.getSession().getAttribute("locale"))) {
             localeFromRequest = "en";
-            httpRequest.getSession().setAttribute("locale", localeFromRequest);
+            httpRequest.getSession().setAttribute(SCOPE_LOCALE, localeFromRequest);
         }
 
         log.info("The locale is: " + localeFromRequest);

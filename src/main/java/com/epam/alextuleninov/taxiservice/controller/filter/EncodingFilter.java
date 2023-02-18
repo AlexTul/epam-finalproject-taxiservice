@@ -9,12 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.epam.alextuleninov.taxiservice.Routes.URL_EMPTY;
+
 /**
  * EncodingFilter for intercepts the request.
  * The filter pre-processes the request before it reaches the servlet.
  * EncodingFilter sets the encoding.
  */
-@WebFilter(filterName = "EncodingFilter", urlPatterns = "/*",
+@WebFilter(filterName = "EncodingFilter", urlPatterns = URL_EMPTY,
         initParams = @WebInitParam(name = "encoding", value = "UTF-8"))
 public class EncodingFilter implements Filter {
 

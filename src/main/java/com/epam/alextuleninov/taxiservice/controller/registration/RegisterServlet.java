@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.registration;
 
-import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
@@ -17,10 +16,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.*;
+
 /**
  * RegisterServlet for to process a Http request from a user.
  */
-@WebServlet(name = "RegisterServlet", urlPatterns = "/register")
+@WebServlet(name = "RegisterServlet", urlPatterns = URL_REGISTER)
 public class RegisterServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterServlet.class);
@@ -44,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(Routes.PAGE_REGISTER)
+        req.getRequestDispatcher(PAGE_REGISTER)
                 .forward(req, resp);
     }
 
@@ -58,7 +60,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        String locale = (String) req.getSession().getAttribute("locale");
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (registerValidation(req, resp, locale)) {
             boolean register = userCRUD.register(UserRequest.getUserRequest(req));
@@ -66,15 +68,15 @@ public class RegisterServlet extends HttpServlet {
             if (!register) {
                 log.info("Email: " + req.getParameter("email") + " already taken");
                 PageMessageBuilder.buildMessageUser(req, locale,
-                        Constants.USER_FAIL_REGISTER_UK, Constants.USER_FAIL_REGISTER);
+                        USER_FAIL_REGISTER_UK, USER_FAIL_REGISTER);
 
-                resp.sendRedirect("/messageuser");
+                resp.sendRedirect(Routes.URL_MESSAGE_USER);
             } else {
                 log.info("User successfully registered");
                 PageMessageBuilder.buildMessageUser(req, locale,
-                        Constants.USER_SUCC_REGISTER_UK, Constants.USER_SUCC_REGISTER);
+                        USER_SUC_REGISTER_UK, USER_SUC_REGISTER);
 
-                resp.sendRedirect("/messageuser");
+                resp.sendRedirect(URL_MESSAGE_USER);
             }
         }
     }
@@ -98,9 +100,9 @@ public class RegisterServlet extends HttpServlet {
         if (!(DataValidator.initRegisterValidation(req))) {
             log.info("User credentials not validated");
 
-            PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_UK, Constants.USER);
+            PageMessageBuilder.buildMessageUser(req, locale, USER_UK, USER);
 
-            resp.sendRedirect("/messageuser");
+            resp.sendRedirect(URL_MESSAGE_USER);
             return false;
         }
         return true;

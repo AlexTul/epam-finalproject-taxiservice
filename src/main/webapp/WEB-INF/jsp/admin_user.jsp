@@ -16,98 +16,64 @@
 
     <title>Users</title>
 </head>
-<body class="text-center">
+<body>
 
-<div>
-    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-    <div>
-        <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
-    </div>
+<div class="container-fluid" style="text-align: center">
+
+    <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
     <%-- Table of users --%>
-    <div class="tab-pane fade show active" id="users" role="tabpanel"
-         aria-labelledby="internet-tab">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">
-                    Id
-                </th>
-                <th scope="col">
-                    <fmt:message key="first.name"/>
-                </th>
-                <th scope="col">
-                    <fmt:message key="last.name"/>
-                </th>
-                <th scope="col">
-                    <fmt:message key="email"/>
-                </th>
-                <th scope="col">
-                    <fmt:message key="role"/>
-                </th>
-                <th scope="col">
-                    <fmt:message key="delete"/>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach var="userResponse" items="${sessionScope.userResponses}">
-                <tr>
-                    <td>${userResponse.id}</td>
-                    <td>${userResponse.firstName}</td>
-                    <td>${userResponse.lastName}</td>
-                    <td>${userResponse.email}</td>
-                    <td>${userResponse.role}</td>
-                    <td>
-                        <form method="post" action="user?id=${userResponse.id}">
-                            <button type="submit" class="btn btn-danger btn-lg"></button>
-                        </form>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tab-pane fade show active" id="users" role="tabpanel"
+                 aria-labelledby="internet-tab">
+                <h3><fmt:message key="table.users"/></h3>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">
+                            Id
+                        </th>
+                        <th scope="col">
+                            <fmt:message key="first.name"/>
+                        </th>
+                        <th scope="col">
+                            <fmt:message key="last.name"/>
+                        </th>
+                        <th scope="col">
+                            <fmt:message key="email"/>
+                        </th>
+                        <th scope="col">
+                            <fmt:message key="role"/>
+                        </th>
+                        <th scope="col">
+                            <fmt:message key="delete"/>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="userResponse" items="${sessionScope.userResponses}">
+                        <tr>
+                            <td>${userResponse.id}</td>
+                            <td>${userResponse.firstName}</td>
+                            <td>${userResponse.lastName}</td>
+                            <td>${userResponse.email}</td>
+                            <td>${userResponse.role}</td>
+                            <td>
+                                <form method="post" action="user?id=${userResponse.id}">
+                                    <button type="submit" class="btn btn-danger btn-lg"></button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     <%-- Table of users --%>
 
-    <%-- Pager --%>
-    <div>
-        <jsp:include page="/WEB-INF/templates/_pager.jsp"></jsp:include>
-    </div>
-    <%-- Pager --%>
-
-    <%-- Admin menu link --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="admin"><fmt:message key="menu.admin"/></a>
-    </div>
-    <%-- Admin menu link --%>
-
-    <%-- Log out link --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="logout"><fmt:message key="logout"/></a>
-    </div>
-    <%-- Log out link --%>
-
-    <%--Locale--%>
-    <div>
-        <form method="get" class="d-flex">
-            <label>
-                <select name="locale" onchange='submit();'>
-                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                        <fmt:message key="en"/>
-                    </option>
-                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                        <fmt:message key="ua"/>
-                    </option>
-                </select>
-            </label>
-        </form>
-    </div>
-    <%--Locale--%>
-
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
-    </div>
+    <jsp:include page="/WEB-INF/templates/_footer.jsp"></jsp:include>
 </div>
 
 </body>

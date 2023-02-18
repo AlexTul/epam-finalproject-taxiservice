@@ -1,7 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.filter;
 
-import com.epam.alextuleninov.taxiservice.Constants;
-import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
@@ -17,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.*;
 import static java.util.Objects.nonNull;
 
 /**
@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
  * The filter pre-processes the request before it reaches the servlet.
  * AuthenticationFilter authenticates the user and forwards to the appropriate resource.
  */
-@WebFilter(filterName = "AuthenticationFilter", urlPatterns = "/auth")
+@WebFilter(filterName = "AuthenticationFilter", urlPatterns = URL_AUTH)
 public class AuthenticationFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
@@ -51,15 +51,15 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
         HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute("locale");
+        String locale = (String) session.getAttribute(SCOPE_LOCALE);
 
-        String login = req.getParameter("login");
-        String password = req.getParameter("password");
+        String login = req.getParameter(SCOPE_LOGIN);
+        String password = req.getParameter(SCOPE_PASSWORD);
 
         if (login == null) {
             // Logged user
-            if (nonNull(session.getAttribute("login"))) {
-                Role role = (Role) session.getAttribute("role");
+            if (nonNull(session.getAttribute(SCOPE_LOGIN))) {
+                Role role = (Role) session.getAttribute(SCOPE_ROLE);
 
                 moveToMenu(req, resp, role);
             } else {
@@ -71,8 +71,8 @@ public class AuthenticationFilter implements Filter {
                if (userCRUD.authentication(login, password)) {
                     Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
 
-                    req.getSession().setAttribute("login", login);
-                    req.getSession().setAttribute("role", role);
+                    req.getSession().setAttribute(SCOPE_LOGIN, login);
+                    req.getSession().setAttribute(SCOPE_ROLE, role);
                     log.info("User: " + login + " passed authentication and authorization filter successfully");
 
                     moveToMenu(req, resp, role);
@@ -103,14 +103,14 @@ public class AuthenticationFilter implements Filter {
 
         if (role.equals(Role.ADMINISTRATOR)) {
 
-            req.getRequestDispatcher(Routes.PAGE_ADMIN)
+            req.getRequestDispatcher(PAGE_ADMIN)
                     .forward(req, resp);
         } else if (role.equals(Role.CLIENT)) {
 
-            req.getRequestDispatcher(Routes.PAGE_ORDER)
+            req.getRequestDispatcher(PAGE_ORDER)
                     .forward(req, resp);
         } else {
-            req.getRequestDispatcher(Routes.PAGE_LOGIN)
+            req.getRequestDispatcher(PAGE_LOGIN)
                     .forward(req, resp);
         }
     }
@@ -129,9 +129,9 @@ public class AuthenticationFilter implements Filter {
         if (!(DataValidator.initLoginValidation(req))) {
             log.info("User credentials not validated");
 
-            PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_UK, Constants.USER);
+            PageMessageBuilder.buildMessageUser(req, locale, USER_UK, USER);
 
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
+            req.getRequestDispatcher(PAGE_MESSAGE_USER)
                     .forward(req, resp);
             return false;
         }

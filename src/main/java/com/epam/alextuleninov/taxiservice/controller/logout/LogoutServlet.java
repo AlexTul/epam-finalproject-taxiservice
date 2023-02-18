@@ -15,10 +15,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_EMPTY_;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_LOGOUT;
+
 /**
  * LogoutServlet to handle logout.
  */
-@WebServlet(name = "LogoutServlet", urlPatterns = "/logout")
+@WebServlet(name = "LogoutServlet", urlPatterns = URL_LOGOUT)
 public class LogoutServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(LogoutServlet.class);
@@ -37,7 +41,7 @@ public class LogoutServlet extends HttpServlet {
 
         processRequest(req);
 
-        resp.sendRedirect("/");
+        resp.sendRedirect(URL_EMPTY_);
     }
 
     @Override
@@ -66,25 +70,25 @@ public class LogoutServlet extends HttpServlet {
 
         HttpSession session = req.getSession();
 
-        session.removeAttribute("locale");
-        session.removeAttribute("cars");
-        session.removeAttribute("travelDistance");
-        session.removeAttribute("travelDuration");
-        session.removeAttribute("loyaltyPrice");
-        session.removeAttribute("startTravel");
-        session.removeAttribute("endTravel");
-        session.removeAttribute("numberOfPassengers");
-        session.removeAttribute("listOfCars");
-        session.removeAttribute("dateOfRide");
-        session.removeAttribute("priceOfRide");
-        session.removeAttribute("login");
-        session.removeAttribute("role");
-        session.removeAttribute("orders");
-        session.removeAttribute("sort");
-        session.removeAttribute("customerOfOrders");
-        session.removeAttribute("dateOfOrders");
-        session.removeAttribute("orderBy");
-        session.removeAttribute("updateOrderID");
+        session.removeAttribute(SCOPE_LOCALE);
+        session.removeAttribute(SCOPE_CARS);
+        session.removeAttribute(SCOPE_TRAVEL_DISTANCE);
+        session.removeAttribute(SCOPE_TRAVEL_DURATION);
+        session.removeAttribute(SCOPE_LOYALTY_PRICE);
+        session.removeAttribute(SCOPE_START_TRAVEL);
+        session.removeAttribute(SCOPE_END_TRAVEL);
+        session.removeAttribute(SCOPE_NUMBER_OF_PASSENGERS);
+        session.removeAttribute(SCOPE_LIST_OF_CARS);
+        session.removeAttribute(SCOPE_DATE_OF_TRAVEL);
+        session.removeAttribute(SCOPE_PRICE_OF_TRAVEL);
+        session.removeAttribute(SCOPE_LOGIN);
+        session.removeAttribute(SCOPE_ROLE);
+        session.removeAttribute(SCOPE_ORDERS);
+        session.removeAttribute(SCOPE_SORT);
+        session.removeAttribute(SCOPE_CUSTOMER_OF_ORDERS);
+        session.removeAttribute(SCOPE_DATE_OF_ORDERS);
+        session.removeAttribute(SCOPE_ORDER_BY);
+        session.removeAttribute(SCOPE_UPDATE_ORDER_ID);
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }

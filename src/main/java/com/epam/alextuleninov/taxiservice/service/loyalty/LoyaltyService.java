@@ -42,9 +42,9 @@ public class LoyaltyService implements Loyalty {
             }
         };
         var routeCharacteristicsResp = routeCharacteristics.getRouteCharacteristics(request);
-        double price = routeCharacteristicsResp.travelDistance() * Constants.TRIP_PRICE_KILOMETER;
+        double price = routeCharacteristicsResp.travelDistance() * Constants.TRAVEL_PRICE_KILOMETER;
         // if the price is less than the minimum
-        price = Math.max(price, Constants.TRIP_PRICE_MINIMAL);
+        price = Math.max(price, Constants.TRAVEL_PRICE_MINIMAL);
 
         return new LoyaltyRatio(loyaltyRatio * price);
     }

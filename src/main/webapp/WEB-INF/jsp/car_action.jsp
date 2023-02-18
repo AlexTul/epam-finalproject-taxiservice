@@ -18,79 +18,102 @@
 
     <title>Cars action</title>
 </head>
-<body class="text-center">
+<body>
 
-<div>
-    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-    <div>
-        <fmt:message key="hello"/><ctg:hello userLogin="${login}"/>
-    </div>
+<div class="container-fluid" style="text-align: center">
+    <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
-    <form class="form-signing" method="post" action="car">
-        <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/><br><fmt:message key="please"/>
-            <fmt:message key="enter.data"/></h1>
+    <div class="row">
+        <div class="col-lg-5"></div>
 
-        <label for="carName" class="sr-only">Car name form</label>
-        <input type="text" id="carName" name="carName" class="form-control"
-               placeholder="${requestScope.car.carName}"
-               minlength="3" maxlength="20" required><br>
+        <div class="col-lg-2">
+            <form class="form-signing" method="post" action="car">
+                <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br><fmt:message key="please"/>
+                    <fmt:message key="enter.data"/></h1>
 
-        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
-        <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
-               placeholder="<fmt:message key="enter.passengers"/>"
-               min="1" minlength="1" maxlength="1" required>
-        <br>
+                <label for="carName" class="sr-only">Car name form</label>
+                <input type="text" id="carName" name="carName" class="form-control"
+                       placeholder="${requestScope.car.carName}"
+                       minlength="3" maxlength="20" required><br>
 
-        <label for="carCategory"><fmt:message key="choose.car.category"/>:</label>
-        <select id="carCategory" name="carCategory">
-            <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
-            <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
-        </select>
-        <br><br>
+                <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
+                <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
+                       placeholder="<fmt:message key="enter.passengers"/>"
+                       min="1" minlength="1" maxlength="1" required>
+                <br>
 
-        <label for="carStatus"><fmt:message key="choose.car.status"/>:</label>
-        <select id="carStatus" name="carStatus">
-            <option value="<%=CarStatus.AVAILABLE.toString()%>"><fmt:message key="available"/></option>
-            <option value="<%=CarStatus.INACTIVE.toString()%>"><fmt:message key="inactive"/></option>
-        </select>
-        <br><br>
-
-        <%-- Register button --%>
-        <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>
-        <%-- Register button --%>
-    </form>
-
-    <%-- Admin menu link --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="/car"><fmt:message key="cars"/></a>
-    </div>
-    <%-- Admin menu link --%>
-
-    <%-- Log out link --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="${pageContext.request.contextPath}/logout"><fmt:message key="logout"/></a>
-    </div>
-    <%-- Log out link --%>
-
-    <%--Locale--%>
-    <div>
-        <form method="get" class="d-flex">
-            <label>
-                <select name="locale" onchange='submit();'>
-                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                        <fmt:message key="en"/>
-                    </option>
-                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                        <fmt:message key="ua"/>
-                    </option>
+                <label for="carCategory"><fmt:message key="choose.car.category"/>:</label>
+                <select id="carCategory" name="carCategory">
+                    <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
+                    <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
                 </select>
-            </label>
-        </form>
-    </div>
-    <%--Locale--%>
+                <br><br>
 
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+                <label for="carStatus"><fmt:message key="choose.car.status"/>:</label>
+                <select id="carStatus" name="carStatus">
+                    <option value="<%=CarStatus.AVAILABLE.toString()%>"><fmt:message key="available"/></option>
+                    <option value="<%=CarStatus.INACTIVE.toString()%>"><fmt:message key="inactive"/></option>
+                </select>
+                <br><br>
+
+                <%-- Register button --%>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>
+                <%-- Register button --%>
+            </form>
+        </div>
+
+        <div class="col-lg-5"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6"></div>
+
+        <div class="col-lg-1">
+            <%-- Admin menu cars --%>
+            <div id="nav-link" class="text-right">
+                <a class="text-info" href="/car"><fmt:message key="cars"/></a>
+            </div>
+            <%-- Admin menu cars --%>
+        </div>
+
+        <div class="col-lg-5"></div>
+    </div>
+
+    <%--Locale and Logout--%>
+    <div class="row">
+        <div class="col-lg-5"></div>
+
+        <div class="col-lg-1">
+            <%--Locale--%>
+            <form method="get" class="d-flex">
+                <label>
+                    <select name="locale" onchange='submit();'>
+                        <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
+                            <fmt:message key="en"/>
+                        </option>
+                        <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
+                            <fmt:message key="ua"/>
+                        </option>
+                    </select>
+                </label>
+            </form>
+            <%--Locale--%>
+        </div>
+
+        <div class="col-lg-1">
+            <%-- Log out link --%>
+            <div id="nav-link" class="text-right">
+                <a class="text-info" href="${pageContext.request.contextPath}/logout"><fmt:message key="logout"/></a>
+            </div>
+            <%-- Log out link --%>
+        </div>
+
+        <div class="col-lg-5"></div>
+    </div>
+    <%--Locale and Logout--%>
+
+    <div class="row">
+        <p class="col-lg-12">&copy;<fmt:message key="reserved"/>. 2023</p>
     </div>
 </div>
 

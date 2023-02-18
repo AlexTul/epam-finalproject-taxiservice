@@ -1,7 +1,6 @@
 package com.epam.alextuleninov.taxiservice.controller.order;
 
 import com.epam.alextuleninov.taxiservice.Constants;
-import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
@@ -24,10 +23,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.*;
+
 /**
  * OrderServlet for to process a Http request from a user.
  */
-@WebServlet(name = "OrderServlet", urlPatterns = "/order")
+@WebServlet(name = "OrderServlet", urlPatterns = URL_ORDER)
 public class OrderServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(OrderServlet.class);
@@ -58,14 +60,14 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        if (req.getSession().getAttribute("updateOrderID") == null) {
-            String updateOrderID = req.getParameter("id");
-            req.getSession().setAttribute("updateOrderID", updateOrderID);
+        if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
+            String updateOrderID = req.getParameter(Constants.SCOPE_ID);
+            req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderID);
         }
 
         processRequestGet(req);
 
-        req.getRequestDispatcher(Routes.PAGE_ORDER)
+        req.getRequestDispatcher(PAGE_ORDER)
                 .forward(req, resp);
     }
 
@@ -79,9 +81,9 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        if (req.getParameter("locale") == null) {
+        if (req.getParameter(SCOPE_LOCALE) == null) {
             if (processRequestPost(req, resp)) {
-                req.getRequestDispatcher(Routes.PAGE_CONFIRM)
+                req.getRequestDispatcher(PAGE_CONFIRM)
                         .forward(req, resp);
             }
         } else {
@@ -103,7 +105,7 @@ public class OrderServlet extends HttpServlet {
      */
     private void processRequestGet(HttpServletRequest req) {
         @SuppressWarnings("unchecked")
-        var cars = (List<Car>) req.getSession().getAttribute("cars");
+        var cars = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
 
         if (cars != null) {
             var orderRequest = OrderRequest.getOrderRequest(req, cars, null);
@@ -122,7 +124,7 @@ public class OrderServlet extends HttpServlet {
      */
     private boolean processRequestPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String locale = (String) req.getSession().getAttribute("locale");
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!orderValidation(req, resp, locale)) {
             return false;
@@ -130,7 +132,7 @@ public class OrderServlet extends HttpServlet {
 
         // calculate the date and time of the trip, taking into account the time the car was delivered
         var dateTimeOfTravel = dateTimeRideService
-                .count(LocalDateTime.parse(req.getParameter("dateOfTravel")));
+                .count(LocalDateTime.parse(req.getParameter(SCOPE_DATE_OF_TRAVEL)));
 
         var request = OrderRequest.getOrderRequest(req, dateTimeOfTravel);
 
@@ -139,9 +141,9 @@ public class OrderServlet extends HttpServlet {
         if (cars.size() == 0) {
             log.info("No available cars, order cancellation");
 
-            PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_CANCEL_ORDER_UK, Constants.USER_CANCEL_ORDER);
+            PageMessageBuilder.buildMessageUser(req, locale, USER_CANCEL_ORDER_UK, USER_CANCEL_ORDER);
 
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_ORDER_USER)
+            req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
                     .forward(req, resp);
             return false;
         }
@@ -152,17 +154,17 @@ public class OrderServlet extends HttpServlet {
 
         var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
 
-        req.getSession().setAttribute("cars", cars);
-        req.getSession().setAttribute("loyaltyPrice", loyaltyPrice.loyaltyPrice());
+        req.getSession().setAttribute(SCOPE_CARS, cars);
+        req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
 
-        req.getSession().setAttribute("startTravel", req.getParameter("startTravel"));
-        req.getSession().setAttribute("endTravel", req.getParameter("endTravel"));
-        req.getSession().setAttribute("travelDistance", routeChar.travelDistance());
-        req.getSession().setAttribute("travelDuration", routeChar.travelDuration());
-        req.getSession().setAttribute("numberOfPassengers", req.getParameter("numberOfPassengers"));
-        req.getSession().setAttribute("listOfCars", stringOfCars);
-        req.getSession().setAttribute("dateOfTravel", dateTimeOfTravel.format(Constants.FORMATTER));
-        req.getSession().setAttribute("priceOfTravel", loyaltyPrice.loyaltyPrice());
+        req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
+        req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
+        req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
+        req.getSession().setAttribute(SCOPE_TRAVEL_DURATION, routeChar.travelDuration());
+        req.getSession().setAttribute(SCOPE_NUMBER_OF_PASSENGERS, req.getParameter(SCOPE_NUMBER_OF_PASSENGERS));
+        req.getSession().setAttribute(SCOPE_LIST_OF_CARS, stringOfCars);
+        req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
+        req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
 
         return true;
     }
@@ -181,9 +183,9 @@ public class OrderServlet extends HttpServlet {
         if (!(DataValidator.initOrderValidation(req))) {
             log.info("User data not validated");
 
-            PageMessageBuilder.buildMessageUser(req, locale, Constants.USER_UK, Constants.USER);
+            PageMessageBuilder.buildMessageUser(req, locale, USER_UK, USER);
 
-            req.getRequestDispatcher(Routes.PAGE_MESSAGE_USER)
+            req.getRequestDispatcher(PAGE_MESSAGE_USER)
                     .forward(req, resp);
             return false;
         }

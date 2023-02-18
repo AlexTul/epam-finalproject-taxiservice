@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.order;
 
-import com.epam.alextuleninov.taxiservice.Routes;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,7 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@WebServlet(name = "OrderSuccessfulServlet", urlPatterns = "/successful")
+import static com.epam.alextuleninov.taxiservice.Routes.PAGE_ORDER_SUCCESSFUL;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_SUC;
+
+@WebServlet(name = "OrderSuccessfulServlet", urlPatterns = URL_SUC)
 public class OrderSuccessfulServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(OrderSuccessfulServlet.class);
@@ -25,7 +27,7 @@ public class OrderSuccessfulServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(Routes.PAGE_ORDER_SUCCESSFUL)
+        req.getRequestDispatcher(PAGE_ORDER_SUCCESSFUL)
                 .forward(req, resp);
     }
 

@@ -20,7 +20,7 @@
     <%-- Customer order --%>
     <form class="form-signing" method="post" action="confirm">
         <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/>, <fmt:message key="confirm.cancel"/></h2>
+        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message key="confirm.cancel"/></h2>
         <ctg:hello userLogin="${login}"/>
 
         <%-- Show route --%>

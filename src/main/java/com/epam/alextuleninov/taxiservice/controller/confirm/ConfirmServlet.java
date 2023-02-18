@@ -1,7 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.confirm;
 
-import com.epam.alextuleninov.taxiservice.Constants;
-import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
@@ -19,10 +17,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.*;
+
 /**
  * ConfirmServlet for to process a Http request from a user.
  */
-@WebServlet(name = "ConfirmServlet", urlPatterns = "/confirm")
+@WebServlet(name = "ConfirmServlet", urlPatterns = URL_CONFIRM)
 public class ConfirmServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(ConfirmServlet.class);
@@ -49,7 +50,7 @@ public class ConfirmServlet extends HttpServlet {
 
         processRequestGet(req);
 
-        req.getRequestDispatcher(Routes.PAGE_CONFIRM)
+        req.getRequestDispatcher(PAGE_CONFIRM)
                 .forward(req, resp);
     }
 
@@ -65,11 +66,11 @@ public class ConfirmServlet extends HttpServlet {
 
         processRequestPost(req);
 
-        if (req.getSession().getAttribute("updateOrderID") != null) {
-            req.getSession().removeAttribute("updateOrderID");
-            resp.sendRedirect("/report");
+        if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) != null) {
+            req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
+            resp.sendRedirect(URL_REPORT);
         } else {
-            resp.sendRedirect("/successful");
+            resp.sendRedirect(URL_SUC);
         }
     }
 
@@ -112,10 +113,10 @@ public class ConfirmServlet extends HttpServlet {
         String updateOrderID = (String) req.getSession().getAttribute("updateOrderID");
 
         @SuppressWarnings("unchecked")
-        var cars = (List<Car>) req.getSession().getAttribute("cars");
+        var cars = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
 
         var dateTimeOfTravel = LocalDateTime.parse(
-                (CharSequence) req.getSession().getAttribute("dateOfTravel"), Constants.FORMATTER);
+                (CharSequence) req.getSession().getAttribute(SCOPE_DATE_OF_TRAVEL), FORMATTER);
 
         var request = OrderRequest.getOrderRequest(req, cars, dateTimeOfTravel);
 
@@ -127,6 +128,6 @@ public class ConfirmServlet extends HttpServlet {
 
         carCRUD.changeCarStatus(request);
 
-        req.getSession().setAttribute("dateTimeTravel", request.startedAt().format(Constants.FORMATTER));
+        req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
     }
 }

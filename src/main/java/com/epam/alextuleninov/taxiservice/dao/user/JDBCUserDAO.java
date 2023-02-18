@@ -116,7 +116,7 @@ public class JDBCUserDAO implements UserDAO {
     public Set<User> findAllClientWithPagination(PageableRequest pageable) {
         Set<User> users = new TreeSet<>();
 
-        String sql = "select * from users u " +
+        String sql = "select * from users u" +
                 " order by u." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 

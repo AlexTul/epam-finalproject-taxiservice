@@ -18,11 +18,12 @@
 <body class="text-center">
 
 <div>
-    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
+        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
+
     <%-- Customer order --%>
     <form class="form-signing" method="post" action="order">
 
-        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxiservice"/>, <fmt:message key="make.order"/></h2>
+        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message key="make.order"/></h2>
         <ctg:hello userLogin="${login}"/>
 
         <%-- Choose start, end of travel --%>
@@ -38,7 +39,7 @@
         <%-- Choose start, end of travel --%>
 
         <%-- Choose number of passengers --%>
-<%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
+        <%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
         <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
                placeholder="<fmt:message key="enter.passengers"/>"
                min="1" minlength="1" maxlength="1" required>
