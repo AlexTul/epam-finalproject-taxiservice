@@ -15,84 +15,67 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <title>Hi, client</title>
 </head>
-<body class="text-center">
+<body>
 
-<div>
-        <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
+<div class="container-fluid" style="text-align: center">
+    <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
-    <%-- Customer order --%>
-    <form class="form-signing" method="post" action="order">
+    <div class="row">
+        <div class="col-lg-4"></div>
 
-        <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message key="make.order"/></h2>
-        <ctg:hello userLogin="${login}"/>
+        <%-- Customer order --%>
+        <div class="col-lg-4">
+            <form class="form-signing" method="post" action="order">
 
-        <%-- Choose start, end of travel --%>
-        <label for="start" class="sr-only">Start travel form</label>
-        <input type="text" id="start" name="startTravel" class="form-control"
-               placeholder="<fmt:message key="start.travel"/>"
-               minlength="2" required><br>
+                <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message
+                        key="make.order"/></h2>
 
-        <label for="end" class="sr-only">Start travel form</label>
-        <input type="text" id="end" name="endTravel" class="form-control"
-               placeholder="<fmt:message key="end.travel"/>"
-               minlength="2" required><br>
-        <%-- Choose start, end of travel --%>
+                <%-- Choose start, end of travel --%>
+                <label for="start" class="sr-only">Start travel form</label>
+                <input type="text" id="start" name="startTravel" class="form-control"
+                       placeholder="<fmt:message key="start.travel"/>"
+                       minlength="2" required><br>
 
-        <%-- Choose number of passengers --%>
-        <%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
-        <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
-               placeholder="<fmt:message key="enter.passengers"/>"
-               min="1" minlength="1" maxlength="1" required>
-        <br>
-        <%-- Choose number of passengers --%>
+                <label for="end" class="sr-only">Start travel form</label>
+                <input type="text" id="end" name="endTravel" class="form-control"
+                       placeholder="<fmt:message key="end.travel"/>"
+                       minlength="2" required><br>
+                <%-- Choose start, end of travel --%>
 
-        <%-- Choose car`s category --%>
-        <label for="carCategory"><fmt:message key="choose.car.category"/>:</label>
-        <select id="carCategory" name="carCategory">
-            <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
-            <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
-        </select>
-        <br><br>
-        <%-- Choose car category --%>
+                <%-- Choose number of passengers --%>
+                <%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
+                <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
+                       placeholder="<fmt:message key="enter.passengers"/>"
+                       min="1" minlength="1" maxlength="1" required>
+                <br>
+                <%-- Choose number of passengers --%>
 
-        <%-- Choose the date for ride --%>
-        <label for="dateRide"><fmt:message key="enter.date.time.trip"/>:</label>
-        <input type="datetime-local" id="dateRide" name="dateOfTravel"><br>
-        <label><fmt:message key="car.delivery.time"/></label><br>
-        <%-- Choose the date for ride --%>
-
-        <%-- To order button --%>
-        <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="to.order"/></button>
-        <%-- To order button --%>
-    </form>
-    <%-- Customer order --%>
-
-    <%-- Log out link --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="logout"><fmt:message key="logout"/></a>
-    </div>
-    <%-- Log out link --%>
-
-    <%--Locale--%>
-    <div>
-        <form method="get" class="d-flex">
-            <label>
-                <select name="locale" onchange='submit();'>
-                    <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                        <fmt:message key="en"/>
-                    </option>
-                    <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                        <fmt:message key="ua"/>
-                    </option>
+                <%-- Choose car`s category --%>
+                <label for="carCategory"><fmt:message key="choose.car.category"/>:</label>
+                <select id="carCategory" name="carCategory">
+                    <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
+                    <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
                 </select>
-            </label>
-        </form>
-    </div>
-    <%--Locale--%>
+                <br><br>
+                <%-- Choose car category --%>
 
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+                <%-- Choose the date for ride --%>
+                <label for="dateRide"><fmt:message key="enter.date.time.trip"/>:</label>
+                <input type="datetime-local" id="dateRide" name="dateOfTravel"><br>
+                <label><fmt:message key="car.delivery.time"/></label><br>
+                <%-- Choose the date for ride --%>
+
+                <%-- To order button --%>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="to.order"/></button>
+                <%-- To order button --%>
+            </form>
+        </div>
+        <%-- Customer order --%>
+
+        <div class="col-lg-4"></div>
     </div>
+
+    <jsp:include page="/WEB-INF/templates/_footer_user.jsp"></jsp:include>
 </div>
 
 </body>

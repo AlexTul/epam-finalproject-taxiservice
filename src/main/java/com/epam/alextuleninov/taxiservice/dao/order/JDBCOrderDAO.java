@@ -36,7 +36,6 @@ public class JDBCOrderDAO implements OrderDAO {
         this.carMapper = carMapper;
         this.userMapper = userMapper;
         this.orderMapper = orderMapper;
-
     }
 
     /**
@@ -52,10 +51,10 @@ public class JDBCOrderDAO implements OrderDAO {
             connection.setAutoCommit(false);
 
             try (var getUserByEmail = connection.prepareStatement(
-                         """
-                                 select * from users as u where u.email like ?
-                                 """
-                 );
+                    """
+                            select * from users as u where u.email like ?
+                            """
+            );
 
                  var createOrder = connection.prepareStatement(
                          """
@@ -163,13 +162,11 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAll(PageableRequest pageable) {
-
-        String sql = "select * from orders o " +
-                "join users u on u.id = o.customer_id " +
+        String sqlID = "select o.id from orders o" +
                 " order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return findOrders(sql);
+        return getOrders(sqlID);
     }
 
     /**
@@ -183,12 +180,12 @@ public class JDBCOrderDAO implements OrderDAO {
         List<Order> orders = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
-            try (var getAllOrdersIDByNow = connection.prepareStatement(
-                         """
-                                 select o.id from orders o
-                                 where o.started_at < ? and finished_at > ?
-                                 """
-                 );
+            try (var getAllOrdersIDByRange = connection.prepareStatement(
+                    """
+                            select o.id from orders o
+                            where o.started_at < ? and finished_at > ?
+                            """
+            );
 
                  var getAllCarsByOrderID = connection.prepareStatement(
                          """
@@ -198,7 +195,7 @@ public class JDBCOrderDAO implements OrderDAO {
                                  """
                  );
 
-                 var getAllOrdersByNow = connection.prepareStatement(
+                 var getAllOrdersByRange = connection.prepareStatement(
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
@@ -211,12 +208,12 @@ public class JDBCOrderDAO implements OrderDAO {
                         .plusSeconds(request.travelDuration() + 2 * Constants.CAR_DELIVERY_TIME_SECOND);
                 LocalDateTime finishedAt = request.startedAt().minusSeconds(Constants.CAR_DELIVERY_TIME_SECOND);
 
-                getAllOrdersIDByNow.setTimestamp(1, Timestamp.valueOf(startedAt));
-                getAllOrdersIDByNow.setTimestamp(2, Timestamp.valueOf(finishedAt));
+                getAllOrdersIDByRange.setTimestamp(1, Timestamp.valueOf(startedAt));
+                getAllOrdersIDByRange.setTimestamp(2, Timestamp.valueOf(finishedAt));
 
                 // find all order id for car`s select
                 Map<Long, List<Car>> mapOrderCars = new HashMap<>();
-                ResultSet rsAllOrdersIDByNow = getAllOrdersIDByNow.executeQuery();
+                ResultSet rsAllOrdersIDByNow = getAllOrdersIDByRange.executeQuery();
                 while (rsAllOrdersIDByNow.next()) {
                     List<Car> carsByOrder = new ArrayList<>();
 
@@ -231,26 +228,10 @@ public class JDBCOrderDAO implements OrderDAO {
                 }
 
                 // find all orders by now
-                getAllOrdersByNow.setTimestamp(1, Timestamp.valueOf(startedAt));
-                getAllOrdersByNow.setTimestamp(2, Timestamp.valueOf(finishedAt));
-                ResultSet rsAllOrdersByNow = getAllOrdersByNow.executeQuery();
-                while (rsAllOrdersByNow.next()) {
-                    orders.add(
-                            new Order(
-                                    rsAllOrdersByNow.getLong(DataSourceFields.ORDER_ID),
-                                    rsAllOrdersByNow.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
-                                    userMapper.map(rsAllOrdersByNow),
-                                    rsAllOrdersByNow.getInt(DataSourceFields.ORDER_PASSENGERS),
-                                    mapOrderCars.get(rsAllOrdersByNow.getLong(DataSourceFields.ORDER_ID)),
-                                    rsAllOrdersByNow.getString(DataSourceFields.ROUTE_START_TRAVEL),
-                                    rsAllOrdersByNow.getString(DataSourceFields.ROUTE_END_TRAVEL),
-                                    rsAllOrdersByNow.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
-                                    rsAllOrdersByNow.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
-                                    rsAllOrdersByNow.getDouble(DataSourceFields.ORDER_COST),
-                                    rsAllOrdersByNow.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
-                                    rsAllOrdersByNow.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
-                            ));
-                }
+                getAllOrdersByRange.setTimestamp(1, Timestamp.valueOf(startedAt));
+                getAllOrdersByRange.setTimestamp(2, Timestamp.valueOf(finishedAt));
+                ResultSet rsAllOrders = getAllOrdersByRange.executeQuery();
+                orderMap(orders, rsAllOrders, mapOrderCars);
             }
         } catch (NullPointerException e) {
             return orders;
@@ -269,14 +250,13 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByCustomer(String customer, PageableRequest pageable) {
-
-        String sql = "select * from orders o " +
-                "join users u on u.id = o.customer_id " +
-                "where u.email like '" + customer +
+        String sqlID = "select o.id from orders o" +
+                " join users u on u.id = o.customer_id" +
+                " where u.email like '" + customer +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return findOrders(sql);
+        return getOrders(sqlID);
     }
 
     /**
@@ -288,15 +268,14 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
-
-        String sql = "select * from orders o " +
-                "join users u on u.id = o.customer_id " +
-                "where o.started_at >= '" + Timestamp.valueOf(startedAt) +
+        String sqlID = "select o.id from orders o" +
+                " join users u on u.id = o.customer_id" +
+                " where o.started_at >= '" + Timestamp.valueOf(startedAt) +
                 "' and o.started_at < '" + Timestamp.valueOf(startedAt.plusDays(1)) +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return findOrders(sql);
+        return getOrders(sqlID);
     }
 
     /**
@@ -460,13 +439,13 @@ public class JDBCOrderDAO implements OrderDAO {
             connection.setAutoCommit(false);
 
             try (var updateOrderByID = connection.prepareStatement(
-                         """
-                                 update orders o
-                                 set order_passengers = ?, start_travel = ?, end_travel = ?, travel_distance = ?,
-                                 travel_duration = ?, cost = ?, started_at = ?, finished_at = ?
-                                 where o.id = ?
-                                 """
-                 );
+                    """
+                            update orders o
+                            set order_passengers = ?, start_travel = ?, end_travel = ?, travel_distance = ?,
+                            travel_duration = ?, cost = ?, started_at = ?, finished_at = ?
+                            where o.id = ?
+                            """
+            );
                  var updateOrderCarByID = connection.prepareStatement(
                          """
                                  update order_car oc
@@ -562,20 +541,57 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders from the database by SQL.
      *
-     * @param sql database query
+     * @param sqlID database query
      * @return query result
      */
-    private List<Order> findOrders(String sql) {
+    private List<Order> getOrders(String sqlID) {
         List<Order> result = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
-            try (var psGetAllByCustomer = connection.prepareStatement(
-                    sql
-            )) {
+            try (var getAllOrdersID = connection.prepareStatement(
+                    sqlID
+            );
 
-                ResultSet resultSet = psGetAllByCustomer.executeQuery();
-                while (resultSet.next()) {
-                    result.add(orderMapper.map(resultSet));
+                 var getAllCarsByOrderID = connection.prepareStatement(
+                         """
+                                 select * from order_car oc
+                                 join cars c on c.car_id = oc.c_id
+                                 where oc.o_id = ?
+                                 """
+                 );
+
+                 var getAllOrders = connection.prepareStatement(
+                         """
+                                 select * from orders o
+                                 join users u on u.id = o.customer_id
+                                 where o.id = ?
+                                 """
+                 )) {
+
+                // find all order id for car`s select
+                List<Long> ordersID = new ArrayList<>();
+                long id;
+                Map<Long, List<Car>> mapOrderCars = new HashMap<>();
+                ResultSet rsAllOrdersID = getAllOrdersID.executeQuery();
+                while (rsAllOrdersID.next()) {
+                    id = rsAllOrdersID.getLong(DataSourceFields.ORDER_ID);
+                    ordersID.add(id);
+                    List<Car> carsByOrder = new ArrayList<>();
+
+                    // find all cars by order`s id
+                    getAllCarsByOrderID.setLong(1, id);
+                    ResultSet rsAllCarsByOrderID = getAllCarsByOrderID.executeQuery();
+                    while (rsAllCarsByOrderID.next()) {
+                        carsByOrder.add(carMapper.map(rsAllCarsByOrderID));
+                    }
+                    mapOrderCars.put(id, carsByOrder);
+                }
+
+                // get all result
+                for (Long variable : ordersID) {
+                    getAllOrders.setLong(1, variable);
+                    ResultSet rsAllOrders = getAllOrders.executeQuery();
+                    orderMap(result, rsAllOrders, mapOrderCars);
                 }
             }
         } catch (NullPointerException e) {
@@ -584,5 +600,34 @@ public class JDBCOrderDAO implements OrderDAO {
             throw new UnexpectedDataAccessException(e);
         }
         return result;
+    }
+
+    /**
+     * The method for entity`s mapping.
+     *
+     * @param result       result from database
+     * @param rsAllOrders  result set
+     * @param mapOrderCars map with cars by order
+     */
+    private void orderMap(List<Order> result, ResultSet rsAllOrders, Map<Long, List<Car>> mapOrderCars)
+            throws SQLException {
+        while (rsAllOrders.next()) {
+            result.add(
+                    new Order(
+                            rsAllOrders.getLong(DataSourceFields.ORDER_ID),
+                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
+                            userMapper.map(rsAllOrders),
+                            rsAllOrders.getInt(DataSourceFields.ORDER_PASSENGERS),
+                            mapOrderCars.get(rsAllOrders.getLong(DataSourceFields.ORDER_ID)),
+                            rsAllOrders.getString(DataSourceFields.ROUTE_START_TRAVEL),
+                            rsAllOrders.getString(DataSourceFields.ROUTE_END_TRAVEL),
+                            rsAllOrders.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
+                            rsAllOrders.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
+                            rsAllOrders.getDouble(DataSourceFields.ORDER_COST),
+                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
+                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
+                    )
+            );
+        }
     }
 }

@@ -67,14 +67,16 @@ public class RegisterServlet extends HttpServlet {
 
             if (!register) {
                 log.info("Email: " + req.getParameter("email") + " already taken");
+                req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, false);
                 PageMessageBuilder.buildMessageUser(req, locale,
-                        USER_FAIL_REGISTER_UK, USER_FAIL_REGISTER);
+                        USER_REGISTER_FAIL_UK, USER_REGISTER_FAIL);
 
                 resp.sendRedirect(Routes.URL_MESSAGE_USER);
             } else {
                 log.info("User successfully registered");
+                req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, true);
                 PageMessageBuilder.buildMessageUser(req, locale,
-                        USER_SUC_REGISTER_UK, USER_SUC_REGISTER);
+                        USER_REGISTER_SUC_UK, USER_REGISTER_SUC);
 
                 resp.sendRedirect(URL_MESSAGE_USER);
             }

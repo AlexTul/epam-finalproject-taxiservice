@@ -1,6 +1,9 @@
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
+<%--Locale--%>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:setBundle basename="resources"/>
+<%--Locale--%>
 
 <html>
 <c:set var="title" value="Панель администратора" scope="page"/>
@@ -11,35 +14,44 @@
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <title>Successful</title>
 </head>
-<body class="text-center">
+<body>
 
-<div>
-
-    <img class="mb-4" src="static/img/img.jpg" alt="" width="241" height="125">
-    <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br>
-        <fmt:message key="order.successfully"/></h1>
-
-    <%-- Show route --%>
-    <label><fmt:message key="date.time.travel"/>:</label>
-    <c:out value="${sessionScope.dateTimeTravel}"/>
+<div class="container-fluid" style="text-align: center">
+    <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
     <br>
-    <%-- Show route --%>
 
-    <%-- New order button --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="order"><fmt:message key="new.order"/></a>
+    <div class="row">
+        <div class="col-lg-12">
+            <%-- Show message --%>
+            <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br>
+                <fmt:message key="order.successfully"/></h1>
+            <%-- Show message --%>
+            <br>
+            <%-- Show route --%>
+            <label><fmt:message key="date.time.travel"/>:</label>
+            <c:out value="${sessionScope.dateTimeTravel}"/>
+            <br>
+            <%-- Show route --%>
+        </div>
     </div>
-    <%-- New order button --%>
 
-    <%-- Log out button --%>
-    <div id="nav-link" class="text-right">
-        <a class="text-info" href="logout"><fmt:message key="logout"/></a>
-    </div>
-    <%-- Log out button --%>
+    <div class="row">
+        <div class="col-lg-5"></div>
 
-    <div>
-        <p class="mt-5 mb-3 text-muted">&copy;<fmt:message key="reserved"/>. 2023</p>
+        <div class="col-lg-1"></div>
+
+        <%-- New order button --%>
+        <div class="col-lg-1">
+            <div id="nav-link" class="text-right">
+                <a class="text-info" href="order"><fmt:message key="new.order"/></a>
+            </div>
+        </div>
+        <%-- New order button --%>
+
+        <div class="col-lg-5"></div>
     </div>
+
+    <jsp:include page="/WEB-INF/templates/_footer_user.jsp"></jsp:include>
 </div>
 
 </body>

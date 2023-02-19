@@ -47,7 +47,7 @@ public class OrderService implements OrderCRUD {
     @Override
     public List<OrderResponse> findAll(PageableRequest pageable) {
         return orderDAO.findAll(pageable).stream()
-                .map(order -> OrderResponse.fromOrder(order))
+                .map(OrderResponse::fromOrder)
                 .toList();
     }
 

@@ -43,12 +43,11 @@ public class ConfirmServlet extends HttpServlet {
      * change locale for presentation to the user.
      *
      * @param req HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-
-        processRequestGet(req);
 
         req.getRequestDispatcher(PAGE_CONFIRM)
                 .forward(req, resp);
@@ -77,26 +76,6 @@ public class ConfirmServlet extends HttpServlet {
     @Override
     public void destroy() {
         log.info(getServletName() + " destroyed");
-    }
-
-    /**
-     * To process Get requests from user:
-     * change locale for presentation to the user.
-     *
-     * @param req HttpServletRequest request
-     */
-    private void processRequestGet(HttpServletRequest req) {
-//        String locale = req.getParameter("locale");
-//
-//        String startEnd;
-//        var routeResponse = routeCRUD.findByStartEnd(OrderRequest.getOrderRequest(req, null, null))
-//                .orElseThrow(() -> RouteExceptions.routeNotFound(OrderRequest.getOrderRequest(req, null, null)));
-//        if (locale.equals("en")) {
-//            startEnd = routeResponse.startEnd();
-//        } else {
-//            startEnd = routeResponse.startEndUk();
-//        }
-//        req.getSession().setAttribute("startEnd", startEnd);
     }
 
     /**

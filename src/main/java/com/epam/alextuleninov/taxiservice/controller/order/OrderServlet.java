@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.order;
 
-import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
@@ -61,7 +60,7 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
-            String updateOrderID = req.getParameter(Constants.SCOPE_ID);
+            String updateOrderID = req.getParameter(SCOPE_ID);
             req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderID);
         }
 
@@ -141,7 +140,7 @@ public class OrderServlet extends HttpServlet {
         if (cars.size() == 0) {
             log.info("No available cars, order cancellation");
 
-            PageMessageBuilder.buildMessageUser(req, locale, USER_CANCEL_ORDER_UK, USER_CANCEL_ORDER);
+            PageMessageBuilder.buildMessageUser(req, locale, USER_ORDER_CANCEL_UK, USER_ORDER_CANCEL);
 
             req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
                     .forward(req, resp);
@@ -156,7 +155,6 @@ public class OrderServlet extends HttpServlet {
 
         req.getSession().setAttribute(SCOPE_CARS, cars);
         req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
-
         req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
         req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
         req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
@@ -193,8 +191,7 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
-     * To process Post requests from user:
-     * validation an order`s data.
+     * Get string of cars from order.
      *
      * @param cars list with cars
      * @return string with car`s name

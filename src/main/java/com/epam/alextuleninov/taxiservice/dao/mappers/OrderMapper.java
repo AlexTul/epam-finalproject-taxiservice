@@ -3,8 +3,6 @@ package com.epam.alextuleninov.taxiservice.dao.mappers;
 import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
-import com.epam.alextuleninov.taxiservice.model.route.adress.Address;
-import com.epam.alextuleninov.taxiservice.model.route.Route;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 

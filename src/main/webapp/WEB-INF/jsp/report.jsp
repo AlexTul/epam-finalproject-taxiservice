@@ -80,6 +80,9 @@
                             <fmt:message key="passengers"/>
                         </th>
                         <th scope="col">
+                            <fmt:message key="cars"/>
+                        </th>
+                        <th scope="col">
                             <fmt:message key="start.travel"/>
                         </th>
                         <th scope="col">
@@ -112,6 +115,7 @@
                             <td>${orderResponse.createdAt}</td>
                             <td>${orderResponse.customerEmail}</td>
                             <td>${orderResponse.numberOfPassengers}</td>
+                            <td>${orderResponse.stringOfCars}</td>
                             <td>${orderResponse.startTravel}</td>
                             <td>${orderResponse.endTravel}</td>
                             <td>${orderResponse.cost}</td>

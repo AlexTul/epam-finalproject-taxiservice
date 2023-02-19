@@ -1,6 +1,5 @@
 <%@ page import="com.epam.alextuleninov.taxiservice.model.car.category.CarCategory" %>
 <%@ page import="com.epam.alextuleninov.taxiservice.model.car.status.CarStatus" %>
-<%@ taglib prefix="ctg" uri="customtags" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%--Locale--%>
@@ -31,14 +30,14 @@
                 <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br><fmt:message key="please"/>
                     <fmt:message key="enter.data"/></h1>
 
-                <label for="carName" class="sr-only">Car name form</label>
+                <label for="carName"><fmt:message key="enter.car.name"/>:</label>
                 <input type="text" id="carName" name="carName" class="form-control"
                        placeholder="${requestScope.car.carName}"
                        minlength="3" maxlength="20" required><br>
 
                 <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
                 <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
-                       placeholder="<fmt:message key="enter.passengers"/>"
+                       placeholder="${requestScope.car.numberOfPassengers}"
                        min="1" minlength="1" maxlength="1" required>
                 <br>
 
@@ -79,42 +78,7 @@
         <div class="col-lg-5"></div>
     </div>
 
-    <%--Locale and Logout--%>
-    <div class="row">
-        <div class="col-lg-5"></div>
-
-        <div class="col-lg-1">
-            <%--Locale--%>
-            <form method="get" class="d-flex">
-                <label>
-                    <select name="locale" onchange='submit();'>
-                        <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                            <fmt:message key="en"/>
-                        </option>
-                        <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                            <fmt:message key="ua"/>
-                        </option>
-                    </select>
-                </label>
-            </form>
-            <%--Locale--%>
-        </div>
-
-        <div class="col-lg-1">
-            <%-- Log out link --%>
-            <div id="nav-link" class="text-right">
-                <a class="text-info" href="${pageContext.request.contextPath}/logout"><fmt:message key="logout"/></a>
-            </div>
-            <%-- Log out link --%>
-        </div>
-
-        <div class="col-lg-5"></div>
-    </div>
-    <%--Locale and Logout--%>
-
-    <div class="row">
-        <p class="col-lg-12">&copy;<fmt:message key="reserved"/>. 2023</p>
-    </div>
+    <jsp:include page="/WEB-INF/templates/_footer_user.jsp"></jsp:include>
 </div>
 
 </body>

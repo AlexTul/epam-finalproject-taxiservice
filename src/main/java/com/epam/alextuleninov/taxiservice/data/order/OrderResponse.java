@@ -1,7 +1,10 @@
 package com.epam.alextuleninov.taxiservice.data.order;
 
 import com.epam.alextuleninov.taxiservice.Constants;
+import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
+
+import java.util.List;
 
 /**
  * Class for the OrderResponse.
@@ -20,6 +23,7 @@ public class OrderResponse {
     private String customerPassword;
     private String customerRole;
     private int numberOfPassengers;
+    private String stringOfCars;
     private String startTravel;
     private String endTravel;
     private double travelDistance;
@@ -28,14 +32,11 @@ public class OrderResponse {
     private String startedAt;
     private String finishedAt;
 
-    public OrderResponse() {
-    }
-
     public OrderResponse(long id, String createdAt, long customerId, String customerFirstName,
                          String customerLastName, String customerEmail, String customerPassword,
-                         String customerRole, int numberOfPassengers, String startTravel,
-                         String endTravel, double travelDistance, int travelDuration, double cost,
-                         String startedAt, String finishedAt) {
+                         String customerRole, int numberOfPassengers, String stringOfCars,
+                         String startTravel, String endTravel, double travelDistance,
+                         int travelDuration, double cost, String startedAt, String finishedAt) {
         this.id = id;
         this.createdAt = createdAt;
         this.customerId = customerId;
@@ -45,6 +46,7 @@ public class OrderResponse {
         this.customerPassword = customerPassword;
         this.customerRole = customerRole;
         this.numberOfPassengers = numberOfPassengers;
+        this.stringOfCars = stringOfCars;
         this.startTravel = startTravel;
         this.endTravel = endTravel;
         this.travelDistance = travelDistance;
@@ -126,6 +128,14 @@ public class OrderResponse {
         this.numberOfPassengers = numberOfPassengers;
     }
 
+    public String getStringOfCars() {
+        return stringOfCars;
+    }
+
+    public void setStringOfCars(String stringOfCars) {
+        this.stringOfCars = stringOfCars;
+    }
+
     public String getStartTravel() {
         return startTravel;
     }
@@ -199,6 +209,7 @@ public class OrderResponse {
                 order.getCustomer().getPassword(),
                 order.getCustomer().getRole().toString(),
                 order.getNumberOfPassengers(),
+                getStringOfCars(order.getCars()),
                 order.getStartTravel(),
                 order.getEndTravel(),
                 order.getTravelDistance(),
@@ -207,5 +218,19 @@ public class OrderResponse {
                 order.getStartedAt().format(Constants.FORMATTER),
                 order.getFinishedAt().format(Constants.FORMATTER)
         );
+    }
+
+    /**
+     * Get string of cars from order.
+     *
+     * @param cars list with cars
+     * @return string with car`s name
+     */
+    private static String getStringOfCars(List<Car> cars) {
+        var stringListOfCars = new StringBuilder();
+        for (Car variable : cars) {
+            stringListOfCars.append(variable.getCarName()).append(", ").append(variable.getCarCategory()).append("; ");
+        }
+        return stringListOfCars.toString();
     }
 }

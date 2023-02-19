@@ -70,25 +70,30 @@ public class LogoutServlet extends HttpServlet {
 
         HttpSession session = req.getSession();
 
-        session.removeAttribute(SCOPE_LOCALE);
-        session.removeAttribute(SCOPE_CARS);
-        session.removeAttribute(SCOPE_TRAVEL_DISTANCE);
-        session.removeAttribute(SCOPE_TRAVEL_DURATION);
-        session.removeAttribute(SCOPE_LOYALTY_PRICE);
-        session.removeAttribute(SCOPE_START_TRAVEL);
-        session.removeAttribute(SCOPE_END_TRAVEL);
-        session.removeAttribute(SCOPE_NUMBER_OF_PASSENGERS);
-        session.removeAttribute(SCOPE_LIST_OF_CARS);
-        session.removeAttribute(SCOPE_DATE_OF_TRAVEL);
-        session.removeAttribute(SCOPE_PRICE_OF_TRAVEL);
         session.removeAttribute(SCOPE_LOGIN);
         session.removeAttribute(SCOPE_ROLE);
+        session.removeAttribute(SCOPE_LOCALE);
+        session.removeAttribute(SCOPE_CARS);
+        session.removeAttribute(SCOPE_LIST_OF_CARS);
+        session.removeAttribute(SCOPE_CAR_RESPONSES);
+        session.removeAttribute(SCOPE_DATE_OF_TRAVEL);
+        session.removeAttribute(SCOPE_PRICE_OF_TRAVEL);
+        session.removeAttribute(SCOPE_TRAVEL_DISTANCE);
+        session.removeAttribute(SCOPE_TRAVEL_DURATION);
+        session.removeAttribute(SCOPE_START_TRAVEL);
+        session.removeAttribute(SCOPE_END_TRAVEL);
+        session.removeAttribute(SCOPE_LOYALTY_PRICE);
+        session.removeAttribute(SCOPE_DATE_TIME_OF_TRAVEL);
+        session.removeAttribute(SCOPE_NUMBER_OF_PASSENGERS);
         session.removeAttribute(SCOPE_ORDERS);
-        session.removeAttribute(SCOPE_SORT);
         session.removeAttribute(SCOPE_CUSTOMER_OF_ORDERS);
         session.removeAttribute(SCOPE_DATE_OF_ORDERS);
         session.removeAttribute(SCOPE_ORDER_BY);
         session.removeAttribute(SCOPE_UPDATE_ORDER_ID);
+        session.removeAttribute(SCOPE_CUSTOMERS_OF_ORDERS);
+        session.removeAttribute(SCOPE_DATES_OF_ORDERS);
+        session.removeAttribute(SCOPE_USER_RESPONSES);
+        session.removeAttribute(SCOPE_MESSAGE_USER);
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }

@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.report;
 
-import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
@@ -220,7 +219,7 @@ public class ReportServlet extends HttpServlet {
 
         allOrders = orderCRUD.findAll(pageable);
 
-        PageMessageBuilder.buildMessageAdmin(req, locale, Constants.SCOPE_WHOSE_ORDERS,
+        PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
                 ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
         return allOrders;
     }

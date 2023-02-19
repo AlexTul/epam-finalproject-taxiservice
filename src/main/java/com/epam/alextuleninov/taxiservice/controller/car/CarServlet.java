@@ -58,7 +58,7 @@ public class CarServlet extends HttpServlet {
             req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID);
             int id;
             if (updateCarID != null) {
-                id = Integer.parseInt(updateCarID); // todo
+                id = Integer.parseInt(updateCarID);
                 req.getSession().setAttribute(SCOPE_UPDATE_CAR_ID, updateCarID);
             } else {
                 id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
