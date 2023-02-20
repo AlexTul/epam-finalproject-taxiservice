@@ -14,7 +14,9 @@ public final class Constants {
     // region scope
     public static final String SCOPE_LOCALE = "locale";
     public static final String SCOPE_LOGIN = "login";
+    public static final String SCOPE_LOGIN_VALIDATE = "loginValidate";
     public static final String SCOPE_PASSWORD = "password";
+    public static final String SCOPE_PASSWORD_VALIDATE = "passwordValidate";
     public static final String SCOPE_NEW_PASSWORD = "newPassword";
     public static final String SCOPE_ROLE = "role";
     public static final String SCOPE_ID = "id";
@@ -74,6 +76,10 @@ public final class Constants {
     // endregion pagination settings
 
     // region message
+    public static final String LOGIN_NOT_VALID_UK = "Логін не валідний";
+    public static final String LOGIN_NOT_VALID = "Login is not valid";
+    public static final String PASSWORD_NOT_VALID_UK = "Пароль не валідний";
+    public static final String PASSWORD_NOT_VALID = "Password is not valid";
     public static final String ADMIN_REPORT_ALL_UK = " усі замовлення";
     public static final String ADMIN_REPORT_ALL = " all orders";
     public static final String ADMIN_REPORT_CUSTOM_UK = " за замовником ";

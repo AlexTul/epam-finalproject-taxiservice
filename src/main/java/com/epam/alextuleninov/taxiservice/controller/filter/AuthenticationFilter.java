@@ -3,7 +3,6 @@ package com.epam.alextuleninov.taxiservice.controller.filter;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
-import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -51,7 +50,6 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
         HttpSession session = req.getSession();
-        String locale = (String) session.getAttribute(SCOPE_LOCALE);
 
         String login = req.getParameter(SCOPE_LOGIN);
         String password = req.getParameter(SCOPE_PASSWORD);
@@ -67,8 +65,8 @@ public class AuthenticationFilter implements Filter {
             }
         } else {
             // validation of entered data
-            if (loginValidation(req, resp, locale)) {
-               if (userCRUD.authentication(login, password)) {
+            if (loginValidation(req, resp)) {
+                if (userCRUD.authentication(login, password)) {
                     Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
 
                     req.getSession().setAttribute(SCOPE_LOGIN, login);
@@ -121,17 +119,14 @@ public class AuthenticationFilter implements Filter {
      *
      * @param req    the HttpServletRequest request
      * @param resp   the HttpServletResponse response
-     * @param locale the default or current locale of application
      * @return true if user credentials is valid
      */
-    private boolean loginValidation(HttpServletRequest req, HttpServletResponse resp, String locale)
+    private boolean loginValidation(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!(DataValidator.initLoginValidation(req))) {
             log.info("User credentials not validated");
 
-            PageMessageBuilder.buildMessageUser(req, locale, USER_UK, USER);
-
-            req.getRequestDispatcher(PAGE_MESSAGE_USER)
+            req.getRequestDispatcher(PAGE_LOGIN)
                     .forward(req, resp);
             return false;
         }

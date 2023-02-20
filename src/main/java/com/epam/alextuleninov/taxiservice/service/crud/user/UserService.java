@@ -141,14 +141,12 @@ public class UserService implements UserCRUD {
      * @param request request with old and new password
      */
     @Override
-    public boolean changePasswordByEmail(String email, ChangeUserPasswordRequest request) {
+    public void changePasswordByEmail(String email, ChangeUserPasswordRequest request) {
         var encryptPassword = PasswordEncoderConfig
                 .passwordEncoder()
                 .encrypt(request.newPassword());
 
         userDAO.changePasswordByEmail(email, encryptPassword);
-
-        return true;
     }
 
     /**

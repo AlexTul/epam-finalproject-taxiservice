@@ -79,7 +79,7 @@ public interface UserCRUD {
      * @param email user`s login
      * @param request request with old and new password
      */
-    boolean changePasswordByEmail(String email, ChangeUserPasswordRequest request);
+    void changePasswordByEmail(String email, ChangeUserPasswordRequest request);
 
     /**
      * Delete the user from database.

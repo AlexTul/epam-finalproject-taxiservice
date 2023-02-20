@@ -30,11 +30,11 @@
                 <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br><fmt:message key="please"/>
                     <fmt:message key="enter.data"/></h1>
 
-                <h6 class="h3 mb-3 font-weight-normal"><fmt:message key="first.name"/>: ${requestScope.userResponse.firstName}</h6>
+                <p class="h3 mb-3 font-weight-normal"><fmt:message key="first.name"/>: ${requestScope.userResponse.firstName}</p>
 
-                <h6 class="h3 mb-3 font-weight-normal"><fmt:message key="last.name"/>: ${requestScope.userResponse.lastName}</h6>
+                <p class="h3 mb-3 font-weight-normal"><fmt:message key="last.name"/>: ${requestScope.userResponse.lastName}</p>
 
-                <h6 class="h3 mb-3 font-weight-normal"><fmt:message key="email"/>: ${requestScope.userResponse.email}</h6>
+                <p class="h3 mb-3 font-weight-normal"><fmt:message key="email"/>: ${requestScope.userResponse.email}</p>
                 <br>
 
                 <label for="password" class="sr-only">Password form</label>
