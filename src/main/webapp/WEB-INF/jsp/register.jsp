@@ -31,22 +31,26 @@
                 <label for="firstname" class="sr-only">First name form</label>
                 <input type="text" id="firstname" name="firstname" class="form-control"
                        placeholder="<fmt:message key="first.name"/>"
-                       minlength="2" maxlength="20" required><br>
+                       minlength="2" maxlength="20" required>
+                <p style="color: red">${requestScope.firstname}</p><br>
 
                 <label for="lastname" class="sr-only">Last name form</label>
                 <input type="text" id="lastname" name="lastname" class="form-control"
                        placeholder="<fmt:message key="last.name"/>"
-                       minlength="2" maxlength="20" required><br>
+                       minlength="2" maxlength="20" required>
+                <p style="color: red">${requestScope.lastname}</p><br>
 
                 <label for="email" class="sr-only">Login form</label>
-                <input type="text" id="email" name="email" class="form-control"
+                <input type="text" id="email" name="login" class="form-control"
                        placeholder="email@gmail.com"
-                       minlength="2" maxlength="40" required><br>
+                       minlength="2" maxlength="40" required>
+                <p style="color: red">${requestScope.loginValidate}</p><br>
 
                 <label for="password" class="sr-only">Password form</label>
                 <input type="password" id="password" name="password" class="form-control"
                        placeholder="<fmt:message key="password"/>"
-                       minlength="10" maxlength="20" required><br>
+                       minlength="10" maxlength="20" required>
+                <p style="color: red">${requestScope.passwordValidate}</p><br>
 
                 <%-- Register button --%>
                 <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>

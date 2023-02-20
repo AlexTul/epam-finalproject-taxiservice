@@ -12,6 +12,10 @@ public final class Constants {
     // endregion connection pool
 
     // region scope
+
+
+    public static final String SCOPE_FIRST_NAME = "firstname";
+    public static final String SCOPE_LAST_NAME = "lastname";
     public static final String SCOPE_LOCALE = "locale";
     public static final String SCOPE_LOGIN = "login";
     public static final String SCOPE_LOGIN_VALIDATE = "loginValidate";
@@ -76,6 +80,10 @@ public final class Constants {
     // endregion pagination settings
 
     // region message
+    public static final String FIRST_NAME_NOT_VALID_UK = "Ім'я не валідне";
+    public static final String FIRST_NAME_NOT_VALID = "First name is not valid";
+    public static final String LAST_NAME_NOT_VALID_UK = "Прізвище не валідне";
+    public static final String LAST_NAME_NOT_VALID = "Last name is not valid";
     public static final String LOGIN_NOT_VALID_UK = "Логін не валідний";
     public static final String LOGIN_NOT_VALID = "Login is not valid";
     public static final String PASSWORD_NOT_VALID_UK = "Пароль не валідний";
