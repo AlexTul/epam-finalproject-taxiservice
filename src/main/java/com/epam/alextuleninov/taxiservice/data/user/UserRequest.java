@@ -2,6 +2,8 @@ package com.epam.alextuleninov.taxiservice.data.user;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+
 /**
  * Record for the UserRequest.
  *
@@ -24,10 +26,10 @@ public record UserRequest(
      */
     public static UserRequest getUserRequest(HttpServletRequest req) {
         return new UserRequest(
-                req.getParameter("firstname"),
-                req.getParameter("lastname"),
-                req.getParameter("email"),
-                req.getParameter("password")
+                req.getParameter(SCOPE_FIRST_NAME),
+                req.getParameter(SCOPE_LAST_NAME),
+                req.getParameter(SCOPE_LOGIN),
+                req.getParameter(SCOPE_PASSWORD)
         );
     }
 }

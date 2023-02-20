@@ -3,11 +3,10 @@ package com.epam.alextuleninov.taxiservice.controller.user;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
-import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
-import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
+import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,11 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
-import static com.epam.alextuleninov.taxiservice.exceptions.car.CarExceptions.carNotFound;
 import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
 
 @WebServlet(name = "UserServlet", urlPatterns = URL_USER_)
@@ -81,20 +78,27 @@ public class UserServlet extends HttpServlet {
         String userLogin = req.getParameter(SCOPE_LOGIN);
 
         if (updateUserLogin != null) {
-            String newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
-            var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, newPassword);
-            userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
-            req.getSession().removeAttribute(SCOPE_UPDATE_CAR_ID);
+            String newPassword;
+            if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
+                newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
+                var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, newPassword);
+                userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
+                req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
-            emailSender.send(EMAIL_UPDATE_USER_PASSWORD,
-                    String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin);
+                emailSender.send(EMAIL_UPDATE_USER_PASSWORD,
+                        String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin);
+
+                req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+                resp.sendRedirect(URL_USER);
+            } else {
+                resp.sendRedirect(URL_USER_UPDATE);
+            }
         } else if (userLogin != null) {
             userCRUD.deleteByEmail(userLogin);
 
             emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, userLogin);
+            resp.sendRedirect(URL_USER);
         }
-
-        resp.sendRedirect(URL_USER);
     }
 
     @Override

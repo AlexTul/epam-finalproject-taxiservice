@@ -81,7 +81,7 @@ public class RegisterServlet extends HttpServlet {
                 PageMessageBuilder.buildMessageUser(req, locale,
                         USER_REGISTER_SUC_UK, USER_REGISTER_SUC);
 
-                emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter("email"));
+                emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN));
 
                 resp.sendRedirect(URL_MESSAGE_USER);
             }

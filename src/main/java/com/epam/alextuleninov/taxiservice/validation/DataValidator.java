@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.validation;
 
-import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.regex.Pattern;
@@ -53,9 +52,8 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initLoginValidation(HttpServletRequest req) {
+    public static boolean initLogInValidation(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
-
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
             changeLocale(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
             return false;
@@ -79,6 +77,21 @@ public final class DataValidator {
     }
 
     /**
+     * Check login data.
+     *
+     * @param req request from HttpServletRequest
+     * @return true if validation is success
+     */
+    public static boolean initPasswordValidation(HttpServletRequest req, String scope) {
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        if (!validatePassword(req.getParameter(scope))) {
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Validate name.
      *
      * @param name name of user
@@ -91,7 +104,7 @@ public final class DataValidator {
     /**
      * Validate login.
      *
-     * @param login login of user
+     * @param login login from request
      * @return true if validation is success
      */
     private static boolean validateLogin(String login) {
@@ -101,7 +114,7 @@ public final class DataValidator {
     /**
      * Validate password.
      *
-     * @param password password of user
+     * @param password password from request
      * @return true if validation is success
      */
     private static boolean validatePassword(String password) {
@@ -144,6 +157,24 @@ public final class DataValidator {
             req.setAttribute(scope, notValidUk);
         } else {
             req.setAttribute(scope, notValid);
+        }
+    }
+
+    /**
+     * Change locale from user request.
+     *
+     * @param locale     current locale
+     * @param req        request from user
+     * @param scope      scope for jsp page
+     * @param notValidUk message on Ukrainian language
+     * @param notValid   message on English language
+     */
+    private static void changeLocaleSession(String locale, HttpServletRequest req, String scope,
+                                     String notValidUk, String notValid) {
+        if (locale.equals("uk_UA")) {
+            req.getSession().setAttribute(scope, notValidUk);
+        } else {
+            req.getSession().setAttribute(scope, notValid);
         }
     }
 }

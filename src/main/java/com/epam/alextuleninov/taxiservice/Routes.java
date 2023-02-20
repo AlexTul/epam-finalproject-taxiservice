@@ -32,6 +32,7 @@ public final class Routes {
     public static final String URL_ADMIN = "/admin";
     public static final String URL_USER = "/user";
     public static final String URL_USER_ = "/user/*";
+    public static final String URL_USER_UPDATE = "/user/update";
     public static final String URL_CAR = "/car";
     public static final String URL_CAR_ = "/car/*";
     public static final String URL_ORDER = "/order";

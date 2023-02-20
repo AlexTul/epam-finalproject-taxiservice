@@ -40,8 +40,8 @@
                 <label for="password" class="sr-only">Password form</label>
                 <input type="password" id="password" name="newPassword" class="form-control"
                        placeholder="<fmt:message key="password"/>"
-                       minlength="10" maxlength="20" required><br>
-                <br><br>
+                       minlength="10" maxlength="20" required>
+                <p style="color: red">${sessionScope.passwordValidate}</p><br>
 
                 <%-- Register button --%>
                 <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>
@@ -66,7 +66,42 @@
         <div class="col-lg-5"></div>
     </div>
 
-    <jsp:include page="/WEB-INF/templates/_footer_user.jsp"></jsp:include>
+    <%--Locale and Logout--%>
+    <div class="row">
+        <div class="col-lg-5"></div>
+
+        <div class="col-lg-1">
+            <%--Locale--%>
+            <form method="get" class="d-flex" action="user/update">
+                <label>
+                    <select name="locale" onchange='submit();'>
+                        <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
+                            <fmt:message key="en"/>
+                        </option>
+                        <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
+                            <fmt:message key="ua"/>
+                        </option>
+                    </select>
+                </label>
+            </form>
+            <%--Locale--%>
+        </div>
+
+        <div class="col-lg-1">
+            <%-- Log out link --%>
+            <div id="nav-link" class="text-right">
+                <a class="text-info" href="${pageContext.request.contextPath}/logout"><fmt:message key="logout"/></a>
+            </div>
+            <%-- Log out link --%>
+        </div>
+
+        <div class="col-lg-5"></div>
+    </div>
+    <%--Locale and Logout--%>
+
+    <div class="row">
+        <p class="col-lg-12">&copy;<fmt:message key="reserved"/>. 2023</p>
+    </div>
 </div>
 
 </body>

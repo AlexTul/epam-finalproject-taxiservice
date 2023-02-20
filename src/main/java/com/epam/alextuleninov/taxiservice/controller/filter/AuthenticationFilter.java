@@ -123,7 +123,7 @@ public class AuthenticationFilter implements Filter {
      */
     private boolean loginValidation(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        if (!(DataValidator.initLoginValidation(req))) {
+        if (!(DataValidator.initLogInValidation(req))) {
             log.info("User credentials not validated");
 
             req.getRequestDispatcher(PAGE_LOGIN)

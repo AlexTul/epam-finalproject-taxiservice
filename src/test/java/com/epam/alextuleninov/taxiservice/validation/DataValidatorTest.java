@@ -22,7 +22,7 @@ public class DataValidatorTest {
         when(req.getParameter("login")).thenReturn("test@gmail.com");
         when(req.getParameter("password")).thenReturn("QAsQaqGMoG1K5hQCCVFd");
 
-        assertTrue(() -> initLoginValidation(req));
+        assertTrue(() -> initLogInValidation(req));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class DataValidatorTest {
         when(req.getParameter("login")).thenReturn("");
         when(req.getParameter("password")).thenReturn("QAsQaqGMoG1K5hQCCVFd");
 
-        assertFalse(() -> initLoginValidation(req));
+        assertFalse(() -> initLogInValidation(req));
     }
 
     @ParameterizedTest
@@ -47,7 +47,7 @@ public class DataValidatorTest {
         when(req.getParameter("login")).thenReturn(login);
         when(req.getParameter("password")).thenReturn("QAsQaqGMoG1K5hQCCVFd");
 
-        assertFalse(() -> initLoginValidation(req));
+        assertFalse(() -> initLogInValidation(req));
     }
 
     @ParameterizedTest
@@ -60,7 +60,7 @@ public class DataValidatorTest {
         when(req.getParameter("login")).thenReturn("login@gmail.com");
         when(req.getParameter("password")).thenReturn(password);
 
-        assertFalse(() -> initLoginValidation(req));
+        assertFalse(() -> initLogInValidation(req));
     }
 
     @ParameterizedTest
