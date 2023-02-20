@@ -1,5 +1,7 @@
 package com.epam.alextuleninov.taxiservice.config.context;
 
+import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
+import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import com.epam.alextuleninov.taxiservice.connectionpool.MyDataSource;
 import com.epam.alextuleninov.taxiservice.dao.car.CarDAO;
 import com.epam.alextuleninov.taxiservice.dao.car.JDBCCarDAO;
@@ -32,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * AppContext class for initialization of resources of application.
@@ -48,6 +51,7 @@ public class AppContext {
     private final Loyalty loyaltyService;
     private final VerifyOrder verifyOrderService;
     private final DateTimeRide dateTimeRide;
+    private final EmailConfig emailSender;
 
     private AppContext() {
         DataSource dataSource = MyDataSource.getConnectionsPool();
@@ -57,6 +61,7 @@ public class AppContext {
         UserDAO userDAO = new JDBCUserDAO(dataSource, userMapper);
         ResultSetMapper<Order> orderMapper = new OrderMapper();
         OrderDAO orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper, orderMapper);
+        Properties properties = new PropertiesConfig().jdbcProperties();
         this.routeCharacteristics = new RouteCharacteristicsService();
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);
@@ -64,6 +69,7 @@ public class AppContext {
         this.loyaltyService = new LoyaltyService(orderCRUD, routeCharacteristics);
         this.verifyOrderService = new VerifyOrderService(carCRUD);
         this.dateTimeRide = new DateTimeRideRideService();
+        this.emailSender = new EmailConfig(properties);
         log.info("AppContext.class is initialized");
     }
 
@@ -101,5 +107,9 @@ public class AppContext {
 
     public DateTimeRide getDateTimeRide() {
         return dateTimeRide;
+    }
+
+    public EmailConfig getEmailSender() {
+        return emailSender;
     }
 }

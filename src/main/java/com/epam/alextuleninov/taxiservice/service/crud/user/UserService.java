@@ -3,6 +3,7 @@ package com.epam.alextuleninov.taxiservice.service.crud.user;
 import com.epam.alextuleninov.taxiservice.config.security.PasswordEncoderConfig;
 import com.epam.alextuleninov.taxiservice.dao.user.UserDAO;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
+import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.model.user.User;
@@ -80,6 +81,11 @@ public class UserService implements UserCRUD {
         return listLoginsClient;
     }
 
+    @Override
+    public Optional<UserResponse> findClientByEmail(String email) {
+        return userDAO.findByEmail(email).map(UserResponse::formUser);
+    }
+
     /**
      * Check if user exists by email in the database.
      *
@@ -129,12 +135,39 @@ public class UserService implements UserCRUD {
     }
 
     /**
+     * Change user`s password by email int the database.
+     *
+     * @param email user`s login
+     * @param request request with old and new password
+     */
+    @Override
+    public boolean changePasswordByEmail(String email, ChangeUserPasswordRequest request) {
+        var encryptPassword = PasswordEncoderConfig
+                .passwordEncoder()
+                .encrypt(request.newPassword());
+
+        userDAO.changePasswordByEmail(email, encryptPassword);
+
+        return true;
+    }
+
+    /**
      * Delete the user from database.
      *
      * @param id            id of user
      */
     @Override
-    public void deleteById(long id) {
+    public void deleteByID(long id) {
         userDAO.deleteById(id);
+    }
+
+    /**
+     * Delete the user from database.
+     *
+     * @param email email of user
+     */
+    @Override
+    public void deleteByEmail(String email) {
+        userDAO.deleteByEmail(email);
     }
 }

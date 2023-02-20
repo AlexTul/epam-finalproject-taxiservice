@@ -15,13 +15,16 @@ public final class Constants {
     public static final String SCOPE_LOCALE = "locale";
     public static final String SCOPE_LOGIN = "login";
     public static final String SCOPE_PASSWORD = "password";
+    public static final String SCOPE_NEW_PASSWORD = "newPassword";
     public static final String SCOPE_ROLE = "role";
     public static final String SCOPE_ID = "id";
     public static final String SCOPE_PAGE = "page";
     public static final String SCOPE_CURRENT_PAGE = "currentPage";
     public static final String SCOPE_TOTAL_RECORDS = "totalRecords";
     public static final String SCOPE_LAST_PAGE = "lastPage";
+    public static final String SCOPE_USER_RESPONSE = "userResponse";
     public static final String SCOPE_USER_RESPONSES = "userResponses";
+    public static final String SCOPE_UPDATE_USER_LOGIN = "updateUserLogin";
     public static final String SCOPE_MESSAGE_USER = "messageUser";
     public static final String SCOPE_REGISTER_TRUE_FALSE = "registerSuccess";
     public static final String SCOPE_CAR = "car";
@@ -86,4 +89,17 @@ public final class Constants {
     public static final String USER_ORDER_CANCEL_UK = "Немає вільних машин, змініть або скасуйте замовлення.";
     public static final String USER_ORDER_CANCEL = "No available cars, change or cancel order.";
     // endregion message
+
+    // region email
+    public static final String EMAIL_REGISTER_SUBJECT = "Registration in a Taxi Service";
+    public static final String EMAIL_REGISTER_BODY = "Dear user,<br>welcome to Taxi Service.<br>" +
+            "Thank you for your choosing!<br><br>Beast regards!<br>Taxi Service team";
+    public static final String EMAIL_DELETE_USER_SUBJECT = "Deleting profile in a Taxi Service";
+    public static final String EMAIL_DELETE_USER_BODY = "Dear user,<br>your profile was delete in Taxi Service.<br><br>" +
+            "Best Regards,<br>Market Place";
+    public static final String EMAIL_UPDATE_USER_PASSWORD = "Updating password in a Taxi Service";
+    public static final String EMAIL_UPDATE_USER_BODY = "Dear user,<br>your password was change in Market Place.<br>" +
+            "Your password is: %s.<br>Best Regards,<br>Taxi Service team";
+
+    // endregion email
 }

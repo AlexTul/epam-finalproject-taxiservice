@@ -2,6 +2,7 @@ package com.epam.alextuleninov.taxiservice.controller.registration;
 
 import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
+import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
@@ -28,10 +29,12 @@ public class RegisterServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(RegisterServlet.class);
 
     private UserCRUD userCRUD;
+    private EmailConfig emailSender;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
+        this.emailSender = AppContext.getAppContext().getEmailSender();
         log.info(getServletName() + " initialized");
     }
 
@@ -77,6 +80,8 @@ public class RegisterServlet extends HttpServlet {
                 req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, true);
                 PageMessageBuilder.buildMessageUser(req, locale,
                         USER_REGISTER_SUC_UK, USER_REGISTER_SUC);
+
+                emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter("email"));
 
                 resp.sendRedirect(URL_MESSAGE_USER);
             }

@@ -28,22 +28,22 @@
                         key="please"/><br>
                     <fmt:message key="enter.data"/></h1>
 
-                <label for="firstname" class="sr-only">First name Form</label>
+                <label for="firstname" class="sr-only">First name form</label>
                 <input type="text" id="firstname" name="firstname" class="form-control"
                        placeholder="<fmt:message key="first.name"/>"
                        minlength="2" maxlength="20" required><br>
 
-                <label for="lastname" class="sr-only">Last name Form</label>
+                <label for="lastname" class="sr-only">Last name form</label>
                 <input type="text" id="lastname" name="lastname" class="form-control"
                        placeholder="<fmt:message key="last.name"/>"
                        minlength="2" maxlength="20" required><br>
 
-                <label for="email" class="sr-only">Login Form</label>
+                <label for="email" class="sr-only">Login form</label>
                 <input type="text" id="email" name="email" class="form-control"
                        placeholder="email@gmail.com"
                        minlength="2" maxlength="40" required><br>
 
-                <label for="password" class="sr-only">Password Form</label>
+                <label for="password" class="sr-only">Password form</label>
                 <input type="password" id="password" name="password" class="form-control"
                        placeholder="<fmt:message key="password"/>"
                        minlength="10" maxlength="20" required><br>

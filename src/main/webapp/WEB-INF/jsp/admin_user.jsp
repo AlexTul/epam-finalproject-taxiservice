@@ -47,6 +47,9 @@
                             <fmt:message key="role"/>
                         </th>
                         <th scope="col">
+                            <fmt:message key="edit"/>
+                        </th>
+                        <th scope="col">
                             <fmt:message key="delete"/>
                         </th>
                     </tr>
@@ -60,7 +63,13 @@
                             <td>${userResponse.email}</td>
                             <td>${userResponse.role}</td>
                             <td>
-                                <form method="post" action="user?id=${userResponse.id}">
+                                <form method="get" action="user/update">
+                                    <input type="text" hidden name="login" value="${userResponse.email}"/>
+                                    <button type="submit" class="btn btn-warning btn-lg"></button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" action="user?login=${userResponse.email}">
                                     <button type="submit" class="btn btn-danger btn-lg"></button>
                                 </form>
                             </td>

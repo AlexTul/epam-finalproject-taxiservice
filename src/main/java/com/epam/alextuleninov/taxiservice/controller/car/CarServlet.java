@@ -55,7 +55,7 @@ public class CarServlet extends HttpServlet {
                     .forward(req, resp);
         } else if (actionAdd.endsWith("update")) {
             String updateCarID = req.getParameter(SCOPE_ID);
-            req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID);
+
             int id;
             if (updateCarID != null) {
                 id = Integer.parseInt(updateCarID);

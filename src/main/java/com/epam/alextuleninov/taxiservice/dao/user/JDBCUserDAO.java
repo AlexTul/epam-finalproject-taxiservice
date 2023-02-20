@@ -4,6 +4,7 @@ import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
+import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.user.User;
@@ -34,8 +35,8 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Create the user in the database.
      *
-     * @param request       request with user parameters
-     * @return              created user from database
+     * @param request request with user parameters
+     * @return created user from database
      */
     @Override
     public User create(UserRequest request) {
@@ -71,7 +72,7 @@ public class JDBCUserDAO implements UserDAO {
                         request.email(),
                         null,
                         Role.CLIENT
-                        );
+                );
             } catch (Exception e) {
                 connection.rollback();
                 throw new UnexpectedDataAccessException(e);
@@ -86,7 +87,7 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Find all users by client from the database.
      *
-     * @return              all users from the database
+     * @return all users from the database
      */
     @Override
     public Set<User> findAllClient() {
@@ -140,11 +141,11 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Find user by email from the database.
      *
-     * @param request       request with order`s parameters
-     * @return              user from database
+     * @param email user`s email
+     * @return user from database
      */
     @Override
-    public Optional<User> findByEmail(OrderRequest request) {
+    public Optional<User> findByEmail(String email) {
         User user;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -153,7 +154,7 @@ public class JDBCUserDAO implements UserDAO {
                             select * from users as u where u.email like ?
                             """
             )) {
-                getUserByEmail.setString(1, request.customer());
+                getUserByEmail.setString(1, email);
 
                 ResultSet resultSet = getUserByEmail.executeQuery();
                 if (resultSet.next()) {
@@ -171,8 +172,8 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Find user`s role  by email from the database.
      *
-     * @param email         email by user
-     * @return              user from database
+     * @param email email by user
+     * @return user from database
      */
     @Override
     public String findRoleByEmail(String email) {
@@ -200,8 +201,8 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Check if user exists by email in the database.
      *
-     * @param email         email by user
-     * @return              true if user exists in database
+     * @param email email by user
+     * @return true if user exists in database
      */
     @Override
     public boolean existsByEmail(String email) {
@@ -233,9 +234,9 @@ public class JDBCUserDAO implements UserDAO {
     /**
      * Check if user exists by email and password in the database.
      *
-     * @param email         email by user
-     * @param password      password by user
-     * @return              true if user exists in database
+     * @param email    email by user
+     * @param password password by user
+     * @return true if user exists in database
      */
     @Override
     public boolean existsByEmailPassword(String email, String password) {
@@ -294,19 +295,76 @@ public class JDBCUserDAO implements UserDAO {
     }
 
     /**
+     * Change user`s password by email int the database.
+     *
+     * @param email user`s login
+     */
+    @Override
+    public void changePasswordByEmail(String email, String password) {
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try (var psUpdatePassword = connection.prepareStatement(
+                    """
+                            update users u
+                            set password = ?
+                            where u.email = ?
+                            """
+            )) {
+
+                psUpdatePassword.setString(1, password);
+                psUpdatePassword.setString(2, email);
+
+                psUpdatePassword.executeUpdate();
+
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw new UnexpectedDataAccessException(e);
+            } finally {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
      * Delete the user from database.
      *
-     * @param id            id of user
+     * @param id id of user
      */
-    public void deleteById(long id){
+    public void deleteById(long id) {
         try (Connection connection = dataSource.getConnection()) {
             try (var ps = connection.prepareStatement(
-                         """
-                                 delete from users u where u.id = ?
-                                 """
-                 )) {
+                    """
+                            delete from users u where u.id = ?
+                            """
+            )) {
 
                 ps.setLong(1, id);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
+    /**
+     * Delete the user from database.
+     *
+     * @param email email of user
+     */
+    public void deleteByEmail(String email) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var ps = connection.prepareStatement(
+                    """
+                            delete from users u where u.email = ?
+                            """
+            )) {
+
+                ps.setString(1, email);
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
