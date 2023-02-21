@@ -7,10 +7,8 @@
 <c:set var="title" value="Панель администратора" scope="page"/>
 <head>
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
-    <title>Reports</title>
+    <title>Message order</title>
 </head>
 <body class="text-center">
 

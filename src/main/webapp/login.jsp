@@ -8,8 +8,6 @@
 <html>
 <head>
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <title>Login</title>
 </head>
@@ -26,21 +24,19 @@
             <form class="form-signing" method="post" action="/auth">
                 <h1 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/><br><fmt:message
                         key="please"/><br>
-                    <fmt:message key="login.register"/></h1><br>
+                    <fmt:message key="login.register"/></h1>
 
                 <label for="login" class="sr-only">Login form</label>
                 <input type="text" id="login" name="login" class="form-control"
                        placeholder="email@gmail.com"
                        minlength="2" maxlength="40" required>
                 <p style="color: red">${requestScope.loginValidate}</p>
-                <br>
 
                 <label for="password" class="sr-only">Password form</label>
                 <input type="password" id="password" name="password" class="form-control"
                        placeholder="<fmt:message key="password"/>"
                        minlength="10" maxlength="20" required>
                 <p style="color: red">${requestScope.passwordValidate}</p>
-                <br>
 
                 <%-- Log In button --%>
                 <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="login"/></button>

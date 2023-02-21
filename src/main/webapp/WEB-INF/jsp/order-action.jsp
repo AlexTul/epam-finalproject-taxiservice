@@ -10,10 +10,8 @@
 <html>
 <head>
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
-    <title>Hi, client</title>
+    <title>Order action</title>
 </head>
 <body>
 
