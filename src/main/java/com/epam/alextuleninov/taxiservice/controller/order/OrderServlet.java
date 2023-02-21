@@ -4,6 +4,7 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
 import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
 import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
+import static com.epam.alextuleninov.taxiservice.exceptions.order.OrderExceptions.orderNotFound;
 
 /**
  * OrderServlet for to process a Http request from a user.
@@ -38,6 +40,7 @@ public class OrderServlet extends HttpServlet {
     private VerifyOrder verifyOrderOrderService;
     private DateTimeRide dateTimeRideService;
     private RouteCharacteristics routeCharacteristics;
+    private OrderCRUD orderCRUD;
 
     @Override
     public void init() {
@@ -46,6 +49,7 @@ public class OrderServlet extends HttpServlet {
         this.verifyOrderOrderService = AppContext.getAppContext().getVerifyService();
         this.dateTimeRideService = AppContext.getAppContext().getDateTimeRide();
         this.routeCharacteristics = AppContext.getAppContext().getRouteCharacteristics();
+        this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         log.info(getServletName() + " initialized");
     }
 
@@ -61,13 +65,26 @@ public class OrderServlet extends HttpServlet {
 
         if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
             String updateOrderID = req.getParameter(SCOPE_ID);
-            req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderID);
+
+            long id;
+            if (updateOrderID != null) {
+                id = Long.parseLong(updateOrderID);
+                req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderID);
+            } else {
+                id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+            }
+
+            var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
+            req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
+
+            req.getRequestDispatcher(PAGE_ORDER_ACTION)
+                    .forward(req, resp);
+        } else {
+            processRequestGet(req);
+
+            req.getRequestDispatcher(PAGE_ORDER)
+                    .forward(req, resp);
         }
-
-        processRequestGet(req);
-
-        req.getRequestDispatcher(PAGE_ORDER)
-                .forward(req, resp);
     }
 
     /**

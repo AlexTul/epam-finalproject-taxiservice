@@ -33,19 +33,19 @@
                 <%-- Choose start, end of travel --%>
                 <label for="start" class="sr-only">Start travel form</label>
                 <input type="text" id="start" name="startTravel" class="form-control"
-                       placeholder="<fmt:message key="start.travel"/>"
+                        value="${requestScope.orderResponse.startTravel}"
                        minlength="2" required><br>
 
                 <label for="end" class="sr-only">Start travel form</label>
                 <input type="text" id="end" name="endTravel" class="form-control"
-                       placeholder="<fmt:message key="end.travel"/>"
+                        value="${requestScope.orderResponse.endTravel}"
                        minlength="2" required><br>
                 <%-- Choose start, end of travel --%>
 
                 <%-- Choose number of passengers --%>
                 <%--        <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>--%>
                 <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
-                       placeholder="<fmt:message key="enter.passengers"/>"
+                       value="${requestScope.orderResponse.numberOfPassengers}"
                        min="1" minlength="1" maxlength="1" required>
                 <br>
                 <%-- Choose number of passengers --%>
@@ -73,6 +73,20 @@
         <%-- Customer order --%>
 
         <div class="col-lg-4"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6"></div>
+
+        <div class="col-lg-1">
+            <%-- Admin menu orders --%>
+            <div id="nav-link" class="text-right">
+                <a class="text-info" href="/report"><fmt:message key="report"/></a>
+            </div>
+            <%-- Admin menu orders --%>
+        </div>
+
+        <div class="col-lg-5"></div>
     </div>
 
     <jsp:include page="/WEB-INF/templates/_footer-action.jsp"></jsp:include>

@@ -42,8 +42,8 @@ public class RegisterServlet extends HttpServlet {
      * To process Get requests from user:
      * redirect user on register page.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -57,15 +57,15 @@ public class RegisterServlet extends HttpServlet {
      * To process Post requests from user:
      * validation a user`s credentials and register user to database.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (registerValidation(req, resp, locale)) {
+        if (registerValidation(req, resp)) {
             boolean register = userCRUD.register(UserRequest.getUserRequest(req));
 
             if (!register) {
@@ -81,7 +81,9 @@ public class RegisterServlet extends HttpServlet {
                 PageMessageBuilder.buildMessageUser(req, locale,
                         USER_REGISTER_SUC_UK, USER_REGISTER_SUC);
 
-                emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN));
+                new Thread(() ->
+                        emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN))
+                ).start();
 
                 resp.sendRedirect(URL_MESSAGE_USER);
             }
@@ -97,12 +99,11 @@ public class RegisterServlet extends HttpServlet {
      * To process Post requests from user:
      * validation a user`s credentials.
      *
-     * @param req                   HttpServletRequest request
-     * @param resp                  HttpServletResponse response
-     * @param locale                default or current locale of application
-     * @return                      true if user credentials is valid
+     * @param req    HttpServletRequest request
+     * @param resp   HttpServletResponse response
+     * @return true if user credentials is valid
      */
-    private boolean registerValidation(HttpServletRequest req, HttpServletResponse resp, String locale)
+    private boolean registerValidation(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
         if (!(DataValidator.initRegisterValidation(req))) {
             log.info("User credentials not validated");

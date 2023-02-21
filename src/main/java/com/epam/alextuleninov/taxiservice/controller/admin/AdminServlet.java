@@ -35,7 +35,7 @@ public class AdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(PAGE_ADMIN)
+        req.getRequestDispatcher(PAGE_ADMIN_MENU)
                 .forward(req, resp);
     }
 

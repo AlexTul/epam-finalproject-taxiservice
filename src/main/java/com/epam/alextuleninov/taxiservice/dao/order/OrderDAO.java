@@ -6,6 +6,7 @@ import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -57,6 +58,13 @@ public interface OrderDAO {
      * @return              all users by range from database
      */
     List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable);
+
+    /**
+     * Find order by id from the database.
+     *
+     * @return              order by id from database in response format
+     */
+    Optional<Order> findById(long id);
 
     /**
      * Find all dates by start order from the database.

@@ -64,8 +64,8 @@ public class CarServlet extends HttpServlet {
                 id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
             }
 
-            var car = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
-            req.setAttribute(SCOPE_CAR, car);
+            var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
+            req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
 
             req.getRequestDispatcher(PAGE_CAR_ACTION)
                     .forward(req, resp);
@@ -73,7 +73,7 @@ public class CarServlet extends HttpServlet {
             // show all cars in the database
             processRequestGet(req);
 
-            req.getRequestDispatcher(PAGE_CAR)
+            req.getRequestDispatcher(PAGE_ADMIN_CAR)
                     .forward(req, resp);
         }
     }

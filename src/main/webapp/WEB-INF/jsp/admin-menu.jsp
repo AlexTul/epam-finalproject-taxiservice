@@ -30,7 +30,7 @@
                     <div class="col-md-4 pt-3">
                         <div class="card" style="background-color:white;">
                             <div class="card-body">
-                                <h4 class="card-title"><fmt:message key="orders"/></h4>
+                                <h4 class="card-title"><fmt:message key="report"/></h4>
                                 <p class="card-text"><fmt:message key="manage.section"/></p>
                                 <form method="get" action="report">
                                     <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
@@ -69,7 +69,7 @@
     <!--Main layout-->
     <br>
 
-    <jsp:include page="/WEB-INF/templates/_footer_action.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/templates/_footer-action.jsp"></jsp:include>
 </div>
 
 </body>

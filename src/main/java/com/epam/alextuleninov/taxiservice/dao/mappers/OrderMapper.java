@@ -28,10 +28,7 @@ public class OrderMapper implements ResultSetMapper<Order> {
     public Order map(ResultSet resultSet) throws SQLException {
         return new Order(
                 resultSet.getLong(DataSourceFields.ORDER_ID),
-                LocalDateTime.parse(
-                        (resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime()
-                                .format(Constants.FORMATTER)),
-                        Constants.FORMATTER),
+                resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
                 new User(
                         resultSet.getLong(DataSourceFields.USER_ID),
                         resultSet.getString(DataSourceFields.USER_FIRST_NAME),

@@ -141,7 +141,7 @@
     </div>
     <%-- Table of orders --%>
 
-    <jsp:include page="/WEB-INF/templates/_footer_admin.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/templates/_footer-admin.jsp"></jsp:include>
 </div>
 
 </body>

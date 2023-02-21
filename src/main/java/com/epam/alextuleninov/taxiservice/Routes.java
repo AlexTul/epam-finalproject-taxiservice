@@ -13,17 +13,17 @@ public final class Routes {
     public static final String PAGE_LOGIN = "/login.jsp";
     public static final String PAGE_REGISTER = "/WEB-INF/jsp/register.jsp";
     public static final String PAGE_ORDER = "/WEB-INF/jsp/order.jsp";
+    public static final String PAGE_ORDER_ACTION = "/WEB-INF/jsp/order-action.jsp";
     public static final String PAGE_CONFIRM = "/WEB-INF/jsp/confirm.jsp";
-    public static final String PAGE_ORDER_SUCCESSFUL = "/WEB-INF/jsp/order_successful.jsp";
-    public static final String PAGE_ADMIN = "/WEB-INF/jsp/admin.jsp";
+    public static final String PAGE_ORDER_SUCCESSFUL = "/WEB-INF/jsp/order-successful.jsp";
+    public static final String PAGE_ADMIN_MENU = "/WEB-INF/jsp/admin-menu.jsp";
     public static final String PAGE_REPORT = "/WEB-INF/jsp/report.jsp";
-    public static final String PAGE_USER = "/WEB-INF/jsp/admin_user.jsp";
-    public static final String PAGE_USER_ACTION = "/WEB-INF/jsp/user_action.jsp";
-    public static final String PAGE_CAR = "/WEB-INF/jsp/admin_car.jsp";
-    public static final String PAGE_CAR_ACTION = "/WEB-INF/jsp/car_action.jsp";
-    public static final String PAGE_MESSAGE_ADMIN = "/WEB-INF/jsp/message_admin.jsp";
-    public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message_user.jsp";
-    public static final String PAGE_MESSAGE_ORDER_USER = "/WEB-INF/jsp/message_order_user.jsp";
+    public static final String PAGE_ADMIN_USER = "/WEB-INF/jsp/admin-user.jsp";
+    public static final String PAGE_USER_ACTION = "/WEB-INF/jsp/user-action.jsp";
+    public static final String PAGE_ADMIN_CAR = "/WEB-INF/jsp/admin-car.jsp";
+    public static final String PAGE_CAR_ACTION = "/WEB-INF/jsp/car-action.jsp";
+    public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message-user.jsp";
+    public static final String PAGE_MESSAGE_ORDER_USER = "/WEB-INF/jsp/message-order-user.jsp";
     // endregion pages
 
     // region url

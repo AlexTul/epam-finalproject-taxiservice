@@ -40,6 +40,7 @@ public final class Constants {
     public static final String SCOPE_LIST_OF_CARS = "listOfCars";
     public static final String SCOPE_CAR_RESPONSES = "carResponses";
     public static final String SCOPE_ORDERS = "orders";
+    public static final String SCOPE_ORDER_RESPONSE = "orderResponse";
     public static final String SCOPE_ORDER_BY = "orderBy";
     public static final String SCOPE_WHOSE_ORDERS = "whoseOrders";
     public static final String SCOPE_UPDATE_ORDER_ID = "updateOrderID";

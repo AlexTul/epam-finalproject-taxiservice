@@ -231,7 +231,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 getAllOrdersByRange.setTimestamp(1, Timestamp.valueOf(startedAt));
                 getAllOrdersByRange.setTimestamp(2, Timestamp.valueOf(finishedAt));
                 ResultSet rsAllOrders = getAllOrdersByRange.executeQuery();
-                orderMap(orders, rsAllOrders, mapOrderCars);
+                ordersMap(orders, rsAllOrders, mapOrderCars);
             }
         } catch (NullPointerException e) {
             return orders;
@@ -276,6 +276,53 @@ public class JDBCOrderDAO implements OrderDAO {
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
         return getOrders(sqlID);
+    }
+
+    /**
+     * Find order by id from the database.
+     *
+     * @return order by id from database in response format
+     */
+    @Override
+    public Optional<Order> findById(long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            try (var getAllCarsByOrderID = connection.prepareStatement(
+                    """
+                            select * from order_car oc
+                            join cars c on c.car_id = oc.c_id
+                            where oc.o_id = ?
+                            """
+            );
+
+                 var psGetOrderByID = connection.prepareStatement(
+                         """
+                                 select * from orders o
+                                 join users u on u.id = o.customer_id
+                                 where o.id = ?
+                                 """
+                 )) {
+
+                List<Car> carsByOrder = new ArrayList<>();
+                // find all cars by order`s id
+                getAllCarsByOrderID.setLong(1, id);
+                ResultSet rsAllCarsByOrderID = getAllCarsByOrderID.executeQuery();
+                while (rsAllCarsByOrderID.next()) {
+                    carsByOrder.add(carMapper.map(rsAllCarsByOrderID));
+                }
+
+                // get order by id
+                psGetOrderByID.setLong(1, id);
+
+                ResultSet resultSet = psGetOrderByID.executeQuery();
+                if (resultSet.next()) {
+                    return Optional.of(orderMap(resultSet, carsByOrder));
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
     }
 
     /**
@@ -591,7 +638,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 for (Long variable : ordersID) {
                     getAllOrders.setLong(1, variable);
                     ResultSet rsAllOrders = getAllOrders.executeQuery();
-                    orderMap(result, rsAllOrders, mapOrderCars);
+                    ordersMap(result, rsAllOrders, mapOrderCars);
                 }
             }
         } catch (NullPointerException e) {
@@ -609,7 +656,7 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param rsAllOrders  result set
      * @param mapOrderCars map with cars by order
      */
-    private void orderMap(List<Order> result, ResultSet rsAllOrders, Map<Long, List<Car>> mapOrderCars)
+    private void ordersMap(List<Order> result, ResultSet rsAllOrders, Map<Long, List<Car>> mapOrderCars)
             throws SQLException {
         while (rsAllOrders.next()) {
             result.add(
@@ -629,5 +676,28 @@ public class JDBCOrderDAO implements OrderDAO {
                     )
             );
         }
+    }
+
+    /**
+     * The method for entity mapping.
+     *
+     * @param resultSet   result set
+     * @param carsByOrder list with cars by order
+     */
+    private Order orderMap(ResultSet resultSet, List<Car> carsByOrder) throws SQLException {
+        return new Order(
+                resultSet.getLong(DataSourceFields.ORDER_ID),
+                resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
+                userMapper.map(resultSet),
+                resultSet.getInt(DataSourceFields.ORDER_PASSENGERS),
+                carsByOrder,
+                resultSet.getString(DataSourceFields.ROUTE_START_TRAVEL),
+                resultSet.getString(DataSourceFields.ROUTE_END_TRAVEL),
+                resultSet.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
+                resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
+                resultSet.getDouble(DataSourceFields.ORDER_COST),
+                resultSet.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
+                resultSet.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
+        );
     }
 }

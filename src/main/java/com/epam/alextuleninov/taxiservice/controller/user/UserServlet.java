@@ -63,7 +63,7 @@ public class UserServlet extends HttpServlet {
             // show all users in the database
             processRequestGet(req);
 
-            req.getRequestDispatcher(PAGE_USER)
+            req.getRequestDispatcher(PAGE_ADMIN_USER)
                     .forward(req, resp);
         }
     }
@@ -72,9 +72,9 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        // update car in the database
+        // update user in the database
         String updateUserLogin = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
-        // delete car from the database
+        // delete user from the database
         String userLogin = req.getParameter(SCOPE_LOGIN);
 
         if (updateUserLogin != null) {
@@ -85,8 +85,10 @@ public class UserServlet extends HttpServlet {
                 userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
                 req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
+                new Thread(() ->
                 emailSender.send(EMAIL_UPDATE_USER_PASSWORD,
-                        String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin);
+                        String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin)
+                ).start();
 
                 req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
                 resp.sendRedirect(URL_USER);
@@ -96,7 +98,8 @@ public class UserServlet extends HttpServlet {
         } else if (userLogin != null) {
             userCRUD.deleteByEmail(userLogin);
 
-            emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, userLogin);
+            new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, userLogin)).start();
+
             resp.sendRedirect(URL_USER);
         }
     }

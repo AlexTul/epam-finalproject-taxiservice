@@ -7,6 +7,7 @@ import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface CRUD for Order.
@@ -36,7 +37,7 @@ public interface OrderCRUD {
      * Find all orders by range from the database.
      *
      * @param request       request with order`s parameters
-     * @return              all users by range from database
+     * @return              all orders by range from database
      */
     List<Order> findAllByRange(OrderRequest request);
 
@@ -45,7 +46,7 @@ public interface OrderCRUD {
      *
      * @param customer      customer from request
      * @param pageable      request with pagination information
-     * @return              all users by range from database in response format
+     * @return              all orders by range from database in response format
      */
     List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable);
 
@@ -54,9 +55,16 @@ public interface OrderCRUD {
      *
      * @param startedAt     trip start date and time
      * @param pageable      request with pagination information
-     * @return              all users by range from database in response format
+     * @return              all orders by range from database in response format
      */
     List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable);
+
+    /**
+     * Find order by id from the database.
+     *
+     * @return              order by id from database in response format
+     */
+    Optional<OrderResponse> findById(long id);
 
     /**
      * Find all dates by start order from the database.

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -73,7 +74,7 @@ public class OrderService implements OrderCRUD {
     public List<OrderResponse> findAllByCustomer(String customer, PageableRequest pageable) {
         return orderDAO.findAllByCustomer(customer, pageable)
                 .stream()
-                .map(order -> OrderResponse.fromOrder(order))
+                .map(OrderResponse::fromOrder)
                 .toList();
     }
 
@@ -88,8 +89,18 @@ public class OrderService implements OrderCRUD {
     public List<OrderResponse> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
         return orderDAO.findAllByDate(startedAt, pageable)
                 .stream()
-                .map(order -> OrderResponse.fromOrder(order))
+                .map(OrderResponse::fromOrder)
                 .toList();
+    }
+
+    /**
+     * Find order by id from the database.
+     *
+     * @return              order by id from database in response format
+     */
+    @Override
+    public Optional<OrderResponse> findById(long id) {
+        return orderDAO.findById(id).map(OrderResponse::fromOrder);
     }
 
     /**

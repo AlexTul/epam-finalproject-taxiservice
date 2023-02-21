@@ -101,7 +101,7 @@ public class AuthenticationFilter implements Filter {
 
         if (role.equals(Role.ADMINISTRATOR)) {
 
-            req.getRequestDispatcher(PAGE_ADMIN)
+            req.getRequestDispatcher(PAGE_ADMIN_MENU)
                     .forward(req, resp);
         } else if (role.equals(Role.CLIENT)) {
 
