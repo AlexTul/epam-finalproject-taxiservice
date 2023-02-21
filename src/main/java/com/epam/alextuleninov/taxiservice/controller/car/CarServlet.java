@@ -63,6 +63,7 @@ public class CarServlet extends HttpServlet {
             } else {
                 id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
             }
+
             var car = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
             req.setAttribute(SCOPE_CAR, car);
 

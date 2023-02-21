@@ -51,7 +51,7 @@
         <div class="col-lg-5"></div>
     </div>
 
-    <jsp:include page="/WEB-INF/templates/_footer_user.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/templates/_footer_action.jsp"></jsp:include>
 </div>
 
 </body>

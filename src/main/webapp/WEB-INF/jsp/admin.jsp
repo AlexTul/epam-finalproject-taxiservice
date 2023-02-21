@@ -69,40 +69,7 @@
     <!--Main layout-->
     <br>
 
-    <%--Locale and Logout--%>
-    <div class="row">
-        <div class="col-lg-3"></div>
-
-        <div class="col-lg-5">
-            <%--Locale--%>
-            <form method="get" class="d-flex">
-                <label>
-                    <select name="locale" onchange='submit();'>
-                        <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>
-                            <fmt:message key="en"/>
-                        </option>
-                        <option value="uk_UA" ${sessionScope.locale eq 'uk_UA' ? 'selected' : ''}>
-                            <fmt:message key="ua"/>
-                        </option>
-                    </select>
-                </label>
-            </form>
-            <%--Locale--%>
-        </div>
-
-        <div class="col-lg-1">
-            <%-- Log out link --%>
-            <a class="text-info" href="logout"><fmt:message key="logout"/></a>
-            <%-- Log out link --%>
-        </div>
-
-        <div class="col-lg-3"></div>
-    </div>
-    <%--Locale and Logout--%>
-
-    <div class="row">
-        <p class="col-lg-12">&copy;<fmt:message key="reserved"/>. 2023</p>
-    </div>
+    <jsp:include page="/WEB-INF/templates/_footer_action.jsp"></jsp:include>
 </div>
 
 </body>
