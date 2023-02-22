@@ -294,6 +294,39 @@ public class JDBCUserDAO implements UserDAO {
         }
     }
 
+    @Override
+    public void changeCredentialsByEmail(String email, UserRequest request) {
+        try (Connection connection = dataSource.getConnection()) {
+            boolean autoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            try (var psUpdate = connection.prepareStatement(
+                    """
+                            update users u
+                            set first_name = ?, last_name = ?, email = ?
+                            where u.email = ?
+                            """
+            )) {
+
+                psUpdate.setString(1, request.firstName());
+                psUpdate.setString(2, request.lastName());
+                psUpdate.setString(3, request.email());
+                psUpdate.setString(4, email);
+
+                psUpdate.executeUpdate();
+
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                throw new UnexpectedDataAccessException(e);
+            } finally {
+                connection.setAutoCommit(autoCommit);
+            }
+        } catch (SQLException e) {
+            throw new UnexpectedDataAccessException(e);
+        }
+    }
+
     /**
      * Change user`s password by email int the database.
      *
@@ -305,7 +338,7 @@ public class JDBCUserDAO implements UserDAO {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (var psUpdatePassword = connection.prepareStatement(
+            try (var psUpdate = connection.prepareStatement(
                     """
                             update users u
                             set password = ?
@@ -313,10 +346,10 @@ public class JDBCUserDAO implements UserDAO {
                             """
             )) {
 
-                psUpdatePassword.setString(1, password);
-                psUpdatePassword.setString(2, email);
+                psUpdate.setString(1, password);
+                psUpdate.setString(2, email);
 
-                psUpdatePassword.executeUpdate();
+                psUpdate.executeUpdate();
 
                 connection.commit();
             } catch (Exception e) {

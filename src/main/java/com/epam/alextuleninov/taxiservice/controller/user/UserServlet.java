@@ -55,7 +55,7 @@ public class UserServlet extends HttpServlet {
                 login = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
             }
 
-            var userResponse = userCRUD.findClientByEmail(login)
+            var userResponse = userCRUD.findByEmail(login)
                     .orElseThrow(() -> userNotFound(login));
 
             req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
@@ -89,8 +89,8 @@ public class UserServlet extends HttpServlet {
                 req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
                 new Thread(() ->
-                emailSender.send(EMAIL_UPDATE_USER_PASSWORD,
-                        String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin)
+                emailSender.send(EMAIL_UPDATE_PASSWORD,
+                        String.format(EMAIL_UPDATE_PASSWORD_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin)
                 ).start();
 
                 req.getSession().removeAttribute(SCOPE_ACTION);

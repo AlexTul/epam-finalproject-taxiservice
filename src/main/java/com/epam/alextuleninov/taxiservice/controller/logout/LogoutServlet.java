@@ -94,6 +94,10 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute(SCOPE_DATES_OF_ORDERS);
         session.removeAttribute(SCOPE_USER_RESPONSES);
         session.removeAttribute(SCOPE_MESSAGE_USER);
+        session.removeAttribute(SCOPE_PASSWORD_VALIDATE);
+        session.removeAttribute(SCOPE_FIRST_NAME);
+        session.removeAttribute(SCOPE_LAST_NAME);
+        session.removeAttribute(SCOPE_PASSWORD);
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }

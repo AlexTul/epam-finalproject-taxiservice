@@ -45,7 +45,7 @@ public interface UserCRUD {
      * @param email user`s email
      * @return list with clients
      */
-    Optional<UserResponse> findClientByEmail(String email);
+    Optional<UserResponse> findByEmail(String email);
 
     /**
      * Check if user exists by email in the database.
@@ -72,6 +72,13 @@ public interface UserCRUD {
      * @return number of record in database
      */
     long findNumberRecords();
+
+    /**
+     * Change user`s credentials by email int the database.
+     *
+     * @param request request form user
+     */
+    void changeCredentialsByEmail(String email, UserRequest request);
 
     /**
      * Change user`s password by email int the database.

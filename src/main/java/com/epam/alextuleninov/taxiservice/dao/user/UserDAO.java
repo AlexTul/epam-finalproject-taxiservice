@@ -42,7 +42,7 @@ public interface UserDAO {
     /**
      * Find user by email from the database.
      *
-     * @param request request with order`s parameters
+     * @param email user`s email
      * @return user from the database
      */
     Optional<User> findByEmail(String email);
@@ -78,6 +78,13 @@ public interface UserDAO {
      * @return number of record in database
      */
     long findNumberRecords();
+
+    /**
+     * Change user`s credentials by email int the database.
+     *
+     * @param request request form user
+     */
+    void changeCredentialsByEmail(String email, UserRequest request);
 
     /**
      * Change user`s password by email int the database.

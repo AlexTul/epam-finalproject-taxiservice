@@ -62,7 +62,7 @@ public class RegisterServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, ServletException {
+            throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (registerValidation(req, resp)) {
@@ -104,12 +104,11 @@ public class RegisterServlet extends HttpServlet {
      * @return true if user credentials is valid
      */
     private boolean registerValidation(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException, ServletException {
+            throws IOException {
         if (!(DataValidator.initRegisterValidation(req))) {
             log.info("User credentials not validated");
 
-            req.getRequestDispatcher(PAGE_REGISTER)
-                    .forward(req, resp);
+            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         return true;

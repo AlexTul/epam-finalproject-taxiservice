@@ -30,19 +30,43 @@ public final class DataValidator {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
-            changeLocale(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
             return false;
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
-            changeLocale(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
             return false;
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
-            changeLocale(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
-            changeLocale(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check registration data.
+     *
+     * @param req request from HttpServletRequest
+     * @return true if validation is success
+     */
+    public static boolean initChangeCredentialValidation(HttpServletRequest req) {
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+
+        if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
+            changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+            return false;
+        }
+        if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
+            changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+            return false;
+        }
+        if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
+            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
             return false;
         }
         return true;

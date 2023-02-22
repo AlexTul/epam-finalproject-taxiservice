@@ -24,6 +24,7 @@ public final class Routes {
     public static final String PAGE_CAR_ACTION = "/WEB-INF/jsp/car-action.jsp";
     public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message-user.jsp";
     public static final String PAGE_MESSAGE_ORDER_USER = "/WEB-INF/jsp/message-order-user.jsp";
+    public static final String PAGE_PROFILE = "/WEB-INF/jsp/profile.jsp";
     // endregion pages
 
     // region url
@@ -43,5 +44,6 @@ public final class Routes {
     public static final String URL_AUTH = "/auth";
     public static final String URL_REGISTER = "/register";
     public static final String URL_LOGOUT = "/logout";
+    public static final String URL_PROFILE = "/profile";
     // endregion url
 }

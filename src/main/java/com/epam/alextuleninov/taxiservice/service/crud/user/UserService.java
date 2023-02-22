@@ -82,7 +82,7 @@ public class UserService implements UserCRUD {
     }
 
     @Override
-    public Optional<UserResponse> findClientByEmail(String email) {
+    public Optional<UserResponse> findByEmail(String email) {
         return userDAO.findByEmail(email).map(UserResponse::formUser);
     }
 
@@ -132,6 +132,16 @@ public class UserService implements UserCRUD {
     @Override
     public long findNumberRecords() {
         return userDAO.findNumberRecords();
+    }
+
+    /**
+     * Change user`s credentials by email int the database.
+     *
+     * @param request request form user
+     */
+    @Override
+    public void changeCredentialsByEmail(String email, UserRequest request) {
+        userDAO.changeCredentialsByEmail(email, request);
     }
 
     /**
