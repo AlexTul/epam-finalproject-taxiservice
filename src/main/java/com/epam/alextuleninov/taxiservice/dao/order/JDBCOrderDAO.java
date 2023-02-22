@@ -134,7 +134,7 @@ public class JDBCOrderDAO implements OrderDAO {
                         createdOn,
                         user,
                         request.numberOfPassengers(),
-                        null,
+                        request.cars(),
                         request.startTravel(),
                         request.endTravel(),
                         request.travelDistance(),

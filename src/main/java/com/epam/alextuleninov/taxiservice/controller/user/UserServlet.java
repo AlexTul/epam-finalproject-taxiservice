@@ -21,7 +21,7 @@ import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
 import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
 
-@WebServlet(name = "UserServlet", urlPatterns = URL_USER_)
+@WebServlet(name = "UserServlet", urlPatterns = URL_USER)
 public class UserServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(UserServlet.class);
@@ -40,8 +40,11 @@ public class UserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String actionAdd = req.getRequestURL().toString();
-        if (actionAdd.endsWith("update")) {
+        String action = req.getParameter(SCOPE_ACTION) == null ?
+                (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
+        req.getSession().setAttribute(SCOPE_ACTION, action);
+
+        if (action != null && action.equals("update")) {
             String updateUserLogin = req.getParameter(SCOPE_LOGIN);
 
             String login;
@@ -55,7 +58,7 @@ public class UserServlet extends HttpServlet {
             var userResponse = userCRUD.findClientByEmail(login)
                     .orElseThrow(() -> userNotFound(login));
 
-            req.setAttribute(SCOPE_USER_RESPONSE, userResponse);
+            req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
 
             req.getRequestDispatcher(PAGE_USER_ACTION)
                     .forward(req, resp);
@@ -70,7 +73,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+            throws IOException, ServletException {
 
         // update user in the database
         String updateUserLogin = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
@@ -90,10 +93,15 @@ public class UserServlet extends HttpServlet {
                         String.format(EMAIL_UPDATE_USER_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin)
                 ).start();
 
+                req.getSession().removeAttribute(SCOPE_ACTION);
+                req.getSession().removeAttribute(SCOPE_USER_RESPONSE);
                 req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+
                 resp.sendRedirect(URL_USER);
             } else {
-                resp.sendRedirect(URL_USER_UPDATE);
+
+                req.getRequestDispatcher(PAGE_USER_ACTION)
+                        .forward(req, resp);
             }
         } else if (userLogin != null) {
             userCRUD.deleteByEmail(userLogin);

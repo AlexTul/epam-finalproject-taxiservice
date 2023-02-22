@@ -19,13 +19,13 @@
     <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
     <div class="row">
-        <div class="col-lg-3"></div>
+        <div class="col-lg-2"></div>
 
-        <div class="col-lg-6">
+        <div class="col-lg-8">
             <!--Main layout-->
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-4 pt-3">
+                    <div class="col-md-3 pt-3">
                         <div class="card" style="background-color:white;">
                             <div class="card-body">
                                 <h4 class="card-title"><fmt:message key="report"/></h4>
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 pt-3">
+                    <div class="col-md-3 pt-3">
                         <div class="card" style="background-color:white;">
                             <div class="card-body">
                                 <h4 class="card-title"><fmt:message key="users"/></h4>
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 pt-3">
+                    <div class="col-md-3 pt-3">
                         <div class="card" style="background-color:white;">
                             <div class="card-body">
                                 <h4 class="card-title"><fmt:message key="cars"/></h4>
@@ -58,11 +58,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3 pt-3">
+                        <div class="card" style="background-color:white;">
+                            <div class="card-body">
+                                <h4 class="card-title"><fmt:message key="profile"/></h4>
+                                <p class="card-text"><fmt:message key="manage.section"/></p>
+                                <form method="get" action="profile">
+                                    <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-3"></div>
+        <div class="col-lg-2"></div>
     </div>
     <!--Main layout-->
     <br>

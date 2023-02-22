@@ -2,6 +2,8 @@ package com.epam.alextuleninov.taxiservice.validation;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
@@ -72,8 +74,17 @@ public final class DataValidator {
      * @return true if validation is success
      */
     public static boolean initOrderValidation(HttpServletRequest req) {
-        return validateNumber(req.getParameter("numberOfPassengers"))
-                && validateLocalDateTime(req.getParameter("dateOfTravel"));
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+
+        if (!validateNumber(req.getParameter("numberOfPassengers"))) {
+            changeLocale(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE, NUMBER_PASSENGERS_NOT_VALID_UK, NUMBER_PASSENGERS_NOT_VALID);
+            return false;
+        }
+        if (!validateLocalDateTime(req.getParameter("dateOfTravel"))) {
+            changeLocale(locale, req, SCOPE_DATE_TIME_VALIDATE, DATE_TIME_NOT_VALID_UK, DATE_TIME_NOT_VALID);
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -139,7 +150,9 @@ public final class DataValidator {
      * @return true if validation is success
      */
     private static boolean validateLocalDateTime(String localDateTime) {
-        return Pattern.matches(REGEX_LOCAL_DATE_TIME, localDateTime);
+        var now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+        return Pattern.matches(REGEX_LOCAL_DATE_TIME, localDateTime)
+                && localDateTime.compareTo(now) >= 0;
     }
 
     /**

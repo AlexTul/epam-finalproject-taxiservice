@@ -54,7 +54,9 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
-     * To process Get requests from user.
+     * To process Get requests from user:
+     * - if new order - forward on order page;
+     * - if update order - forward on order update page
      *
      * @param req  HttpServletRequest request
      * @param resp HttpServletResponse response
@@ -63,7 +65,9 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
+        String action = req.getParameter(SCOPE_ACTION);
+
+        if (action == null && req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
             String updateOrderID = req.getParameter(SCOPE_ID);
 
             long id;
@@ -77,9 +81,9 @@ public class OrderServlet extends HttpServlet {
             var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
             req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
 
-            req.getRequestDispatcher(PAGE_ORDER_ACTION)
+            req.getRequestDispatcher(PAGE_ORDER_UPDATE)
                     .forward(req, resp);
-        } else {
+        } else if (action != null && action.equals("new")) {
             processRequestGet(req);
 
             req.getRequestDispatcher(PAGE_ORDER)
@@ -142,7 +146,7 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (!orderValidation(req, resp, locale)) {
+        if (!orderValidation(req, resp)) {
             return false;
         }
 
@@ -190,17 +194,14 @@ public class OrderServlet extends HttpServlet {
      *
      * @param req    HttpServletRequest request
      * @param resp   HttpServletResponse response
-     * @param locale default or current locale of application
      * @return true if user credentials is valid
      */
-    private boolean orderValidation(HttpServletRequest req, HttpServletResponse resp, String locale)
+    private boolean orderValidation(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!(DataValidator.initOrderValidation(req))) {
             log.info("User data not validated");
 
-            PageMessageBuilder.buildMessageUser(req, locale, USER_UK, USER);
-
-            req.getRequestDispatcher(PAGE_MESSAGE_USER)
+            req.getRequestDispatcher(PAGE_ORDER)
                     .forward(req, resp);
             return false;
         }

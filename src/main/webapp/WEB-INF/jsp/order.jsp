@@ -54,13 +54,15 @@
                     <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
                     <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
                 </select>
-                <br><br>
+                <p style="color: red">${requestScope.numberOfPassengersValidate}</p>
                 <%-- Choose car category --%>
 
                 <%-- Choose the date for ride --%>
                 <label for="dateRide"><fmt:message key="enter.date.time.trip"/>:</label>
                 <input type="datetime-local" id="dateRide" name="dateOfTravel"><br>
-                <label><fmt:message key="car.delivery.time"/></label><br>
+                <p style="color: red">${requestScope.dateTimeValidate}</p>
+                <label><fmt:message key="car.delivery.time"/></label>
+                <br>
                 <%-- Choose the date for ride --%>
 
                 <%-- To order button --%>

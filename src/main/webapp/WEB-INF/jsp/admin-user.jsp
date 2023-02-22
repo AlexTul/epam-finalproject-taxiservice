@@ -60,10 +60,8 @@
                             <td>${userResponse.email}</td>
                             <td>${userResponse.role}</td>
                             <td>
-                                <form method="get" action="user/update">
-                                    <input type="text" hidden name="login" value="${userResponse.email}"/>
-                                    <button type="submit" class="btn btn-warning btn-lg"></button>
-                                </form>
+                                <a class="btn btn-warning btn-lg" href="user?action=update&login=${userResponse.email}"
+                                   role="button"></a>
                             </td>
                             <td>
                                 <form method="post" action="user?login=${userResponse.email}">

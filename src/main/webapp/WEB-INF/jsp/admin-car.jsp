@@ -20,9 +20,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <form method="get" action="car/add">
-                <button type="submit" class="btn btn-primary">Add car</button>
-            </form>
+            <a class="btn btn-primary" href="car?action=add" role="button"><fmt:message key="car.add"/></a>
 
             <%-- Table of users --%>
             <div class="tab-pane fade show active" id="cars" role="tabpanel"
@@ -62,10 +60,8 @@
                             <td>${carResponse.carCategory}</td>
                             <td>${carResponse.carStatus}</td>
                             <td>
-                                <form method="get" action="car/update">
-                                    <input type="number" hidden name="id" value="${carResponse.id}"/>
-                                    <button type="submit" class="btn btn-warning btn-lg"></button>
-                                </form>
+                                <a class="btn btn-warning btn-lg" href="car?action=update&id=${carResponse.id}"
+                                   role="button"></a>
                             </td>
                             <td>
                                 <form method="post" action="car?id=${carResponse.id}">

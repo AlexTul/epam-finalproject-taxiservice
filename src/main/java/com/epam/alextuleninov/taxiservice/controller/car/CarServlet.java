@@ -22,7 +22,7 @@ import static com.epam.alextuleninov.taxiservice.exceptions.car.CarExceptions.ca
 /**
  * CarServlet for to process a Http request from admin.
  */
-@WebServlet(name = "CarServlet", urlPatterns = URL_CAR_)
+@WebServlet(name = "CarServlet", urlPatterns = URL_CAR)
 public class CarServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(CarServlet.class);
@@ -48,27 +48,32 @@ public class CarServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // redirect on action car page for add or update car in the database or show all cars in the database
-        String actionAdd = req.getRequestURL().toString();
-        if (actionAdd.endsWith("add")) {
+        String action = req.getParameter(SCOPE_ACTION) == null ?
+                (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
+        req.getSession().setAttribute(SCOPE_ACTION, action);
 
-            req.getRequestDispatcher(PAGE_CAR_ACTION)
-                    .forward(req, resp);
-        } else if (actionAdd.endsWith("update")) {
-            String updateCarID = req.getParameter(SCOPE_ID);
+        if (action != null) {
+            if (action.equals("add")) {
 
-            int id;
-            if (updateCarID != null) {
-                id = Integer.parseInt(updateCarID);
-                req.getSession().setAttribute(SCOPE_UPDATE_CAR_ID, updateCarID);
-            } else {
-                id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+                req.getRequestDispatcher(PAGE_CAR_ACTION)
+                        .forward(req, resp);
+            } else if (action.equals("update")) {
+                String updateCarID = req.getParameter(SCOPE_ID);
+
+                int id;
+                if (updateCarID != null) {
+                    id = Integer.parseInt(updateCarID);
+                    req.getSession().setAttribute(SCOPE_UPDATE_CAR_ID, updateCarID);
+                } else {
+                    id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+                }
+
+                var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
+                req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
+
+                req.getRequestDispatcher(PAGE_CAR_ACTION)
+                        .forward(req, resp);
             }
-
-            var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
-            req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
-
-            req.getRequestDispatcher(PAGE_CAR_ACTION)
-                    .forward(req, resp);
         } else {
             // show all cars in the database
             processRequestGet(req);
@@ -102,6 +107,7 @@ public class CarServlet extends HttpServlet {
             carCRUD.create(CarRequest.getCarRequest(req));
         } else if (updateCarID != null) {
             carCRUD.updateByID(Integer.parseInt(updateCarID), CarRequest.getCarRequest(req));
+            req.getSession().removeAttribute(SCOPE_ACTION);
             req.getSession().removeAttribute(SCOPE_UPDATE_CAR_ID);
         } else if (carID != null) {
             carCRUD.deleteById(Integer.parseInt(carID));

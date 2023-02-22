@@ -53,14 +53,17 @@ public final class Constants {
     public static final String SCOPE_TRAVEL_DISTANCE = "travelDistance";
     public static final String SCOPE_DATE_OF_TRAVEL = "dateOfTravel";
     public static final String SCOPE_DATE_TIME_OF_TRAVEL = "dateTimeTravel";
+    public static final String SCOPE_DATE_TIME_VALIDATE = "dateTimeValidate";
     public static final String SCOPE_TRAVEL_DURATION = "travelDuration";
     public static final String SCOPE_NUMBER_OF_PASSENGERS = "numberOfPassengers";
+    public static final String SCOPE_NUMBER_PASSENGERS_VALIDATE = "numberOfPassengersValidate";
     public static final String SCOPE_LOYALTY_PRICE = "loyaltyPrice";
     public static final String SCOPE_PRICE_OF_TRAVEL = "priceOfTravel";
     public static final String SCOPE_SORT_BY_DATE = "sortByDate";
     public static final String SCOPE_SORT_BY_COST = "sortByCost";
     public static final String SCOPE_FILTER_BY_CUSTOMER = "filterByCustomer";
     public static final String SCOPE_FILTER_BY_DATE = "filterByDate";
+    public static final String SCOPE_ACTION = "action";
     // endregion scope
 
     // region of the travel
@@ -95,14 +98,18 @@ public final class Constants {
     public static final String ADMIN_REPORT_CUSTOM = " by customer of ";
     public static final String ADMIN_REPORT_DATE_UK = " за датою початку ";
     public static final String ADMIN_REPORT_DATE = " by started at date ";
-    public static final String USER_UK = "Вибачте, ваші дані не валідні.";
-    public static final String USER = "Sorry, your data not validated.";
-    public static final String USER_REGISTER_SUC_UK = "Успішна реєстрація. Пройдіть на сторінку логіну.";
-    public static final String USER_REGISTER_SUC = "Successful registration. Go to login page.";
-    public static final String USER_REGISTER_FAIL_UK = "Вибачте, цей email існує.";
-    public static final String USER_REGISTER_FAIL = "Sorry, this email exists.";
-    public static final String USER_ORDER_CANCEL_UK = "Немає вільних машин, змініть або скасуйте замовлення.";
-    public static final String USER_ORDER_CANCEL = "No available cars, change or cancel order.";
+    public static final String DATE_TIME_NOT_VALID_UK = "Дата та час вибрані раніше ніж теперішня дата та час";
+    public static final String DATE_TIME_NOT_VALID = "The date and time selected is earlier than the current date and time";
+    public static final String NUMBER_PASSENGERS_NOT_VALID_UK = "Кількість пасажирів повинна бути числом не меньше 1 та додатнім";
+    public static final String NUMBER_PASSENGERS_NOT_VALID = "The number of passengers must be a number not less than 1 and positive";
+    public static final String USER_UK = "Вибачте, ваші дані не валідні";
+    public static final String USER = "Sorry, your data not validated";
+    public static final String USER_REGISTER_SUC_UK = "Успішна реєстрація. Пройдіть на сторінку логіну";
+    public static final String USER_REGISTER_SUC = "Successful registration. Go to login page";
+    public static final String USER_REGISTER_FAIL_UK = "Вибачте, цей email існує";
+    public static final String USER_REGISTER_FAIL = "Sorry, this email exists";
+    public static final String USER_ORDER_CANCEL_UK = "Немає вільних машин, змініть або скасуйте замовлення";
+    public static final String USER_ORDER_CANCEL = "No available cars, change or cancel order";
     // endregion message
 
     // region email
