@@ -3,6 +3,7 @@ package com.epam.alextuleninov.taxiservice.controller.order;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
+import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
@@ -65,25 +66,30 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        String action = req.getParameter(SCOPE_ACTION);
+        String action = req.getParameter(SCOPE_ACTION) == null ?
+                (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
+        req.getSession().setAttribute(SCOPE_ACTION, action);
 
-        if (action == null && req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) == null) {
-            String updateOrderID = req.getParameter(SCOPE_ID);
+        if (action != null && action.equals("update")) {
+            String updateOrderByID = req.getParameter(SCOPE_ID);
 
             long id;
-            if (updateOrderID != null) {
-                id = Long.parseLong(updateOrderID);
-                req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderID);
+            if (updateOrderByID != null) {
+                id = Long.parseLong(updateOrderByID);
+                req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderByID);
             } else {
                 id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
             }
 
             var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
+
             req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
+            req.getSession().removeAttribute(SCOPE_ACTION);
 
             req.getRequestDispatcher(PAGE_ORDER_UPDATE)
                     .forward(req, resp);
-        } else if (action != null && action.equals("new")) {
+        } else {
+            // show all orders in the database
             processRequestGet(req);
 
             req.getRequestDispatcher(PAGE_ORDER)
@@ -103,6 +109,7 @@ public class OrderServlet extends HttpServlet {
 
         if (req.getParameter(SCOPE_LOCALE) == null) {
             if (processRequestPost(req, resp)) {
+
                 req.getRequestDispatcher(PAGE_CONFIRM)
                         .forward(req, resp);
             }
@@ -144,46 +151,59 @@ public class OrderServlet extends HttpServlet {
      */
     private boolean processRequestPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (!orderValidation(req, resp)) {
+        // delete order
+        String id = req.getParameter(SCOPE_ID);
+        if (id != null) {
+            orderCRUD.deleteById(Long.parseLong(id));
+            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
+                resp.sendRedirect(URL_REPORT_ADMIN);
+            } else {
+                resp.sendRedirect(URL_REPORT_CLIENT);
+            }
             return false;
+        } else {
+            String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+
+            if (!orderValidation(req, resp)) {
+                return false;
+            }
+
+            // calculate the date and time of the trip, taking into account the time the car was delivered
+            var dateTimeOfTravel = dateTimeRideService
+                    .count(LocalDateTime.parse(req.getParameter(SCOPE_DATE_OF_TRAVEL)));
+
+            var request = OrderRequest.getOrderRequest(req, dateTimeOfTravel);
+
+            var cars = verifyOrderOrderService.checkOrder(request);
+
+            if (cars.size() == 0) {
+                log.info("No available cars, order cancellation");
+
+                PageMessageBuilder.buildMessageUser(req, locale, USER_ORDER_CANCEL_UK, USER_ORDER_CANCEL);
+
+                req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
+                        .forward(req, resp);
+                return false;
+            }
+
+            var stringOfCars = getStringOfCars(cars);
+
+            var routeChar = routeCharacteristics.getRouteCharacteristics(request);
+
+            var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
+
+            req.getSession().setAttribute(SCOPE_CARS, cars);
+            req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
+            req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
+            req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
+            req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
+            req.getSession().setAttribute(SCOPE_TRAVEL_DURATION, routeChar.travelDuration());
+            req.getSession().setAttribute(SCOPE_NUMBER_OF_PASSENGERS, req.getParameter(SCOPE_NUMBER_OF_PASSENGERS));
+            req.getSession().setAttribute(SCOPE_LIST_OF_CARS, stringOfCars);
+            req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
+            req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
         }
-
-        // calculate the date and time of the trip, taking into account the time the car was delivered
-        var dateTimeOfTravel = dateTimeRideService
-                .count(LocalDateTime.parse(req.getParameter(SCOPE_DATE_OF_TRAVEL)));
-
-        var request = OrderRequest.getOrderRequest(req, dateTimeOfTravel);
-
-        var cars = verifyOrderOrderService.checkOrder(request);
-
-        if (cars.size() == 0) {
-            log.info("No available cars, order cancellation");
-
-            PageMessageBuilder.buildMessageUser(req, locale, USER_ORDER_CANCEL_UK, USER_ORDER_CANCEL);
-
-            req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
-                    .forward(req, resp);
-            return false;
-        }
-
-        var stringOfCars = getStringOfCars(cars);
-
-        var routeChar = routeCharacteristics.getRouteCharacteristics(request);
-
-        var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
-
-        req.getSession().setAttribute(SCOPE_CARS, cars);
-        req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
-        req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
-        req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
-        req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
-        req.getSession().setAttribute(SCOPE_TRAVEL_DURATION, routeChar.travelDuration());
-        req.getSession().setAttribute(SCOPE_NUMBER_OF_PASSENGERS, req.getParameter(SCOPE_NUMBER_OF_PASSENGERS));
-        req.getSession().setAttribute(SCOPE_LIST_OF_CARS, stringOfCars);
-        req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
-        req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
 
         return true;
     }

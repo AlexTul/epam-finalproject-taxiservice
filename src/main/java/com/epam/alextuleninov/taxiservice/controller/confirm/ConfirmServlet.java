@@ -67,7 +67,11 @@ public class ConfirmServlet extends HttpServlet {
 
         if (req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID) != null) {
             req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
-            resp.sendRedirect(URL_REPORT);
+            if (req.getSession().getAttribute(SCOPE_ROLE).equals("ADMINISTRATOR")) {
+                resp.sendRedirect(URL_REPORT_ADMIN);
+            } else {
+                resp.sendRedirect(URL_REPORT_CLIENT);
+            }
         } else {
             resp.sendRedirect(URL_SUC);
         }

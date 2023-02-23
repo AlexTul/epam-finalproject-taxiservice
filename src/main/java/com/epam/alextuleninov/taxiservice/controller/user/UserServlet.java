@@ -45,11 +45,11 @@ public class UserServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
         if (action != null && action.equals("update")) {
-            String updateUserLogin = req.getParameter(SCOPE_LOGIN);
+            String updateUserByLogin = req.getParameter(SCOPE_LOGIN);
 
             String login;
-            if (updateUserLogin != null) {
-                login = updateUserLogin;
+            if (updateUserByLogin != null) {
+                login = updateUserByLogin;
                 req.getSession().setAttribute(SCOPE_UPDATE_USER_LOGIN, login);
             } else {
                 login = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);

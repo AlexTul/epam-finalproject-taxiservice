@@ -16,6 +16,9 @@
 </head>
 <body>
 
+<c:set var="url" value="${sessionScope.role eq 'ADMINISTRATOR' ?
+                                'admin' : 'client'}"/>
+
 <div class="container-fluid" style="text-align: center">
     <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
@@ -64,7 +67,7 @@
         <div class="col-lg-1">
             <%-- Admin menu cars --%>
             <div id="nav-link" class="text-right">
-                <a class="text-info" href="admin"><fmt:message key="menu.admin"/></a>
+                <a class="text-info" href="${url}"><fmt:message key="menu"/></a>
             </div>
             <%-- Admin menu cars --%>
         </div>

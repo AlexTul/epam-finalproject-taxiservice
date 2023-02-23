@@ -77,7 +77,7 @@
     </div>
     <%-- Table of users --%>
 
-    <jsp:include page="/WEB-INF/templates/_footer-admin.jsp"></jsp:include>
+    <jsp:include page="/WEB-INF/templates/_footer.jsp"></jsp:include>
 </div>
 
 </body>

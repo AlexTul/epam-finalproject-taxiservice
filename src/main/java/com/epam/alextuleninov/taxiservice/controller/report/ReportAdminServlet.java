@@ -24,23 +24,23 @@ import java.util.stream.Collectors;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT;
-import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT_ADMIN;
 
 /**
- * ReportServlet for to process a Http request from a user.
+ * ReportServlet for to process a Http request from admin.
  */
-@WebServlet(name = "ReportServlet", urlPatterns = URL_REPORT)
-public class ReportServlet extends HttpServlet {
+@WebServlet(name = "ReportServlet", urlPatterns = URL_REPORT_ADMIN)
+public class ReportAdminServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(ReportAdminServlet.class);
 
     private OrderCRUD orderCRUD;
     private UserCRUD userCRUD;
 
     @Override
     public void init() {
-        this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
+        this.userCRUD = AppContext.getAppContext().getUserCRUD();
         log.info(getServletName() + " initialized");
     }
 
@@ -58,23 +58,6 @@ public class ReportServlet extends HttpServlet {
 
         req.getRequestDispatcher(PAGE_REPORT)
                 .forward(req, resp);
-    }
-
-    /**
-     * To process Post requests from user:
-     * delete the order from database.
-     *
-     * @param req  HttpServletRequest request
-     * @param resp HttpServletResponse response
-     */
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-
-        String id = req.getParameter(SCOPE_ID);
-        orderCRUD.deleteById(Long.parseLong(id));
-
-        resp.sendRedirect(URL_REPORT);
     }
 
     @Override
@@ -112,7 +95,7 @@ public class ReportServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_CUSTOMERS_OF_ORDERS, allUsersForFilter);
         req.getSession().setAttribute(SCOPE_ORDERS, allOrders);
         // set order by for default sorting by the date of order and at the cost of the order
-        req.getSession().setAttribute(SCOPE_ORDER_BY, SORTING_DESC);
+        req.getSession().setAttribute(SCOPE_ORDER_BY, SORTING_DESC); // todo dell
         PageMessageBuilder.buildMessageAdmin(req, locale,
                 SCOPE_WHOSE_ORDERS, ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
 
@@ -138,8 +121,7 @@ public class ReportServlet extends HttpServlet {
         var pageableRequest = PageableRequest.getPageableRequest(page);
 
         // put all orders from database or put by dateOfOrders or customerOfOrders
-        allOrders = putOrdersFromDBToPage(req,
-                pageableRequest, locale);
+        allOrders = putOrdersFromDBToPage(req, pageableRequest, locale);
 
         // sort configuration by date
         if (sortTypeByDateFromRequest != null) {

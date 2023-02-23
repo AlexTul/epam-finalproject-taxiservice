@@ -74,7 +74,7 @@
         <%-- New order button --%>
         <div class="col-lg-1">
             <div class="text-right">
-                <a class="text-info" href="order?action=new"><fmt:message key="new.order"/></a>
+                <a class="text-info" href="order"><fmt:message key="new.order"/></a>
             </div>
         </div>
         <%-- New order button --%>
