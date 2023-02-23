@@ -98,6 +98,7 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute(SCOPE_FIRST_NAME);
         session.removeAttribute(SCOPE_LAST_NAME);
         session.removeAttribute(SCOPE_PASSWORD);
+        session.removeAttribute(SCOPE_PASSWORD_CONFIRMING);
 
         log.info("User: " + session.getAttribute("login") + " logout");
     }

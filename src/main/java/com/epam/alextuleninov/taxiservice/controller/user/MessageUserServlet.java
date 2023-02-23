@@ -37,7 +37,6 @@ public class MessageUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // change locale
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
         Object attributeRegister = req.getSession().getAttribute(SCOPE_REGISTER_TRUE_FALSE);
         boolean register = false;

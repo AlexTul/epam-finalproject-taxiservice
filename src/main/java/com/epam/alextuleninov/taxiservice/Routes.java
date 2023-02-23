@@ -25,6 +25,7 @@ public final class Routes {
     public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message-user.jsp";
     public static final String PAGE_MESSAGE_ORDER_USER = "/WEB-INF/jsp/message-order-user.jsp";
     public static final String PAGE_PROFILE = "/WEB-INF/jsp/profile.jsp";
+    public static final String PAGE_CHANGE_PASSWORD = "/WEB-INF/jsp/change-password.jsp";
     // endregion pages
 
     // region url

@@ -81,10 +81,9 @@ public class UserServlet extends HttpServlet {
         String userLogin = req.getParameter(SCOPE_LOGIN);
 
         if (updateUserLogin != null) {
-            String newPassword;
             if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
-                newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
-                var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, newPassword);
+                var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
+                var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, null, newPassword);
                 userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
                 req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 

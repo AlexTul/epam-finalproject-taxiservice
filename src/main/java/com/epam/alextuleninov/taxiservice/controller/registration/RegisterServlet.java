@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.registration;
 
-import com.epam.alextuleninov.taxiservice.Routes;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
@@ -74,7 +73,7 @@ public class RegisterServlet extends HttpServlet {
                 PageMessageBuilder.buildMessageUser(req, locale,
                         USER_REGISTER_FAIL_UK, USER_REGISTER_FAIL);
 
-                resp.sendRedirect(Routes.URL_MESSAGE_USER);
+                resp.sendRedirect(URL_MESSAGE_USER);
             } else {
                 log.info("User successfully registered");
                 req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, true);

@@ -28,26 +28,26 @@
                         key="please"/><br>
                     <fmt:message key="enter.data"/></h1>
 
-                <label for="firstname" class="sr-only">First name form</label>
-                <input type="text" id="firstname" name="firstname" class="form-control"
-                       value="${sessionScope.userResponse.firstName}"
-                       minlength="2" maxlength="20" pattern="^[A-Za-zА-ЩЬЮЯҐІЇЄа-щьюяґіїє'\\- ]{1,20}" required>
-                <p style="color: red">${requestScope.firstname}</p><br>
+                <label for="password" class="sr-only">Password form</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="<fmt:message key="password"/>"
+                       minlength="10" maxlength="20" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,20}$" required>
+                <p style="color: red">${sessionScope.authentication}</p>
 
-                <label for="lastname" class="sr-only">Last name form</label>
-                <input type="text" id="lastname" name="lastname" class="form-control"
-                       value="${sessionScope.userResponse.lastName}"
-                       minlength="2" maxlength="20" pattern="^[A-Za-zА-ЩЬЮЯҐІЇЄа-щьюяґіїє'\\- ]{1,20}" required>
-                <p style="color: red">${requestScope.lastname}</p><br>
+                <label for="password" class="sr-only">Password form</label>
+                <input type="password" id="password" name="newPassword" class="form-control"
+                       placeholder="<fmt:message key="password"/>"
+                       minlength="10" maxlength="20" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,20}$" required>
+                <p style="color: red">${sessionScope.passwordValidate}</p><br>
 
-                <label for="email" class="sr-only">Login form</label>
-                <input type="text" id="email" name="login" class="form-control"
-                       value="${sessionScope.userResponse.email}"
-                       minlength="2" maxlength="40" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
-                <p style="color: red">${requestScope.loginValidate}</p><br>
+                <label for="password" class="sr-only">Password form</label>
+                <input type="password" id="password" name="confirmPassword" class="form-control"
+                       placeholder="<fmt:message key="password"/>"
+                       minlength="10" maxlength="20" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,20}$" required>
+                <p style="color: red">${sessionScope.passwordConfirming}</p>
 
                 <%-- Register button --%>
-                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="register"/></button>
+                <button class="btn btn-lg btn-primary btn-block" type="submit"><fmt:message key="change.password"/></button>
                 <%-- Register button --%>
             </form>
         </div>
@@ -59,11 +59,11 @@
         <div class="col-lg-6"></div>
 
         <div class="col-lg-1">
-            <%-- Admin menu cars --%>
+            <%-- Profile --%>
             <div id="nav-link" class="text-right">
-                <a class="text-info" href="admin"><fmt:message key="menu.admin"/></a>
+                <a class="text-info" href="profile?action=null"><fmt:message key="profile"/></a>
             </div>
-            <%-- Admin menu cars --%>
+            <%-- Profile --%>
         </div>
 
         <div class="col-lg-5"></div>

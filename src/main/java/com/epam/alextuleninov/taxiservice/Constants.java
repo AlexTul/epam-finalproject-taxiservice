@@ -21,7 +21,9 @@ public final class Constants {
     public static final String SCOPE_LOGIN_VALIDATE = "loginValidate";
     public static final String SCOPE_PASSWORD = "password";
     public static final String SCOPE_PASSWORD_VALIDATE = "passwordValidate";
+    public static final String SCOPE_CONFIRM_PASSWORD_VALIDATE = "confirmPasswordValidate";
     public static final String SCOPE_NEW_PASSWORD = "newPassword";
+    public static final String SCOPE_CONFIRM_PASSWORD = "confirmPassword";
     public static final String SCOPE_ROLE = "role";
     public static final String SCOPE_ID = "id";
     public static final String SCOPE_PAGE = "page";
@@ -63,6 +65,8 @@ public final class Constants {
     public static final String SCOPE_FILTER_BY_CUSTOMER = "filterByCustomer";
     public static final String SCOPE_FILTER_BY_DATE = "filterByDate";
     public static final String SCOPE_ACTION = "action";
+    public static final String SCOPE_AUTHENTICATION = "authentication";
+    public static final String SCOPE_PASSWORD_CONFIRMING = "passwordConfirming";
     // endregion scope
 
     // region of the travel
@@ -109,6 +113,10 @@ public final class Constants {
     public static final String USER_REGISTER_FAIL = "Sorry, this email exists";
     public static final String USER_ORDER_CANCEL_UK = "Немає вільних машин, змініть або скасуйте замовлення";
     public static final String USER_ORDER_CANCEL = "No available cars, change or cancel order";
+    public static final String USER_AUTHENTICATED_NOT = "User not authenticated";
+    public static final String USER_AUTHENTICATED_NOT_UK = "Користувач не аутентифікований";
+    public static final String PASSWORD_CONFIRMING_NOT = "Passwords do not match";
+    public static final String PASSWORD_CONFIRMING_NOT_UK = "Паролі не співпадають";
     // endregion message
 
     // region email
@@ -121,6 +129,7 @@ public final class Constants {
     public static final String EMAIL_UPDATE_PASSWORD = "Updating password in a Taxi Service";
     public static final String EMAIL_UPDATE_PASSWORD_BODY = "Dear user,<br>your password was change in Market Place.<br>" +
             "Your password is: %s.<br>Best regards!<br>Taxi Service team<br>";
+    public static final String EMAIL_UPDATE_CREDENTIALS = "Updating credentials in a Taxi Service";
     public static final String EMAIL_UPDATE_CREDENTIALS_BODY = "Dear user,<br>your credentials was change in Market Place.<br>" +
             "Your first name is: %s, last name is: %s, email is: %s.<br>Best regards,<br>Taxi Service team<br>";
     // endregion email

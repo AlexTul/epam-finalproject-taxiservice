@@ -51,10 +51,8 @@
                 <%-- Register button --%>
             </form>
 
-            <p >
-                <a href="change-password.jsp" class="link-dark"><fmt:message key="change.password"/></a>
-            </p>
-
+            <a class="btn btn-warning btn-lg" href="profile?action=updatePassword"
+               role="button"><fmt:message key="change.password"/></a>
         </div>
 
         <div class="col-lg-5"></div>

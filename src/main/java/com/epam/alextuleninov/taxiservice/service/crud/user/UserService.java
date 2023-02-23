@@ -12,6 +12,8 @@ import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
+
 /**
  * Class CRUD for User.
  *
@@ -29,8 +31,8 @@ public class UserService implements UserCRUD {
     /**
      * Create the user in the database.
      *
-     * @param request       request with user`s parameters
-     * @return              created user from database
+     * @param request request with user`s parameters
+     * @return created user from database
      */
     @Override
     public boolean register(UserRequest request) {
@@ -55,8 +57,8 @@ public class UserService implements UserCRUD {
     /**
      * Find all clients from database.
      *
-     * @param pageable     request with pagination information
-     * @return              list with clients
+     * @param pageable request with pagination information
+     * @return list with clients
      */
     @Override
     public List<UserResponse> findAllClients(PageableRequest pageable) {
@@ -69,7 +71,7 @@ public class UserService implements UserCRUD {
     /**
      * Find all logins of clients.
      *
-     * @return              list with logins
+     * @return list with logins
      */
     @Override
     public List<String> findAllLoginsClient() {
@@ -89,8 +91,8 @@ public class UserService implements UserCRUD {
     /**
      * Check if user exists by email in the database.
      *
-     * @param email         email by user
-     * @return              true if user exists in database
+     * @param email email by user
+     * @return true if user exists in database
      */
     @Override
     public boolean existsByEmail(String email) {
@@ -100,9 +102,9 @@ public class UserService implements UserCRUD {
     /**
      * Check if user exists by email and password in the database.
      *
-     * @param email         email by user
-     * @param password      password by user
-     * @return              user from database
+     * @param email    email by user
+     * @param password password by user
+     * @return user from database
      */
     @Override
     public boolean authentication(String email, String password) {
@@ -116,8 +118,8 @@ public class UserService implements UserCRUD {
     /**
      * Find user`s role  by email from the database.
      *
-     * @param email         email by user
-     * @return              user from database
+     * @param email email by user
+     * @return user from database
      */
     @Override
     public String findRoleByEmail(String email) {
@@ -127,7 +129,7 @@ public class UserService implements UserCRUD {
     /**
      * Find number of records from the database.
      *
-     * @return             number of record in database
+     * @return number of record in database
      */
     @Override
     public long findNumberRecords() {
@@ -147,7 +149,7 @@ public class UserService implements UserCRUD {
     /**
      * Change user`s password by email int the database.
      *
-     * @param email user`s login
+     * @param email   user`s login
      * @param request request with old and new password
      */
     @Override
@@ -162,7 +164,7 @@ public class UserService implements UserCRUD {
     /**
      * Delete the user from database.
      *
-     * @param id            id of user
+     * @param id id of user
      */
     @Override
     public void deleteByID(long id) {

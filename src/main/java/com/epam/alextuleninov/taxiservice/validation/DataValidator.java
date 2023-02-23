@@ -112,7 +112,7 @@ public final class DataValidator {
     }
 
     /**
-     * Check login data.
+     * Check password data.
      *
      * @param req request from HttpServletRequest
      * @return true if validation is success
@@ -121,6 +121,25 @@ public final class DataValidator {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
         if (!validatePassword(req.getParameter(scope))) {
             changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check password data.
+     *
+     * @param req request from HttpServletRequest
+     * @return true if validation is success
+     */
+    public static boolean initChangePasswordValidation(HttpServletRequest req) {
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        if (!validatePassword(req.getParameter(SCOPE_NEW_PASSWORD))) {
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            return false;
+        }
+        if (!validatePassword(req.getParameter(SCOPE_CONFIRM_PASSWORD))) {
+            changeLocaleSession(locale, req, SCOPE_CONFIRM_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
             return false;
         }
         return true;
