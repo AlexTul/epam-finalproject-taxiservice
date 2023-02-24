@@ -1,12 +1,18 @@
 package com.epam.alextuleninov.taxiservice.validation;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.Routes.*;
 
 /**
  * The DataValidator class contains the methods for
@@ -14,35 +20,63 @@ import static com.epam.alextuleninov.taxiservice.Constants.*;
  */
 public final class DataValidator {
 
+    private static final Logger log = LoggerFactory.getLogger(DataValidator.class);
+
     private final static String REGEX_CHECK_FOR_NAME = "^[a-zA-Zа-яА-Я\\s]{2,20}$";
     private final static String REGEX_EMAIL = "^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$";
     private final static String REGEX_PASSWORD = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,20}$";
     private final static String REGEX_NUMBER = "[0-9]+";
     private final static String REGEX_LOCAL_DATE_TIME = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}";
 
-    /**
-     * Check registration data.
+     /**
+     * Validation a user`s register credentials.
      *
-     * @param req request from HttpServletRequest
-     * @return true if validation is success
+     * @param req    HttpServletRequest request
+     * @param resp   HttpServletResponse response
+     * @return true if user credentials is valid
      */
-    public static boolean initRegisterValidation(HttpServletRequest req) {
+    public static boolean initValidationRegisterCredentials(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
+            log.info("User first name not validated");
             changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_LAST_NAME);
+            req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
+            log.info("User last name not validated");
             changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_FIRST_NAME);
+            req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
+            log.info("User login not validated");
             changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_FIRST_NAME);
+            req.getSession().removeAttribute(SCOPE_LAST_NAME);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
+            log.info("User password not validated");
             changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_FIRST_NAME);
+            req.getSession().removeAttribute(SCOPE_LAST_NAME);
+            req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
+            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         return true;
@@ -54,58 +88,94 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initChangeCredentialValidation(HttpServletRequest req) {
+    public static boolean initValidationChangeCredentials(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
+            log.info("User first name not validated");
             changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_LAST_NAME);
+            req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
+            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
+            log.info("User last name not validated");
             changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_FIRST_NAME);
+            req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
+            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
+            log.info("User login not validated");
             changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+
+            req.getSession().removeAttribute(SCOPE_FIRST_NAME);
+            req.getSession().removeAttribute(SCOPE_LAST_NAME);
+            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         return true;
     }
 
     /**
-     * Check login data.
+     * Validation a user`s login credentials.
      *
-     * @param req request from HttpServletRequest
-     * @return true if validation is success
+     * @param req  the HttpServletRequest request
+     * @param resp the HttpServletResponse response
+     * @return true if user credentials is valid
      */
-    public static boolean initLogInValidation(HttpServletRequest req) {
+    public static boolean initValidationLogInCredentials(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
+            log.info("User login not validated");
             changeLocale(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+
+            req.getRequestDispatcher(PAGE_LOGIN)
+                    .forward(req, resp);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
+            log.info("User password not validated");
             changeLocale(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+
+            req.getRequestDispatcher(PAGE_LOGIN)
+                    .forward(req, resp);
             return false;
         }
         return true;
     }
 
     /**
-     * Check order data.
+     * Validation order`s data.
      *
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initOrderValidation(HttpServletRequest req) {
+    public static boolean initValidationOrderData(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateNumber(req.getParameter("numberOfPassengers"))) {
+            log.info("Number of passengers not validated");
             changeLocale(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE, NUMBER_PASSENGERS_NOT_VALID_UK, NUMBER_PASSENGERS_NOT_VALID);
+
+            req.getRequestDispatcher(PAGE_ORDER)
+                    .forward(req, resp);
             return false;
         }
         if (!validateLocalDateTime(req.getParameter("dateOfTravel"))) {
+            log.info("Date of travel not validated");
             changeLocale(locale, req, SCOPE_DATE_TIME_VALIDATE, DATE_TIME_NOT_VALID_UK, DATE_TIME_NOT_VALID);
+
+            req.getRequestDispatcher(PAGE_ORDER)
+                    .forward(req, resp);
             return false;
         }
         return true;
@@ -132,14 +202,24 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initChangePasswordValidation(HttpServletRequest req) {
+    public static boolean initValidationChangePassword(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+
         if (!validatePassword(req.getParameter(SCOPE_NEW_PASSWORD))) {
+            log.info("User new password not validated");
             changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+
+            resp.sendRedirect(URL_PROFILE);
+            req.getSession().removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_CONFIRM_PASSWORD))) {
+            log.info("User confirm password not validated");
             changeLocaleSession(locale, req, SCOPE_CONFIRM_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+
+            resp.sendRedirect(URL_PROFILE);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
             return false;
         }
         return true;
@@ -226,7 +306,7 @@ public final class DataValidator {
      * @param notValid   message on English language
      */
     private static void changeLocaleSession(String locale, HttpServletRequest req, String scope,
-                                     String notValidUk, String notValid) {
+                                            String notValidUk, String notValid) {
         if (locale.equals("uk_UA")) {
             req.getSession().setAttribute(scope, notValidUk);
         } else {

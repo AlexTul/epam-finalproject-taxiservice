@@ -165,7 +165,7 @@ public class OrderServlet extends HttpServlet {
         } else {
             String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-            if (!orderValidation(req, resp)) {
+            if (!DataValidator.initValidationOrderData(req, resp)) {
                 return false;
             }
 
@@ -205,26 +205,6 @@ public class OrderServlet extends HttpServlet {
             req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
         }
 
-        return true;
-    }
-
-    /**
-     * To process Post requests from user:
-     * validation an order`s data.
-     *
-     * @param req    HttpServletRequest request
-     * @param resp   HttpServletResponse response
-     * @return true if user credentials is valid
-     */
-    private boolean orderValidation(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        if (!(DataValidator.initOrderValidation(req))) {
-            log.info("User data not validated");
-
-            req.getRequestDispatcher(PAGE_ORDER)
-                    .forward(req, resp);
-            return false;
-        }
         return true;
     }
 

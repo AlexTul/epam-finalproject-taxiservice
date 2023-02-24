@@ -64,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
             throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (registerValidation(req, resp)) {
+        if (DataValidator.initValidationRegisterCredentials(req, resp)) {
             boolean register = userCRUD.register(UserRequest.getUserRequest(req));
 
             if (!register) {
@@ -92,24 +92,5 @@ public class RegisterServlet extends HttpServlet {
     @Override
     public void destroy() {
         log.info(getServletName() + " destroyed");
-    }
-
-    /**
-     * To process Post requests from user:
-     * validation a user`s credentials.
-     *
-     * @param req    HttpServletRequest request
-     * @param resp   HttpServletResponse response
-     * @return true if user credentials is valid
-     */
-    private boolean registerValidation(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        if (!(DataValidator.initRegisterValidation(req))) {
-            log.info("User credentials not validated");
-
-            resp.sendRedirect(URL_REGISTER);
-            return false;
-        }
-        return true;
     }
 }

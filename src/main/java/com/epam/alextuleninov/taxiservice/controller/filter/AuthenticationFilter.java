@@ -65,7 +65,7 @@ public class AuthenticationFilter implements Filter {
             }
         } else {
             // validation of entered data
-            if (loginValidation(req, resp)) {
+            if (DataValidator.initValidationLogInCredentials(req, resp)) {
                 if (userCRUD.authentication(login, password)) {
                     Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
 
@@ -111,25 +111,5 @@ public class AuthenticationFilter implements Filter {
             req.getRequestDispatcher(PAGE_LOGIN)
                     .forward(req, resp);
         }
-    }
-
-    /**
-     * To process Post requests from user:
-     * validation a user`s login.
-     *
-     * @param req    the HttpServletRequest request
-     * @param resp   the HttpServletResponse response
-     * @return true if user credentials is valid
-     */
-    private boolean loginValidation(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        if (!(DataValidator.initLogInValidation(req))) {
-            log.info("User credentials not validated");
-
-            req.getRequestDispatcher(PAGE_LOGIN)
-                    .forward(req, resp);
-            return false;
-        }
-        return true;
     }
 }

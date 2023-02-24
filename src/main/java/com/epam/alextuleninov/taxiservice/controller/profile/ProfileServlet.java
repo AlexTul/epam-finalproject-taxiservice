@@ -56,6 +56,10 @@ public class ProfileServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
         if (action != null && action.equals("updatePassword")) {
+            req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
+            req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+            req.getSession().removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
 
             req.getRequestDispatcher(PAGE_CHANGE_PASSWORD)
                     .forward(req, resp);
@@ -83,7 +87,7 @@ public class ProfileServlet extends HttpServlet {
         String action = (String) req.getSession().getAttribute(SCOPE_ACTION);
 
         if (action != null && action.equals("updatePassword")) {
-            if(passwordValidation(req, resp)) {
+            if(validationPasswordData(req, resp)) {
                 var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
                 var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
 
@@ -101,7 +105,7 @@ public class ProfileServlet extends HttpServlet {
                 resp.sendRedirect(URL_PROFILE);
             }
         } else {
-            if (credentialValidation(req, resp)) {
+            if (DataValidator.initValidationChangeCredentials(req, resp)) {
                 var userRequest = UserRequest.getUserRequest(req);
 
                 String oldLogin = (String) req.getSession().getAttribute(SCOPE_LOGIN);
@@ -126,32 +130,13 @@ public class ProfileServlet extends HttpServlet {
 
     /**
      * To process Post requests from user:
-     * validation a user`s credentials.
+     * validation password data for changing.
      *
      * @param req    HttpServletRequest request
      * @param resp   HttpServletResponse response
      * @return true if user credentials is valid
      */
-    private boolean credentialValidation(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        if (!(DataValidator.initChangeCredentialValidation(req))) {
-            log.info("User credentials not validated");
-
-            resp.sendRedirect(URL_PROFILE);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * To process Post requests from user:
-     * validation a user`s credentials.
-     *
-     * @param req    HttpServletRequest request
-     * @param resp   HttpServletResponse response
-     * @return true if user credentials is valid
-     */
-    private boolean passwordValidation(HttpServletRequest req, HttpServletResponse resp)
+    private boolean validationPasswordData(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
         var locale = req.getSession().getAttribute(SCOPE_LOCALE);
         var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
@@ -168,8 +153,7 @@ public class ProfileServlet extends HttpServlet {
             }
 
             resp.sendRedirect(URL_PROFILE);
-
-            req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
+            req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
             return false;
         }
 
@@ -181,19 +165,12 @@ public class ProfileServlet extends HttpServlet {
             }
 
             resp.sendRedirect(URL_PROFILE);
-
-            req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
+            req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
             return false;
         }
+        req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
+        req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
 
-        if (!DataValidator.initChangePasswordValidation(req)) {
-            log.info("User credentials not validated");
-
-            resp.sendRedirect(URL_PROFILE);
-
-            req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
-            return false;
-        }
-        return true;
+        return DataValidator.initValidationChangePassword(req, resp);
     }
 }

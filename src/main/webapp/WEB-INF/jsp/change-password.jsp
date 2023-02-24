@@ -44,6 +44,7 @@
                 <input type="password" id="password" name="confirmPassword" class="form-control"
                        placeholder="<fmt:message key="password"/>"
                        minlength="10" maxlength="20" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=\S+$).{8,20}$" required>
+                <p style="color: red">${sessionScope.confirmPasswordValidate}</p>
                 <p style="color: red">${sessionScope.passwordConfirming}</p>
 
                 <%-- Register button --%>
