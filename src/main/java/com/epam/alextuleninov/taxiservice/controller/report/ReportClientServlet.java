@@ -24,7 +24,7 @@ import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT_CLIENT;
 import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT_CLIENT;
 
 /**
- * ReportServlet for to process a Http request from a user.
+ * Servlet for to process a Http request from a user.
  */
 @WebServlet(name = "ReportClientServlet", urlPatterns = URL_REPORT_CLIENT)
 public class ReportClientServlet extends HttpServlet {
@@ -46,7 +46,8 @@ public class ReportClientServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         processRequest(req);
 
@@ -68,24 +69,12 @@ public class ReportClientServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processRequest(HttpServletRequest req) {
-        String client = (String) req.getSession().getAttribute(SCOPE_LOGIN);
-
-        // set attribute for pagination, total_records = all records from database
-        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(client);
-        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabaseByClient);
-        // set current page for pagination
-        int page = new PaginationConfig().configPage(req);
-        // find all orders with pagination for report`s page
-        new PaginationConfig().config(req);
-        var allOrdersByClient = orderCRUD.findAllByCustomer(client, PageableRequest.getPageableRequest(page));
-
-        req.getSession().setAttribute(SCOPE_ORDERS, allOrdersByClient);
-
         // section for configuration report page
         String sortTypeByDateFromRequest = req.getParameter(SCOPE_SORT_BY_DATE);
         Object sortTypeByDateFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_DATE);
         String sortTypeByCostFromRequest = req.getParameter(SCOPE_SORT_BY_COST);
         Object sortTypeByCostFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_COST);
+        String client = (String) req.getSession().getAttribute(SCOPE_LOGIN);
 
         // sort configuration by date
         if (sortTypeByDateFromRequest != null) {
@@ -100,9 +89,19 @@ public class ReportClientServlet extends HttpServlet {
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, SCOPE_SORT_BY_COST);
         }
 
+        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(client);
+        // set attribute for pagination, total_records = all records from database
+        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabaseByClient);
+
+        // config pagination
+        var paginationConfig = new PaginationConfig();
+        int page = paginationConfig.configPage(req);
+        paginationConfig.config(req);
+
+        // find all orders with pagination for report`s page
+        var allOrdersByClient = orderCRUD.findAllByCustomer(client, PageableRequest.getPageableRequest(page));
         // sorting by date or sorting by cost
         allOrdersByClient = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrdersByClient);
-
         req.getSession().setAttribute(SCOPE_ORDERS, allOrdersByClient);
     }
 
