@@ -4,7 +4,6 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.ServletException;
@@ -88,14 +87,14 @@ public class UserServlet extends HttpServlet {
         if (updateUserLogin != null) {
             if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
                 var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
-                var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, null, newPassword);
-                userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
+
+                userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
                 req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
                 String finalUpdateUserLogin = updateUserLogin;
                 new Thread(() ->
                 emailSender.send(EMAIL_UPDATE_PASSWORD,
-                        String.format(EMAIL_UPDATE_PASSWORD_BODY, changeUserPasswordRequest.newPassword()), finalUpdateUserLogin)
+                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword), finalUpdateUserLogin)
                 ).start();
 
                 req.getSession().removeAttribute(SCOPE_ACTION);

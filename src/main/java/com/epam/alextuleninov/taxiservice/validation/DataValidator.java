@@ -32,11 +32,9 @@ public final class DataValidator {
      * Validation a user`s register credentials.
      *
      * @param req    HttpServletRequest request
-     * @param resp   HttpServletResponse response
      * @return true if user credentials is valid
      */
-    public static boolean initValidationRegisterCredentials(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    public static boolean initValidationRegisterCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
@@ -46,7 +44,6 @@ public final class DataValidator {
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
-            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
@@ -56,7 +53,6 @@ public final class DataValidator {
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
-            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
@@ -66,7 +62,6 @@ public final class DataValidator {
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
-            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
@@ -76,7 +71,6 @@ public final class DataValidator {
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
-            resp.sendRedirect(URL_REGISTER);
             return false;
         }
         return true;
@@ -88,8 +82,7 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initValidationChangeCredentials(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    public static boolean initValidationChangeCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
@@ -98,7 +91,6 @@ public final class DataValidator {
 
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
-            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
@@ -107,7 +99,6 @@ public final class DataValidator {
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
-            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
@@ -116,7 +107,6 @@ public final class DataValidator {
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
-            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         return true;
@@ -126,27 +116,19 @@ public final class DataValidator {
      * Validation a user`s login credentials.
      *
      * @param req  the HttpServletRequest request
-     * @param resp the HttpServletResponse response
      * @return true if user credentials is valid
      */
-    public static boolean initValidationLogInCredentials(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    public static boolean initValidationLogInCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
             log.info("User login not validated");
             changeLocale(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
-
-            req.getRequestDispatcher(PAGE_LOGIN)
-                    .forward(req, resp);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
             log.info("User password not validated");
             changeLocale(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
-
-            req.getRequestDispatcher(PAGE_LOGIN)
-                    .forward(req, resp);
             return false;
         }
         return true;
@@ -158,24 +140,17 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initValidationOrderData(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    public static boolean initValidationOrderData(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validateNumber(req.getParameter("numberOfPassengers"))) {
             log.info("Number of passengers not validated");
             changeLocale(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE, NUMBER_PASSENGERS_NOT_VALID_UK, NUMBER_PASSENGERS_NOT_VALID);
-
-            req.getRequestDispatcher(PAGE_ORDER)
-                    .forward(req, resp);
             return false;
         }
         if (!validateLocalDateTime(req.getParameter("dateOfTravel"))) {
             log.info("Date of travel not validated");
             changeLocale(locale, req, SCOPE_DATE_TIME_VALIDATE, DATE_TIME_NOT_VALID_UK, DATE_TIME_NOT_VALID);
-
-            req.getRequestDispatcher(PAGE_ORDER)
-                    .forward(req, resp);
             return false;
         }
         return true;
@@ -202,23 +177,18 @@ public final class DataValidator {
      * @param req request from HttpServletRequest
      * @return true if validation is success
      */
-    public static boolean initValidationChangePassword(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    public static boolean initValidationChangePassword(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (!validatePassword(req.getParameter(SCOPE_NEW_PASSWORD))) {
             log.info("User new password not validated");
             changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
-
-            resp.sendRedirect(URL_PROFILE);
             req.getSession().removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_CONFIRM_PASSWORD))) {
             log.info("User confirm password not validated");
             changeLocaleSession(locale, req, SCOPE_CONFIRM_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
-
-            resp.sendRedirect(URL_PROFILE);
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
             return false;
         }

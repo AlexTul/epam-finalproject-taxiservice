@@ -3,7 +3,6 @@ package com.epam.alextuleninov.taxiservice.service.crud.user;
 import com.epam.alextuleninov.taxiservice.config.security.PasswordEncoderConfig;
 import com.epam.alextuleninov.taxiservice.dao.user.UserDAO;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.model.user.User;
@@ -11,8 +10,6 @@ import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
 
 /**
  * Class CRUD for User.
@@ -150,13 +147,13 @@ public class UserService implements UserCRUD {
      * Change user`s password by email int the database.
      *
      * @param email   user`s login
-     * @param request request with old and new password
+     * @param newPassword new password
      */
     @Override
-    public void changePasswordByEmail(String email, ChangeUserPasswordRequest request) {
+    public void changePasswordByEmail(String email, String newPassword) {
         var encryptPassword = PasswordEncoderConfig
                 .passwordEncoder()
-                .encrypt(request.newPassword());
+                .encrypt(newPassword);
 
         userDAO.changePasswordByEmail(email, encryptPassword);
     }

@@ -2,9 +2,7 @@ package com.epam.alextuleninov.taxiservice.dao.user;
 
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
-import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.user.User;

@@ -64,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
             throws IOException {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (DataValidator.initValidationRegisterCredentials(req, resp)) {
+        if (DataValidator.initValidationRegisterCredentials(req)) {
             boolean register = userCRUD.register(UserRequest.getUserRequest(req));
 
             if (!register) {
@@ -86,6 +86,8 @@ public class RegisterServlet extends HttpServlet {
 
                 resp.sendRedirect(URL_MESSAGE_USER);
             }
+        } else {
+            resp.sendRedirect(URL_REGISTER);
         }
     }
 

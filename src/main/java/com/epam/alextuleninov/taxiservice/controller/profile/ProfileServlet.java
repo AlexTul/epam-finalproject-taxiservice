@@ -2,7 +2,6 @@ package com.epam.alextuleninov.taxiservice.controller.profile;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
-import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
@@ -56,13 +55,14 @@ public class ProfileServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
         if (action != null && action.equals("updatePassword")) {
+
+            req.getRequestDispatcher(PAGE_CHANGE_PASSWORD)
+                    .forward(req, resp);
+
             req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
             req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
             req.getSession().removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
-
-            req.getRequestDispatcher(PAGE_CHANGE_PASSWORD)
-                    .forward(req, resp);
         } else {
             var userResponse = userCRUD.findByEmail(login)
                     .orElseThrow(() -> userNotFound(login));
@@ -91,10 +91,7 @@ public class ProfileServlet extends HttpServlet {
                 var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
                 var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
 
-                var changeUserPasswordRequest = new ChangeUserPasswordRequest(null, newPassword, null);
-
-                userCRUD.changePasswordByEmail(login, changeUserPasswordRequest);
-                req.getSession().removeAttribute(SCOPE_ACTION);
+                userCRUD.changePasswordByEmail(login, newPassword);
 
                 new Thread(() ->
                         emailSender.send(EMAIL_UPDATE_PASSWORD,
@@ -102,10 +99,11 @@ public class ProfileServlet extends HttpServlet {
                                 login)
                 ).start();
 
+                req.getSession().removeAttribute(SCOPE_ACTION);
                 resp.sendRedirect(URL_PROFILE);
             }
         } else {
-            if (DataValidator.initValidationChangeCredentials(req, resp)) {
+            if (DataValidator.initValidationChangeCredentials(req)) {
                 var userRequest = UserRequest.getUserRequest(req);
 
                 String oldLogin = (String) req.getSession().getAttribute(SCOPE_LOGIN);
@@ -119,6 +117,8 @@ public class ProfileServlet extends HttpServlet {
                 ).start();
 
                 resp.sendRedirect(URL_LOGOUT);
+            } else {
+                resp.sendRedirect(URL_PROFILE);
             }
         }
     }
@@ -152,25 +152,30 @@ public class ProfileServlet extends HttpServlet {
                 req.getSession().setAttribute(SCOPE_AUTHENTICATION, USER_AUTHENTICATED_NOT);
             }
 
-            resp.sendRedirect(URL_PROFILE);
             req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
+            resp.sendRedirect(URL_PROFILE);
             return false;
         }
 
         if(!newPassword.equals(confirmPassword)) {
+            log.info("New password and confirmation password do not match");
             if (locale.equals("uk_UA")) {
                 req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, PASSWORD_CONFIRMING_NOT_UK);
             } else {
                 req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, PASSWORD_CONFIRMING_NOT);
             }
 
-            resp.sendRedirect(URL_PROFILE);
             req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
+            resp.sendRedirect(URL_PROFILE);
             return false;
         }
         req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
         req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
 
-        return DataValidator.initValidationChangePassword(req, resp);
+        if (!DataValidator.initValidationChangePassword(req)) {
+            resp.sendRedirect(URL_PROFILE);
+            return false;
+        }
+        return true;
     }
 }

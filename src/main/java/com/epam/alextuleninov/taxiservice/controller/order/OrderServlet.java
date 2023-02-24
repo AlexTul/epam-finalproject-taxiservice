@@ -112,6 +112,8 @@ public class OrderServlet extends HttpServlet {
 
                 req.getRequestDispatcher(PAGE_CONFIRM)
                         .forward(req, resp);
+            } else {
+                resp.sendRedirect(URL_ORDER);
             }
         } else {
             doGet(req, resp);
@@ -165,7 +167,7 @@ public class OrderServlet extends HttpServlet {
         } else {
             String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-            if (!DataValidator.initValidationOrderData(req, resp)) {
+            if (!DataValidator.initValidationOrderData(req)) {
                 return false;
             }
 

@@ -1,7 +1,6 @@
 package com.epam.alextuleninov.taxiservice.service.crud.user;
 
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.data.user.ChangeUserPasswordRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 
@@ -84,9 +83,9 @@ public interface UserCRUD {
      * Change user`s password by email int the database.
      *
      * @param email user`s login
-     * @param request request with old and new password
+     * @param newPassword new password
      */
-    void changePasswordByEmail(String email, ChangeUserPasswordRequest request);
+    void changePasswordByEmail(String email, String newPassword);
 
     /**
      * Delete the user from database.

@@ -65,7 +65,7 @@ public class AuthenticationFilter implements Filter {
             }
         } else {
             // validation of entered data
-            if (DataValidator.initValidationLogInCredentials(req, resp)) {
+            if (DataValidator.initValidationLogInCredentials(req)) {
                 if (userCRUD.authentication(login, password)) {
                     Role role = Role.valueOf(userCRUD.findRoleByEmail(login));
 
@@ -77,6 +77,9 @@ public class AuthenticationFilter implements Filter {
                 } else {
                     moveToMenu(req, resp, Role.UNKNOWN);
                 }
+            } else {
+                req.getRequestDispatcher(PAGE_LOGIN)
+                        .forward(req, resp);
             }
         }
 
