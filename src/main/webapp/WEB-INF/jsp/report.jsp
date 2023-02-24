@@ -106,7 +106,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="orderResponse" items="${sessionScope.orders}">
+                    <c:forEach var="orderResponse" items="${requestScope.orders}">
                         <tr>
                             <td>${orderResponse.id}</td>
                             <td>${orderResponse.createdAt}</td>

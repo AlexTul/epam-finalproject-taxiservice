@@ -59,6 +59,7 @@ public class UserServlet extends HttpServlet {
                     .orElseThrow(() -> userNotFound(login));
 
             req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
+            req.getSession().removeAttribute(SCOPE_ACTION);
 
             req.getRequestDispatcher(PAGE_USER_ACTION)
                     .forward(req, resp);
@@ -80,6 +81,10 @@ public class UserServlet extends HttpServlet {
         // delete user from the database
         String userLogin = req.getParameter(SCOPE_LOGIN);
 
+        if (userLogin != null) {
+            updateUserLogin = null;
+        }
+
         if (updateUserLogin != null) {
             if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
                 var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
@@ -87,9 +92,10 @@ public class UserServlet extends HttpServlet {
                 userCRUD.changePasswordByEmail(updateUserLogin, changeUserPasswordRequest);
                 req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
+                String finalUpdateUserLogin = updateUserLogin;
                 new Thread(() ->
                 emailSender.send(EMAIL_UPDATE_PASSWORD,
-                        String.format(EMAIL_UPDATE_PASSWORD_BODY, changeUserPasswordRequest.newPassword()), updateUserLogin)
+                        String.format(EMAIL_UPDATE_PASSWORD_BODY, changeUserPasswordRequest.newPassword()), finalUpdateUserLogin)
                 ).start();
 
                 req.getSession().removeAttribute(SCOPE_ACTION);

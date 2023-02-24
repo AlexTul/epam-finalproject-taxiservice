@@ -75,7 +75,7 @@ public class ReportAdminServlet extends HttpServlet {
      */
     private void processRequest(HttpServletRequest req) {
         // section for configuration report page
-        String customerFromRequest = req.getParameter(SCOPE_CUSTOMER_OF_ORDERS);
+        String clientFromRequest = req.getParameter(SCOPE_CUSTOMER_OF_ORDERS);
         String dateFromRequest = req.getParameter(SCOPE_DATE_OF_ORDERS);
         String sortTypeByDateFromRequest = req.getParameter(SCOPE_SORT_BY_DATE);
         Object sortTypeByDateFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_DATE);
@@ -84,8 +84,8 @@ public class ReportAdminServlet extends HttpServlet {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         // filter configuration
-        if (customerFromRequest != null) {
-            req.getSession().setAttribute(SCOPE_FILTER_BY_CUSTOMER, customerFromRequest);
+        if (clientFromRequest != null) {
+            req.getSession().setAttribute(SCOPE_FILTER_BY_CUSTOMER, clientFromRequest);
             req.getSession().removeAttribute(SCOPE_FILTER_BY_DATE);
         }
         if (dateFromRequest != null) {
@@ -142,7 +142,7 @@ public class ReportAdminServlet extends HttpServlet {
 
         req.getSession().setAttribute(SCOPE_DATES_OF_ORDERS, allStartedAtDates);
         req.getSession().setAttribute(SCOPE_CUSTOMERS_OF_ORDERS, allUsersForFilter);
-        req.getSession().setAttribute(SCOPE_ORDERS, allOrders); // todo request
+        req.setAttribute(SCOPE_ORDERS, allOrders);
     }
 
     /**
@@ -191,55 +191,6 @@ public class ReportAdminServlet extends HttpServlet {
 
             return orderCRUD.findAll(pageable);
         }
-    }
-
-    /**
-     * To process Get requests from user:
-     * get all orders from database (if dateFromRequest == null && customerFromRequest == null)
-     *
-     * @param req      HttpServletRequest request
-     * @param pageable pageable with pagination information
-     * @param locale   default or current locale of application
-     */
-    private List<OrderResponse> getOrderResponses(HttpServletRequest req, PageableRequest pageable, String locale) {
-        List<OrderResponse> allOrders;
-        req.setAttribute(SCOPE_TOTAL_RECORDS, orderCRUD.findNumberRecords());
-        new PaginationConfig().config(req);
-
-        allOrders = orderCRUD.findAll(pageable);
-
-        PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
-                ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
-        return allOrders;
-    }
-
-    /**
-     * To process Get requests from user:
-     * get all orders from database (if (!(customerFromRequest == null) && dateFromSession == null) else)
-     *
-     * @param req                     HttpServletRequest request
-     * @param numberRecordsByCustomer number of records in the database
-     * @param orderCRUD               all orders (from customer or date)
-     * @param customerOfOrders        attribute form the scope with customer`s request parameter
-     * @param customerFromRequest     customer from customer`s request (attribute) for search orders in database
-     * @param locale                  default or current locale of application
-     * @param messageUK               message for admin on UK locale
-     * @param message                 message for admin on default locale
-     */
-    private List<OrderResponse> getOrderResponses(HttpServletRequest req, long numberRecordsByCustomer, List<OrderResponse> orderCRUD,
-                                                  String customerOfOrders, String customerFromRequest, String locale,
-                                                  String messageUK, String message) {
-        List<OrderResponse> allOrders;
-        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsByCustomer);
-        new PaginationConfig().config(req);
-
-        allOrders = orderCRUD;
-
-        req.getSession().setAttribute(customerOfOrders, customerFromRequest);
-        PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
-                messageUK + customerFromRequest,
-                message + customerFromRequest);
-        return allOrders;
     }
 
     /**

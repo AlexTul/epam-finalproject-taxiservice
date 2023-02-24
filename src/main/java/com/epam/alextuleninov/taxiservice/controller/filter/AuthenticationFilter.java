@@ -105,7 +105,7 @@ public class AuthenticationFilter implements Filter {
                     .forward(req, resp);
         } else if (role.equals(Role.CLIENT)) {
 
-            req.getRequestDispatcher(PAGE_CLIENT_MENU)
+            req.getRequestDispatcher(PAGE_CUSTOMER_MENU)
                     .forward(req, resp);
         } else {
             req.getRequestDispatcher(PAGE_LOGIN)

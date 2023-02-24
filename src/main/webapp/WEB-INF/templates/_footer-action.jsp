@@ -5,6 +5,23 @@
 <fmt:setBundle basename="resources"/>
 <%--Locale--%>
 
+<c:set var="url" value="${sessionScope.role eq 'ADMINISTRATOR' ?
+                                'admin' : 'client'}"/>
+
+<div class="row">
+    <div class="col-lg-6"></div>
+
+    <div class="col-lg-1">
+        <%-- Admin menu cars --%>
+        <div id="nav-link" class="text-right">
+            <a class="text-info" href="${url}"><fmt:message key="menu"/></a>
+        </div>
+        <%-- Admin menu cars --%>
+    </div>
+
+    <div class="col-lg-5"></div>
+</div>
+
 <%--Locale and Logout--%>
 <div class="row">
     <div class="col-lg-5"></div>

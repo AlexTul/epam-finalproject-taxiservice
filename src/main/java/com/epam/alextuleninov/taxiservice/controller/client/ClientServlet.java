@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import static com.epam.alextuleninov.taxiservice.Routes.PAGE_CLIENT_MENU;
+import static com.epam.alextuleninov.taxiservice.Routes.PAGE_CUSTOMER_MENU;
 
 /**
  * Servlet for to process a Http request from a client.
@@ -36,7 +36,7 @@ public class ClientServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.getRequestDispatcher(PAGE_CLIENT_MENU)
+        req.getRequestDispatcher(PAGE_CUSTOMER_MENU)
                 .forward(req, resp);
     }
 

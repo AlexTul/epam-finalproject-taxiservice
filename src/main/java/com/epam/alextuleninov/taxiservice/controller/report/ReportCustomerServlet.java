@@ -20,16 +20,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
-import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT_CLIENT;
-import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT_CLIENT;
+import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT_CUSTOMER;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT_CUSTOMER;
 
 /**
  * Servlet for to process a Http request from a user.
  */
-@WebServlet(name = "ReportClientServlet", urlPatterns = URL_REPORT_CLIENT)
-public class ReportClientServlet extends HttpServlet {
+@WebServlet(name = "ReportCustomerServlet", urlPatterns = URL_REPORT_CUSTOMER)
+public class ReportCustomerServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(ReportClientServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(ReportCustomerServlet.class);
 
     private OrderCRUD orderCRUD;
 
@@ -51,7 +51,7 @@ public class ReportClientServlet extends HttpServlet {
 
         processRequest(req);
 
-        req.getRequestDispatcher(PAGE_REPORT_CLIENT)
+        req.getRequestDispatcher(PAGE_REPORT_CUSTOMER)
                 .forward(req, resp);
     }
 
@@ -74,7 +74,7 @@ public class ReportClientServlet extends HttpServlet {
         Object sortTypeByDateFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_DATE);
         String sortTypeByCostFromRequest = req.getParameter(SCOPE_SORT_BY_COST);
         Object sortTypeByCostFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_COST);
-        String client = (String) req.getSession().getAttribute(SCOPE_LOGIN);
+        String customer = (String) req.getSession().getAttribute(SCOPE_LOGIN);
 
         // sort configuration by date
         if (sortTypeByDateFromRequest != null) {
@@ -89,7 +89,7 @@ public class ReportClientServlet extends HttpServlet {
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, SCOPE_SORT_BY_COST);
         }
 
-        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(client);
+        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(customer);
         // set attribute for pagination, total_records = all records from database
         req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabaseByClient);
 
@@ -99,10 +99,10 @@ public class ReportClientServlet extends HttpServlet {
         paginationConfig.config(req);
 
         // find all orders with pagination for report`s page
-        var allOrdersByClient = orderCRUD.findAllByCustomer(client, PageableRequest.getPageableRequest(page));
+        var allOrders = orderCRUD.findAllByCustomer(customer, PageableRequest.getPageableRequest(page));
         // sorting by date or sorting by cost
-        allOrdersByClient = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrdersByClient);
-        req.getSession().setAttribute(SCOPE_ORDERS, allOrdersByClient);
+        allOrders = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
+        req.setAttribute(SCOPE_ORDERS, allOrders);
     }
 
     /**

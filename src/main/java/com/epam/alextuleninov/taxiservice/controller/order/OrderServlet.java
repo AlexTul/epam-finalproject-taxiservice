@@ -159,7 +159,7 @@ public class OrderServlet extends HttpServlet {
             if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
                 resp.sendRedirect(URL_REPORT_ADMIN);
             } else {
-                resp.sendRedirect(URL_REPORT_CLIENT);
+                resp.sendRedirect(URL_REPORT_CUSTOMER);
             }
             return false;
         } else {

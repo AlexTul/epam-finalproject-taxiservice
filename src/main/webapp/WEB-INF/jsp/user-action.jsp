@@ -12,7 +12,7 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Cars action</title>
+    <title>User action</title>
 </head>
 <body>
 
@@ -54,7 +54,7 @@
         <div class="col-lg-1">
             <%-- Admin menu cars --%>
             <div id="nav-link" class="text-right">
-                <a class="text-info" href="/user"><fmt:message key="users"/></a>
+                <a class="text-info" href="user"><fmt:message key="users"/></a>
             </div>
             <%-- Admin menu cars --%>
         </div>

@@ -47,7 +47,6 @@ public class CarServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // redirect on action car page for add or update car in the database or show all cars in the database
         String action = req.getParameter(SCOPE_ACTION) == null ?
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
@@ -55,6 +54,7 @@ public class CarServlet extends HttpServlet {
         if (action != null) {
             if (action.equals("add")) {
 
+                req.getSession().removeAttribute(SCOPE_ACTION);
                 req.getRequestDispatcher(PAGE_CAR_ACTION)
                         .forward(req, resp);
             } else if (action.equals("update")) {
@@ -70,6 +70,7 @@ public class CarServlet extends HttpServlet {
 
                 var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
                 req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
+                req.getSession().removeAttribute(SCOPE_ACTION);
 
                 req.getRequestDispatcher(PAGE_CAR_ACTION)
                         .forward(req, resp);
@@ -103,7 +104,11 @@ public class CarServlet extends HttpServlet {
         // delete car from the database
         String carID = req.getParameter(SCOPE_ID);
 
-        if (carName != null && updateCarID == null) {
+        if (carName != null || carID != null) {
+            updateCarID = null;
+        }
+
+        if (carName != null) {
             carCRUD.create(CarRequest.getCarRequest(req));
         } else if (updateCarID != null) {
             carCRUD.updateByID(Integer.parseInt(updateCarID), CarRequest.getCarRequest(req));

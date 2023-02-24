@@ -70,7 +70,7 @@ public class ConfirmServlet extends HttpServlet {
             if (req.getSession().getAttribute(SCOPE_ROLE).equals("ADMINISTRATOR")) {
                 resp.sendRedirect(URL_REPORT_ADMIN);
             } else {
-                resp.sendRedirect(URL_REPORT_CLIENT);
+                resp.sendRedirect(URL_REPORT_CUSTOMER);
             }
         } else {
             resp.sendRedirect(URL_SUC);
