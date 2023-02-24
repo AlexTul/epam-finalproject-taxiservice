@@ -20,6 +20,9 @@ import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
 import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
 
+/**
+ * Servlet for to process a Http request from admin.
+ */
 @WebServlet(name = "UserServlet", urlPatterns = URL_USER)
 public class UserServlet extends HttpServlet {
 
@@ -35,6 +38,13 @@ public class UserServlet extends HttpServlet {
         log.info(getServletName() + " initialized");
     }
 
+    /**
+     * To process Get requests from admin:
+     * - forward on action user`s page for update user in the database;
+     * - forward on user`s page for show all users in the database
+     *
+     * @param req HttpServletRequest request
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -44,21 +54,7 @@ public class UserServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
         if (action != null && action.equals("update")) {
-            String updateUserByLogin = req.getParameter(SCOPE_LOGIN);
-
-            String login;
-            if (updateUserByLogin != null) {
-                login = updateUserByLogin;
-                req.getSession().setAttribute(SCOPE_UPDATE_USER_LOGIN, login);
-            } else {
-                login = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
-            }
-
-            var userResponse = userCRUD.findByEmail(login)
-                    .orElseThrow(() -> userNotFound(login));
-
-            req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
-            req.getSession().removeAttribute(SCOPE_ACTION);
+            processRequestGetUpdate(req);
 
             req.getRequestDispatcher(PAGE_USER_ACTION)
                     .forward(req, resp);
@@ -71,6 +67,14 @@ public class UserServlet extends HttpServlet {
         }
     }
 
+    /**
+     * To process Post requests from admin:
+     * - update user in the database;
+     * - delete user from the database
+     *
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
@@ -89,7 +93,6 @@ public class UserServlet extends HttpServlet {
                 var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
 
                 userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
-                req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
 
                 String finalUpdateUserLogin = updateUserLogin;
                 new Thread(() ->
@@ -97,6 +100,7 @@ public class UserServlet extends HttpServlet {
                         String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword), finalUpdateUserLogin)
                 ).start();
 
+                req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
                 req.getSession().removeAttribute(SCOPE_ACTION);
                 req.getSession().removeAttribute(SCOPE_USER_RESPONSE);
                 req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
@@ -121,6 +125,36 @@ public class UserServlet extends HttpServlet {
         log.info(getServletName() + " destroyed");
     }
 
+    /**
+     * To process Get requests from admin:
+     * - add parameters to user`s action page for updating user in the database.
+     *
+     * @param req  HttpServletRequest request
+     */
+    private void processRequestGetUpdate(HttpServletRequest req) {
+        String updateUserByLogin = req.getParameter(SCOPE_LOGIN);
+
+        String login;
+        if (updateUserByLogin != null) {
+            login = updateUserByLogin;
+            req.getSession().setAttribute(SCOPE_UPDATE_USER_LOGIN, login);
+        } else {
+            login = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
+        }
+
+        var userResponse = userCRUD.findByEmail(login)
+                .orElseThrow(() -> userNotFound(login));
+
+        req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
+        req.getSession().removeAttribute(SCOPE_ACTION);
+    }
+
+    /**
+     * To process Get requests from admin:
+     * - forward on user`s page for show all users in the database
+     *
+     * @param req HttpServletRequest request
+     */
     private void processRequestGet(HttpServletRequest req) {
         long numberRecordsUsersInDatabase = userCRUD.findNumberRecords();
 

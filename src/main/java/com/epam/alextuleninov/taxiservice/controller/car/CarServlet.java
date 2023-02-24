@@ -20,7 +20,7 @@ import static com.epam.alextuleninov.taxiservice.Routes.*;
 import static com.epam.alextuleninov.taxiservice.exceptions.car.CarExceptions.carNotFound;
 
 /**
- * CarServlet for to process a Http request from admin.
+ * Servlet for to process a Http request from admin.
  */
 @WebServlet(name = "CarServlet", urlPatterns = URL_CAR)
 public class CarServlet extends HttpServlet {
@@ -53,24 +53,12 @@ public class CarServlet extends HttpServlet {
 
         if (action != null) {
             if (action.equals("add")) {
-
                 req.getSession().removeAttribute(SCOPE_ACTION);
+
                 req.getRequestDispatcher(PAGE_CAR_ACTION)
                         .forward(req, resp);
             } else if (action.equals("update")) {
-                String updateCarID = req.getParameter(SCOPE_ID);
-
-                int id;
-                if (updateCarID != null) {
-                    id = Integer.parseInt(updateCarID);
-                    req.getSession().setAttribute(SCOPE_UPDATE_CAR_ID, updateCarID);
-                } else {
-                    id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
-                }
-
-                var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
-                req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
-                req.getSession().removeAttribute(SCOPE_ACTION);
+                processRequestGetUpdate(req);
 
                 req.getRequestDispatcher(PAGE_CAR_ACTION)
                         .forward(req, resp);
@@ -128,6 +116,29 @@ public class CarServlet extends HttpServlet {
 
     /**
      * To process Get requests from admin:
+     * - add parameters to car`s action page for updating car in the database.
+     *
+     * @param req  HttpServletRequest request
+     */
+    private void processRequestGetUpdate(HttpServletRequest req) {
+        String updateCarID = req.getParameter(SCOPE_ID);
+
+        int id;
+        if (updateCarID != null) {
+            id = Integer.parseInt(updateCarID);
+            req.getSession().setAttribute(SCOPE_UPDATE_CAR_ID, updateCarID);
+        } else {
+            id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+        }
+
+        var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
+
+        req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
+        req.getSession().removeAttribute(SCOPE_ACTION);
+    }
+
+    /**
+     * To process Get requests from admin:
      * - forward on car`s page for show all cars in the database
      *
      * @param req HttpServletRequest request
@@ -137,10 +148,11 @@ public class CarServlet extends HttpServlet {
         // set attribute for pagination, total_records = all records from database
         req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsCarsInDatabase);
         // set current page for pagination
-        int page = new PaginationConfig().configPage(req);
-        // find all orders with pagination for report`s page
-        new PaginationConfig().config(req);
+        var paginationConfig = new PaginationConfig();
+        int page = paginationConfig.configPage(req);
+        paginationConfig.config(req);
 
+        // find all orders with pagination for report`s page
         var allCars = carCRUD.findAll(PageableRequest.getCarPageableRequest(page));
         req.getSession().setAttribute(SCOPE_CAR_RESPONSES, allCars);
     }
