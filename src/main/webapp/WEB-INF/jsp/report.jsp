@@ -55,7 +55,7 @@
         <div class="col-lg-12">
             <div class="tab-pane fade show active" id="reports" role="tabpanel"
                  aria-labelledby="internet-tab">
-                <h3><fmt:message key="table.orders"/>: ${requestScope.whoseOrders}.</h3>
+                <h3><fmt:message key="table.orders"/>: ${requestScope.whoseOrders}</h3>
                 <table class="table table-striped">
                     <thead>
                     <tr>

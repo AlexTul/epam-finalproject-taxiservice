@@ -74,31 +74,6 @@ public class ReportAdminServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processRequest(HttpServletRequest req) {
-        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
-
-        // find all users for filter for report`s page
-        var allUsersForFilter = userCRUD.findAllLoginsClient();
-
-        // find all started at dates for report`s page
-        var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
-
-        // set attribute for pagination, total_records = all records from database
-        long numberRecordsInDatabase = orderCRUD.findNumberRecords();
-        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
-        // set current page for pagination
-        int page = new PaginationConfig().configPage(req);
-        // find all orders with pagination for report`s page
-        new PaginationConfig().config(req);
-        var allOrders = orderCRUD.findAll(PageableRequest.getPageableRequest(page));
-
-        req.getSession().setAttribute(SCOPE_DATES_OF_ORDERS, allStartedAtDates);
-        req.getSession().setAttribute(SCOPE_CUSTOMERS_OF_ORDERS, allUsersForFilter);
-        req.getSession().setAttribute(SCOPE_ORDERS, allOrders);
-        // set order by for default sorting by the date of order and at the cost of the order
-        req.getSession().setAttribute(SCOPE_ORDER_BY, SORTING_DESC); // todo dell
-        PageMessageBuilder.buildMessageAdmin(req, locale,
-                SCOPE_WHOSE_ORDERS, ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
-
         // section for configuration report page
         String customerFromRequest = req.getParameter(SCOPE_CUSTOMER_OF_ORDERS);
         String dateFromRequest = req.getParameter(SCOPE_DATE_OF_ORDERS);
@@ -106,6 +81,7 @@ public class ReportAdminServlet extends HttpServlet {
         Object sortTypeByDateFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_DATE);
         String sortTypeByCostFromRequest = req.getParameter(SCOPE_SORT_BY_COST);
         Object sortTypeByCostFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_COST);
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         // filter configuration
         if (customerFromRequest != null) {
@@ -116,12 +92,6 @@ public class ReportAdminServlet extends HttpServlet {
             req.getSession().setAttribute(SCOPE_FILTER_BY_DATE, dateFromRequest);
             req.getSession().removeAttribute(SCOPE_FILTER_BY_CUSTOMER);
         }
-
-        // configure the request for pagination
-        var pageableRequest = PageableRequest.getPageableRequest(page);
-
-        // put all orders from database or put by dateOfOrders or customerOfOrders
-        allOrders = putOrdersFromDBToPage(req, pageableRequest, locale);
 
         // sort configuration by date
         if (sortTypeByDateFromRequest != null) {
@@ -136,10 +106,43 @@ public class ReportAdminServlet extends HttpServlet {
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, SCOPE_SORT_BY_COST);
         }
 
+        // find all users for filter for report`s page
+        var allUsersForFilter = userCRUD.findAllLoginsClient();
+
+        // find all started at dates for report`s page
+        var allStartedAtDates = orderCRUD.findAllStartedAtDatesFromOrder();
+
+        long numberRecordsInDatabase;
+        String customer = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_CUSTOMER);
+        String localeDate = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_DATE);
+        if (customer != null && !customer.equals("all")) {
+            numberRecordsInDatabase = orderCRUD.findNumberRecordsByCustomer(customer);
+            req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
+        } else if (localeDate != null && !localeDate.equals("all")) {
+            LocalDateTime localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), FORMATTER);
+            numberRecordsInDatabase = orderCRUD.findNumberRecordsByDateStartedAt(localeDateTime);
+            req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
+        } else {
+            numberRecordsInDatabase = orderCRUD.findNumberRecords();
+            req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
+        }
+
+        // config pagination
+        var paginationConfig = new PaginationConfig();
+        int page = paginationConfig.configPage(req);
+        paginationConfig.config(req);
+
+        // find orders by filter with pagination for report`s page
+        // configure the request for pagination
+        var pageableRequest = PageableRequest.getPageableRequest(page);
+        // put all orders from database or put by dateOfOrders or customerOfOrders
+        var allOrders = putOrdersFromDBToPage(req, pageableRequest, locale);
         // sorting by date or sorting by cost
         allOrders = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
 
-        req.getSession().setAttribute(SCOPE_ORDERS, allOrders);
+        req.getSession().setAttribute(SCOPE_DATES_OF_ORDERS, allStartedAtDates);
+        req.getSession().setAttribute(SCOPE_CUSTOMERS_OF_ORDERS, allUsersForFilter);
+        req.getSession().setAttribute(SCOPE_ORDERS, allOrders); // todo request
     }
 
     /**
@@ -165,25 +168,29 @@ public class ReportAdminServlet extends HttpServlet {
      * @param req      HttpServletRequest request
      * @param pageable pageable with pagination information
      * @param locale   default or current locale of application
+     * @return all orders by request
      */
     private List<OrderResponse> putOrdersFromDBToPage(HttpServletRequest req, PageableRequest pageable, String locale) {
         String customer = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_CUSTOMER);
         String localeDate = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_DATE);
 
-        List<OrderResponse> allOrders;
         if (customer != null && !customer.equals("all")) {
-            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByCustomer(customer),
-                    orderCRUD.findAllByCustomer(customer, pageable),
-                    SCOPE_CUSTOMER_OF_ORDERS, customer, locale, ADMIN_REPORT_CUSTOM_UK, ADMIN_REPORT_CUSTOM);
+            PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
+                    ADMIN_REPORT_CUSTOM_UK + " " + customer, ADMIN_REPORT_CUSTOM + " " + customer);
+
+            return orderCRUD.findAllByCustomer(customer, pageable);
         } else if (localeDate != null && !localeDate.equals("all")) {
-            LocalDateTime localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), FORMATTER);
-            allOrders = getOrderResponses(req, orderCRUD.findNumberRecordsByDateStartedAt(localeDateTime),
-                    orderCRUD.findAllByDate(localeDateTime, pageable),
-                    SCOPE_DATE_OF_ORDERS, localeDate, locale, ADMIN_REPORT_DATE_UK, ADMIN_REPORT_DATE);
+            PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
+                    ADMIN_REPORT_DATE_UK + " " + localeDate, ADMIN_REPORT_DATE + " " + localeDate);
+
+            var localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), FORMATTER);
+            return orderCRUD.findAllByDate(localeDateTime, pageable);
         } else {
-            allOrders = getOrderResponses(req, pageable, locale);
+            PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
+                    ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
+
+            return orderCRUD.findAll(pageable);
         }
-        return allOrders;
     }
 
     /**

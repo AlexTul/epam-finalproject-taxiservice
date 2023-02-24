@@ -97,10 +97,10 @@ public final class Constants {
     public static final String PASSWORD_NOT_VALID = "Password is not valid";
     public static final String ADMIN_REPORT_ALL_UK = " усі замовлення";
     public static final String ADMIN_REPORT_ALL = " all orders";
-    public static final String ADMIN_REPORT_CUSTOM_UK = " за замовником ";
-    public static final String ADMIN_REPORT_CUSTOM = " by customer of ";
-    public static final String ADMIN_REPORT_DATE_UK = " за датою початку ";
-    public static final String ADMIN_REPORT_DATE = " by started at date ";
+    public static final String ADMIN_REPORT_CUSTOM_UK = " за клієнтом";
+    public static final String ADMIN_REPORT_CUSTOM = " by client";
+    public static final String ADMIN_REPORT_DATE_UK = " за датою початку";
+    public static final String ADMIN_REPORT_DATE = " by started at date";
     public static final String DATE_TIME_NOT_VALID_UK = "Дата та час вибрані раніше ніж теперішня дата та час";
     public static final String DATE_TIME_NOT_VALID = "The date and time selected is earlier than the current date and time";
     public static final String NUMBER_PASSENGERS_NOT_VALID_UK = "Кількість пасажирів повинна бути числом не меньше 1 та додатнім";
