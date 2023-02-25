@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.controller.filter;
 
-import com.epam.alextuleninov.taxiservice.controller.confirm.ConfirmServlet;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.annotation.WebInitParam;
@@ -20,7 +19,7 @@ import static com.epam.alextuleninov.taxiservice.Routes.URL_EMPTY;
         initParams = @WebInitParam(name = "encoding", value = "UTF-8"))
 public class EncodingFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(ConfirmServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(EncodingFilter.class);
 
     private String encoding;
 

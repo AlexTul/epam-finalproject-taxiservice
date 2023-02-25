@@ -90,20 +90,20 @@ public class CarServlet extends HttpServlet {
         // update car in the database
         String updateCarID = (String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID);
         // delete car from the database
-        String carID = req.getParameter(SCOPE_ID);
+        String deleteCarID = req.getParameter(SCOPE_ID);
 
-        if (carName != null || carID != null) {
+        if (carName != null || deleteCarID != null) {
             updateCarID = null;
         }
 
-        if (carName != null) {
-            carCRUD.create(CarRequest.getCarRequest(req));
-        } else if (updateCarID != null) {
+        if (updateCarID != null) {
             carCRUD.updateByID(Integer.parseInt(updateCarID), CarRequest.getCarRequest(req));
             req.getSession().removeAttribute(SCOPE_ACTION);
             req.getSession().removeAttribute(SCOPE_UPDATE_CAR_ID);
-        } else if (carID != null) {
-            carCRUD.deleteById(Integer.parseInt(carID));
+        } else if (deleteCarID != null) {
+            carCRUD.deleteById(Integer.parseInt(deleteCarID));
+        } else if (carName != null) {
+            carCRUD.create(CarRequest.getCarRequest(req));
         }
 
         resp.sendRedirect(URL_CAR);

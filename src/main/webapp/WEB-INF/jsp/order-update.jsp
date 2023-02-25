@@ -23,7 +23,8 @@
 
         <%-- Customer order --%>
         <div class="col-lg-4">
-            <form class="form-signing" method="post" action="order">
+            <form class="form-signing" method="get" action="order">
+                <input type="hidden" name="action" value="confirm">
 
                 <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message
                         key="make.order"/></h2>

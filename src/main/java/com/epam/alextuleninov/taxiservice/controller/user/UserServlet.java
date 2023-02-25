@@ -82,9 +82,9 @@ public class UserServlet extends HttpServlet {
         // update user in the database
         String updateUserLogin = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
         // delete user from the database
-        String userLogin = req.getParameter(SCOPE_LOGIN);
+        String deleteUserLogin = req.getParameter(SCOPE_LOGIN);
 
-        if (userLogin != null) {
+        if (deleteUserLogin != null) {
             updateUserLogin = null;
         }
 
@@ -111,10 +111,10 @@ public class UserServlet extends HttpServlet {
                 req.getRequestDispatcher(PAGE_USER_ACTION)
                         .forward(req, resp);
             }
-        } else if (userLogin != null) {
-            userCRUD.deleteByEmail(userLogin);
+        } else if (deleteUserLogin != null) {
+            userCRUD.deleteByEmail(deleteUserLogin);
 
-            new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, userLogin)).start();
+            new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, deleteUserLogin)).start();
 
             resp.sendRedirect(URL_USER);
         }

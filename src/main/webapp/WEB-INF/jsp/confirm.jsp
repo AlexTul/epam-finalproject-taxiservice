@@ -23,7 +23,7 @@
 
         <%-- Customer order --%>
         <div class="col-lg-4">
-            <form class="form-signing" method="post" action="confirm">
+            <form class="form-signing" method="post" action="order">
                 <h2 class="h3 mb-3 font-weight-normal"><fmt:message key="taxi.service"/>, <fmt:message
                         key="confirm.cancel"/></h2>
                 <br>
@@ -88,7 +88,7 @@
 
         <div class="col-lg-1">
             <%--Locale--%>
-            <form method="get" class="d-flex" action="confirm">
+            <form method="get" class="d-flex">
                 <label>
                     <select name="locale" onchange='submit();'>
                         <option value="en" ${sessionScope.locale eq 'en' ? 'selected' : ''}>

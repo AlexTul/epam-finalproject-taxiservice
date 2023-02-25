@@ -70,24 +70,31 @@ public class OrderServlet extends HttpServlet {
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
-        if (action != null && action.equals("update")) {
-            String updateOrderByID = req.getParameter(SCOPE_ID);
+        if (action != null) {
+            if (action.equals("confirm")) {
+                processRequestGetConfirm(req, resp);
 
-            long id;
-            if (updateOrderByID != null) {
-                id = Long.parseLong(updateOrderByID);
-                req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderByID);
-            } else {
-                id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+                req.getRequestDispatcher(PAGE_CONFIRM)
+                        .forward(req, resp);
+            } else if (action.equals("update")) {
+                String updateOrderByID = req.getParameter(SCOPE_ID);
+
+                long id;
+                if (updateOrderByID != null) {
+                    id = Long.parseLong(updateOrderByID);
+                    req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderByID);
+                } else {
+                    id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+                }
+
+                var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
+
+                req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
+                req.getSession().removeAttribute(SCOPE_ACTION);
+
+                req.getRequestDispatcher(PAGE_ORDER_UPDATE)
+                        .forward(req, resp);
             }
-
-            var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
-
-            req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
-            req.getSession().removeAttribute(SCOPE_ACTION);
-
-            req.getRequestDispatcher(PAGE_ORDER_UPDATE)
-                    .forward(req, resp);
         } else {
             // show all orders in the database
             processRequestGet(req);
@@ -98,25 +105,60 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
-     * To process Post requests from user.
+     * To process Post requests:
+     * - update order in the database;
+     * - delete order in the database;
+     * - create order in the database.
      *
      * @param req  HttpServletRequest request
      * @param resp HttpServletResponse response
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
 
-        if (req.getParameter(SCOPE_LOCALE) == null) {
-            if (processRequestPost(req, resp)) {
+        // update order in the database
+        String updateOrderID = (String) req.getSession().getAttribute(SCOPE_UPDATE_ORDER_ID);
+        // delete order
+        String deleteOrderID = req.getParameter(SCOPE_ID);
 
-                req.getRequestDispatcher(PAGE_CONFIRM)
-                        .forward(req, resp);
+        OrderRequest request = null;
+        if (deleteOrderID == null) {
+            @SuppressWarnings("unchecked")
+            var cars = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
+
+            var dateTimeOfTravel = LocalDateTime.parse(
+                    (CharSequence) req.getSession().getAttribute(SCOPE_DATE_OF_TRAVEL), FORMATTER);
+
+            request = OrderRequest.getOrderRequest(req, cars, dateTimeOfTravel);
+        }
+
+        if (updateOrderID != null) {
+            orderCRUD.updateById(Long.parseLong(updateOrderID), request);
+            req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
+            req.getSession().removeAttribute(SCOPE_CARS);
+            req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
+            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
+                resp.sendRedirect(URL_REPORT_ADMIN);
             } else {
-                resp.sendRedirect(URL_ORDER);
+                resp.sendRedirect(URL_REPORT_CUSTOMER);
+            }
+        } else if (deleteOrderID != null) {
+            orderCRUD.deleteById(Long.parseLong(deleteOrderID));
+            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
+                resp.sendRedirect(URL_REPORT_ADMIN);
+            } else {
+                resp.sendRedirect(URL_REPORT_CUSTOMER);
             }
         } else {
-            doGet(req, resp);
+            orderCRUD.create(request);
+            carCRUD.changeCarStatus(request);
+
+            req.getSession().removeAttribute(SCOPE_CARS);
+            req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
+            req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
+
+            resp.sendRedirect(URL_SUC);
         }
     }
 
@@ -151,26 +193,13 @@ public class OrderServlet extends HttpServlet {
      * @param req  HttpServletRequest request
      * @param resp HttpServletResponse response
      */
-    private boolean processRequestPost(HttpServletRequest req, HttpServletResponse resp)
+    private void processRequestGetConfirm(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        @SuppressWarnings("unchecked")
+        var carsFromSession = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
 
-        // delete order
-        String id = req.getParameter(SCOPE_ID);
-        if (id != null) {
-            orderCRUD.deleteById(Long.parseLong(id));
-            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
-                resp.sendRedirect(URL_REPORT_ADMIN);
-            } else {
-                resp.sendRedirect(URL_REPORT_CUSTOMER);
-            }
-            return false;
-        } else {
-            String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
-
-            if (!DataValidator.initValidationOrderData(req)) {
-                return false;
-            }
-
+        if (carsFromSession == null && DataValidator.initValidationOrderData(req)) {
             // calculate the date and time of the trip, taking into account the time the car was delivered
             var dateTimeOfTravel = dateTimeRideService
                     .count(LocalDateTime.parse(req.getParameter(SCOPE_DATE_OF_TRAVEL)));
@@ -186,7 +215,6 @@ public class OrderServlet extends HttpServlet {
 
                 req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
                         .forward(req, resp);
-                return false;
             }
 
             var stringOfCars = getStringOfCars(cars);
@@ -206,8 +234,6 @@ public class OrderServlet extends HttpServlet {
             req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
             req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
         }
-
-        return true;
     }
 
     /**
