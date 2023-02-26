@@ -8,7 +8,6 @@ import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
 import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
-import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 import com.epam.alextuleninov.taxiservice.service.verifyorder.VerifyOrder;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
@@ -70,12 +69,16 @@ public class OrderServlet extends HttpServlet {
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
+        if (action != null && action.equals("new")) {
+            action = null;
+        }
+
         if (action != null) {
             if (action.equals("confirm")) {
-                processRequestGetConfirm(req, resp);
-
-                req.getRequestDispatcher(PAGE_CONFIRM)
-                        .forward(req, resp);
+                if (processRequestGetConfirm(req, resp)) {
+                    req.getRequestDispatcher(PAGE_CONFIRM)
+                            .forward(req, resp);
+                }
             } else if (action.equals("update")) {
                 String updateOrderByID = req.getParameter(SCOPE_ID);
 
@@ -154,11 +157,14 @@ public class OrderServlet extends HttpServlet {
             orderCRUD.create(request);
             carCRUD.changeCarStatus(request);
 
+            req.getSession().removeAttribute(SCOPE_ACTION);
+            req.getSession().removeAttribute(SCOPE_CARS);
             req.getSession().removeAttribute(SCOPE_CARS);
             req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
+
             req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
 
-            resp.sendRedirect(URL_SUC);
+            resp.sendRedirect(URL_MESSAGE);
         }
     }
 
@@ -193,9 +199,8 @@ public class OrderServlet extends HttpServlet {
      * @param req  HttpServletRequest request
      * @param resp HttpServletResponse response
      */
-    private void processRequestGetConfirm(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+    private boolean processRequestGetConfirm(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
         @SuppressWarnings("unchecked")
         var carsFromSession = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
 
@@ -210,30 +215,33 @@ public class OrderServlet extends HttpServlet {
 
             if (cars.size() == 0) {
                 log.info("No available cars, order cancellation");
+                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER, USER_ORDER_CANCEL);
+                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER_UK, USER_ORDER_CANCEL_UK);
 
-                PageMessageBuilder.buildMessageUser(req, locale, USER_ORDER_CANCEL_UK, USER_ORDER_CANCEL);
+                req.getSession().removeAttribute(SCOPE_ACTION);
 
-                req.getRequestDispatcher(PAGE_MESSAGE_ORDER_USER)
-                        .forward(req, resp);
+                resp.sendRedirect(URL_MESSAGE);
+                return false;
+            } else {
+                var stringOfCars = getStringOfCars(cars);
+
+                var routeChar = routeCharacteristics.getRouteCharacteristics(request);
+
+                var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
+
+                req.getSession().setAttribute(SCOPE_CARS, cars);
+                req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
+                req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
+                req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
+                req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
+                req.getSession().setAttribute(SCOPE_TRAVEL_DURATION, routeChar.travelDuration());
+                req.getSession().setAttribute(SCOPE_NUMBER_OF_PASSENGERS, req.getParameter(SCOPE_NUMBER_OF_PASSENGERS));
+                req.getSession().setAttribute(SCOPE_LIST_OF_CARS, stringOfCars);
+                req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
+                req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
             }
-
-            var stringOfCars = getStringOfCars(cars);
-
-            var routeChar = routeCharacteristics.getRouteCharacteristics(request);
-
-            var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
-
-            req.getSession().setAttribute(SCOPE_CARS, cars);
-            req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
-            req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
-            req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
-            req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());
-            req.getSession().setAttribute(SCOPE_TRAVEL_DURATION, routeChar.travelDuration());
-            req.getSession().setAttribute(SCOPE_NUMBER_OF_PASSENGERS, req.getParameter(SCOPE_NUMBER_OF_PASSENGERS));
-            req.getSession().setAttribute(SCOPE_LIST_OF_CARS, stringOfCars);
-            req.getSession().setAttribute(SCOPE_DATE_OF_TRAVEL, dateTimeOfTravel.format(FORMATTER));
-            req.getSession().setAttribute(SCOPE_PRICE_OF_TRAVEL, loyaltyPrice.loyaltyPrice());
         }
+        return true;
     }
 
     /**

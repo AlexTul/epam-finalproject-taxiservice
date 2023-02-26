@@ -12,22 +12,25 @@
 <head>
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
-    <title>Message user</title>
+    <title>Message</title>
 </head>
 <body>
+
+<c:set var="message" value="${sessionScope.locale eq 'en' ?
+                                sessionScope.message : sessionScope.messageUK}"/>
 
 <div class="container-fluid" style="text-align: center">
     <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
     <br>
     <div class="row">
-        <%-- Message for user --%>
         <div class="col-lg-12">
+            <%-- Message for user --%>
             <div>
-                <h5>${sessionScope.messageUser}</h5>
+                <h5>${message}</h5>
             </div>
+            <%-- Message for user --%>
         </div>
-        <%-- Message for user --%>
     </div>
     <br><br>
 

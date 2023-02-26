@@ -18,14 +18,14 @@ public final class Routes {
     public static final String PAGE_ORDER_SUCCESSFUL = "/WEB-INF/jsp/order-successful.jsp";
     public static final String PAGE_ADMIN_MENU = "/WEB-INF/jsp/admin-menu.jsp";
     public static final String PAGE_CUSTOMER_MENU = "/WEB-INF/jsp/customer-menu.jsp";
-    public static final String PAGE_REPORT = "/WEB-INF/jsp/report.jsp";
+    public static final String PAGE_REPORT = "/WEB-INF/jsp/report-admin.jsp";
     public static final String PAGE_REPORT_CUSTOMER = "/WEB-INF/jsp/report-customer.jsp";
     public static final String PAGE_ADMIN_USER = "/WEB-INF/jsp/admin-user.jsp";
     public static final String PAGE_USER_ACTION = "/WEB-INF/jsp/user-action.jsp";
     public static final String PAGE_ADMIN_CAR = "/WEB-INF/jsp/admin-car.jsp";
     public static final String PAGE_CAR_ACTION = "/WEB-INF/jsp/car-action.jsp";
-    public static final String PAGE_MESSAGE_USER = "/WEB-INF/jsp/message-user.jsp";
-    public static final String PAGE_MESSAGE_ORDER_USER = "/WEB-INF/jsp/message-order-user.jsp";
+    public static final String PAGE_MESSAGE = "/WEB-INF/jsp/message.jsp";
+    public static final String PAGE_MESSAGE_ORDER = "/WEB-INF/jsp/message-order.jsp";
     public static final String PAGE_PROFILE = "/WEB-INF/jsp/profile.jsp";
     public static final String PAGE_CHANGE_PASSWORD = "/WEB-INF/jsp/change-password.jsp";
     // endregion pages
@@ -39,15 +39,15 @@ public final class Routes {
     public static final String URL_CAR = "/car";
     public static final String URL_CAR_ = "/car/*";
     public static final String URL_ORDER = "/order";
-    public static final String URL_CONFIRM = "/confirm";
-    public static final String URL_REPORT_ADMIN = "/report";
-    public static final String URL_REPORT_CUSTOMER = "/report-client";
-    public static final String URL_REPORT_ = "/report/*";
+    public static final String URL_REPORT_ADMIN = "/report-admin";
+    public static final String URL_REPORT_CUSTOMER = "/report-customer";
+    public static final String URL_REPORT_ADMIN_ = "/report-admin/*";
     public static final String URL_SUC = "/successful";
-    public static final String URL_MESSAGE_USER = "/message-user";
+    public static final String URL_MESSAGE = "/message";
     public static final String URL_AUTH = "/auth";
     public static final String URL_REGISTER = "/register";
     public static final String URL_LOGOUT = "/logout";
     public static final String URL_PROFILE = "/profile";
+    public static final String URL_CUSTOMER = "/customer";
     // endregion url
 }

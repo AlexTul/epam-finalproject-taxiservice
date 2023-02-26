@@ -15,7 +15,7 @@ import static com.epam.alextuleninov.taxiservice.Routes.*;
  * The filter pre-processes the request before it reaches the servlet.
  * AuthorizationFilter checks authorization.
  */
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {URL_ADMIN, URL_REPORT_, URL_USER_, URL_CAR_})
+@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {URL_ADMIN, URL_REPORT_ADMIN_, URL_USER_, URL_CAR_})
 public class AuthorizationFilter implements Filter {
 
     @Override

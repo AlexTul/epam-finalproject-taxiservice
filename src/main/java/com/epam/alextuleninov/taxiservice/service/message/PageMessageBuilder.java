@@ -2,7 +2,7 @@ package com.epam.alextuleninov.taxiservice.service.message;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_MESSAGE_USER;
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_MESSAGE;
 
 /**
  * Class for building message for admin and user for page.
@@ -20,9 +20,9 @@ public class PageMessageBuilder {
     public static void buildMessageUser(HttpServletRequest req, String locale,
                                         String messageUK, String message) {
         if (locale.equals("uk_UA")) {
-            req.getSession().setAttribute(SCOPE_MESSAGE_USER, messageUK);
+            req.getSession().setAttribute(SCOPE_MESSAGE, messageUK);
         } else {
-            req.getSession().setAttribute(SCOPE_MESSAGE_USER, message);
+            req.getSession().setAttribute(SCOPE_MESSAGE, message);
         }
     }
 

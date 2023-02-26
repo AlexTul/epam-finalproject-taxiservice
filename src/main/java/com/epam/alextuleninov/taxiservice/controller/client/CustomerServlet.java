@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.controller.admin;
+package com.epam.alextuleninov.taxiservice.controller.client;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
@@ -16,17 +16,19 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_CARS;
-import static com.epam.alextuleninov.taxiservice.Routes.*;
+import static com.epam.alextuleninov.taxiservice.Routes.PAGE_CUSTOMER_MENU;
+import static com.epam.alextuleninov.taxiservice.Routes.URL_CUSTOMER;
 
 /**
- * AdminServlet for to process a Http request from admin.
+ * Servlet for to process a Http request from a customer.
  */
-@WebServlet(name = "AdminServlet", urlPatterns = URL_ADMIN)
-public class AdminServlet extends HttpServlet {
+@WebServlet(name = "CustomerServlet", urlPatterns = URL_CUSTOMER)
+public class CustomerServlet extends HttpServlet {
 
-    private static final Logger log = LoggerFactory.getLogger(AdminServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomerServlet.class);
 
     private CarCRUD carCRUD;
+
     @Override
     public void init() {
         this.carCRUD = AppContext.getAppContext().getCarCRUD();
@@ -34,10 +36,11 @@ public class AdminServlet extends HttpServlet {
     }
 
     /**
-     * To process Get requests from admin:
-     * - forward on admin page.
+     * To process Get requests from user:
+     * -
      *
      * @param req HttpServletRequest request
+     * @param resp HttpServletResponse response
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -45,7 +48,7 @@ public class AdminServlet extends HttpServlet {
 
         processRequestGet(req);
 
-        req.getRequestDispatcher(PAGE_ADMIN_MENU)
+        req.getRequestDispatcher(PAGE_CUSTOMER_MENU)
                 .forward(req, resp);
     }
 
@@ -53,6 +56,7 @@ public class AdminServlet extends HttpServlet {
     public void destroy() {
         log.info(getServletName() + " destroyed");
     }
+
 
     /**
      * To process Get requests:

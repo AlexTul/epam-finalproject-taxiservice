@@ -4,7 +4,6 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
-import com.epam.alextuleninov.taxiservice.service.message.PageMessageBuilder;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -62,29 +61,26 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
-        String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         if (DataValidator.initValidationRegisterCredentials(req)) {
             boolean register = userCRUD.register(UserRequest.getUserRequest(req));
 
             if (!register) {
                 log.info("Email: " + req.getParameter("email") + " already taken");
-                req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, false);
-                PageMessageBuilder.buildMessageUser(req, locale,
-                        USER_REGISTER_FAIL_UK, USER_REGISTER_FAIL);
+                req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_FAIL);
+                req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_FAIL_UK);
 
-                resp.sendRedirect(URL_MESSAGE_USER);
+                resp.sendRedirect(URL_MESSAGE);
             } else {
                 log.info("User successfully registered");
-                req.getSession().setAttribute(SCOPE_REGISTER_TRUE_FALSE, true);
-                PageMessageBuilder.buildMessageUser(req, locale,
-                        USER_REGISTER_SUC_UK, USER_REGISTER_SUC);
+                req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_SUC);
+                req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_SUC_UK);
 
                 new Thread(() ->
                         emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN))
                 ).start();
 
-                resp.sendRedirect(URL_MESSAGE_USER);
+                resp.sendRedirect(URL_MESSAGE);
             }
         } else {
             resp.sendRedirect(URL_REGISTER);

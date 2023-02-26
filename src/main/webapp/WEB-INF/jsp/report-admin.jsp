@@ -11,7 +11,7 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Reports</title>
+    <title>Report-admin</title>
 </head>
 <body>
 
@@ -22,7 +22,7 @@
     <div class="row">
         <%-- Choose by customer --%>
         <div class="col-lg-3">
-            <form class="form-signing" method="get" action="report">
+            <form class="form-signing" method="get" action="report-admin">
                 <label for="customersOfOrders"><fmt:message key="choose.order.customer"/>:</label><br>
                 <select id="customersOfOrders" name="customerOfOrders" onchange='submit();'>
                     <c:forEach items="${sessionScope.customersOfOrders}" var="customer">
@@ -37,7 +37,7 @@
 
         <%-- Choose by date --%>
         <div class="col-lg-3">
-            <form class="form-signing" method="get" action="report">
+            <form class="form-signing" method="get" action="report-admin">
                 <label for="datesOfOrders"><fmt:message key="choose.order.start.end"/>:</label><br>
                 <select id="datesOfOrders" name="dateOfOrders" onchange='submit();'>
                     <c:forEach items="${sessionScope.datesOfOrders}" var="date">
@@ -65,7 +65,7 @@
                             Id
                         </th>
                         <th scope="col">
-                            <a href="report?sortByDate=${orderBy}" class="list-group-item">
+                            <a href="report-admin?sortByDate=${orderBy}" class="list-group-item">
                                 <i class="fa fa-arrows-v" style="color:black"></i>
                             </a>
                             <fmt:message key="createdAt"/>
@@ -86,7 +86,7 @@
                             <fmt:message key="end.travel"/>
                         </th>
                         <th scope="col">
-                            <a href="report?sortByCost=${orderBy}" class="list-group-item">
+                            <a href="report-admin?sortByCost=${orderBy}" class="list-group-item">
                                 <i class="fa fa-arrows-v" style="color:black"></i>
                             </a>
                             <fmt:message key="cost"/>

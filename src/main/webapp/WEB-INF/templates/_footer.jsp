@@ -6,7 +6,7 @@
 <%--Locale--%>
 
 <c:set var="url" value="${sessionScope.role eq 'ADMINISTRATOR' ?
-                                'admin' : 'client'}"/>
+                                'admin' : 'customer'}"/>
 
 <div class="row">
     <div class="col-lg-1"></div>

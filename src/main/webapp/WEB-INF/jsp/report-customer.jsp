@@ -11,7 +11,7 @@
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Reports</title>
+    <title>Report-customer</title>
 </head>
 <body>
 
@@ -32,7 +32,7 @@
                             Id
                         </th>
                         <th scope="col">
-                            <a href="report-client?sortByDate=${orderBy}" class="list-group-item">
+                            <a href="report-customer?sortByDate=${orderBy}" class="list-group-item">
                                 <i class="fa fa-arrows-v" style="color:black"></i>
                             </a>
                             <fmt:message key="createdAt"/>
@@ -53,7 +53,7 @@
                             <fmt:message key="end.travel"/>
                         </th>
                         <th scope="col">
-                            <a href="report-client?sortByCost=${orderBy}" class="list-group-item">
+                            <a href="report-customer?sortByCost=${orderBy}" class="list-group-item">
                                 <i class="fa fa-arrows-v" style="color:black"></i>
                             </a>
                             <fmt:message key="cost"/>

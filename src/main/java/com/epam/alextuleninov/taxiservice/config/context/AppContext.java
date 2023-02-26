@@ -66,7 +66,7 @@ public class AppContext {
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);
         this.userCRUD = new UserService(userDAO);
-        this.loyaltyService = new LoyaltyService(orderCRUD, routeCharacteristics);
+        this.loyaltyService = new LoyaltyService(orderCRUD);
         this.verifyOrderService = new VerifyOrderService(carCRUD);
         this.dateTimeRide = new DateTimeRideRideService();
         this.emailSender = new EmailConfig(properties);

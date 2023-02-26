@@ -44,7 +44,7 @@
 <!--    </filter>-->
 <!--    <filter-mapping>-->
 <!--        <filter-name>AuthenticationFilter</filter-name>-->
-<!--&lt;!&ndash;        <url-pattern>report.jsp</url-pattern>&ndash;&gt;-->
+<!--&lt;!&ndash;        <url-pattern>report-admin.jsp</url-pattern>&ndash;&gt;-->
 <!--        <url-pattern>/login</url-pattern>-->
 <!--&lt;!&ndash;        <servlet-name>Controller</servlet-name>&ndash;&gt;-->
 <!--    </filter-mapping>-->

@@ -41,7 +41,7 @@
                             <div class="card-body">
                                 <h4 class="card-title"><fmt:message key="report"/></h4>
                                 <p class="card-text"><fmt:message key="manage.section"/></p>
-                                <form method="get" action="report-client">
+                                <form method="get" action="report-customer">
                                     <button type="submit" class="btn btn-primary"><fmt:message key="manage"/></button>
                                 </form>
                             </div>

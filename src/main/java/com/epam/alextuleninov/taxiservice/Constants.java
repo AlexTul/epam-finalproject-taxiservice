@@ -12,8 +12,6 @@ public final class Constants {
     // endregion connection pool
 
     // region scope
-
-
     public static final String SCOPE_FIRST_NAME = "firstname";
     public static final String SCOPE_LAST_NAME = "lastname";
     public static final String SCOPE_LOCALE = "locale";
@@ -33,8 +31,10 @@ public final class Constants {
     public static final String SCOPE_USER_RESPONSE = "userResponse";
     public static final String SCOPE_USER_RESPONSES = "userResponses";
     public static final String SCOPE_UPDATE_USER_LOGIN = "updateUserLogin";
-    public static final String SCOPE_MESSAGE_USER = "messageUser";
-    public static final String SCOPE_REGISTER_TRUE_FALSE = "registerSuccess";
+    public static final String SCOPE_MESSAGE = "message";
+    public static final String SCOPE_MESSAGE_UK = "messageUK";
+    public static final String SCOPE_MESSAGE_ORDER = "messageOrder";
+    public static final String SCOPE_MESSAGE_ORDER_UK = "messageOrderUK";
     public static final String SCOPE_CARS = "cars";
     public static final String SCOPE_CAR_NAME = "carName";
     public static final String SCOPE_UPDATE_CAR_ID = "updateCarID";
@@ -76,6 +76,14 @@ public final class Constants {
     public static final double TRAVEL_PRICE_MINIMAL = 40.00;
     // endregion of the travel
 
+    // region of the loyalty
+    public static final double COUNT_COST_MINIMAL = 200.00;
+    public static final double COUNT_COST_MEDIUM = 300.00;
+    public static final double LOYALTY_RATIO_MINIMAL = 1.00;
+    public static final double LOYALTY_RATIO_MEDIUM = 0.97;
+    public static final double LOYALTY_RATIO_MAXIMUM = 0.95;
+    // endregion of the loyalty
+
     // region to format date and time
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     // endregion to format date and time
@@ -105,8 +113,6 @@ public final class Constants {
     public static final String DATE_TIME_NOT_VALID = "The date and time selected is earlier than the current date and time";
     public static final String NUMBER_PASSENGERS_NOT_VALID_UK = "Кількість пасажирів повинна бути числом не меньше 1 та додатнім";
     public static final String NUMBER_PASSENGERS_NOT_VALID = "The number of passengers must be a number not less than 1 and positive";
-    public static final String USER_UK = "Вибачте, ваші дані не валідні";
-    public static final String USER = "Sorry, your data not validated";
     public static final String USER_REGISTER_SUC_UK = "Успішна реєстрація. Пройдіть на сторінку логіну";
     public static final String USER_REGISTER_SUC = "Successful registration. Go to login page";
     public static final String USER_REGISTER_FAIL_UK = "Вибачте, цей email існує";

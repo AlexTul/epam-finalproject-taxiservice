@@ -93,7 +93,10 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute(SCOPE_CUSTOMERS_OF_ORDERS);
         session.removeAttribute(SCOPE_DATES_OF_ORDERS);
         session.removeAttribute(SCOPE_USER_RESPONSES);
-        session.removeAttribute(SCOPE_MESSAGE_USER);
+        session.removeAttribute(SCOPE_MESSAGE);
+        session.removeAttribute(SCOPE_MESSAGE_UK);
+        session.removeAttribute(SCOPE_MESSAGE_ORDER);
+        session.removeAttribute(SCOPE_MESSAGE_ORDER_UK);
         session.removeAttribute(SCOPE_PASSWORD_VALIDATE);
         session.removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
         session.removeAttribute(SCOPE_FIRST_NAME);

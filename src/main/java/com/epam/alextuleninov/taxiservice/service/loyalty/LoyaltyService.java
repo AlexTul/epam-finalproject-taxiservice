@@ -8,6 +8,8 @@ import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristicsService;
 
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+
 /**
  * Interface for count loyalty price.
  *
@@ -17,11 +19,9 @@ import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteChar
 public class LoyaltyService implements Loyalty {
 
     private final OrderCRUD orderCRUD;
-    private final RouteCharacteristics routeCharacteristics;
 
-    public LoyaltyService(OrderCRUD orderCRUD, RouteCharacteristics routeCharacteristics) {
+    public LoyaltyService(OrderCRUD orderCRUD) {
         this.orderCRUD = orderCRUD;
-        this.routeCharacteristics = routeCharacteristics;
     }
 
     /**
@@ -51,12 +51,12 @@ public class LoyaltyService implements Loyalty {
 
     private double calculateRatio(double countCost) {
         double loyaltyRatio;
-        if (countCost <= 200) {
-            loyaltyRatio = 1;
-        } else if (countCost <= 300) {
-            loyaltyRatio = 0.97;
+        if (countCost <= COUNT_COST_MINIMAL) {
+            loyaltyRatio = LOYALTY_RATIO_MINIMAL;
+        } else if (countCost <= COUNT_COST_MEDIUM) {
+            loyaltyRatio = LOYALTY_RATIO_MEDIUM;
         } else {
-            loyaltyRatio = 0.95;
+            loyaltyRatio = LOYALTY_RATIO_MAXIMUM;
         }
         return loyaltyRatio;
     }
