@@ -19,7 +19,6 @@ class EncodingFilterTest {
     private FilterChain chain;
     private FilterConfig config;
 
-    // mock HttpServletRequest, HttpServletResponse, FilterChain, FilterConfig
     @BeforeEach
     void setUp() {
         req = mock(HttpServletRequest.class);
@@ -30,7 +29,6 @@ class EncodingFilterTest {
 
     @Test
     void testDoFilter() throws ServletException, IOException {
-        // mock the returned value
         when(config.getInitParameter("encoding")).thenReturn("UTF-8");
 
         var filter = new EncodingFilter();

@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * Interface CRUD for count date and time of ride.
+ * Interface for count date and time of ride.
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public class DateTimeRideRideService implements DateTimeRide {
+public class DateTimeRideService implements DateTimeRide {
 
     /**
      * Count date and time of ride.

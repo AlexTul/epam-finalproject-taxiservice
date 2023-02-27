@@ -1,99 +1,88 @@
 package com.epam.alextuleninov.taxiservice.service.loyalty;
 
-import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
-import com.epam.alextuleninov.taxiservice.data.route.RouteResponse;
-//import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
-//import com.epam.alextuleninov.taxiservice.service.crud.route.RouteCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
+import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static com.epam.alextuleninov.taxiservice.TestUtils.getRouteCharacteristicsResp;
+import static com.epam.alextuleninov.taxiservice.TestUtils.getTestOrderRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class LoyaltyServiceTest {
 
     public static final double ROUTE_PRICE = 40.0;
-    public static final double ROUTE_TOTAL_SPENT_FIRST = 40;
-    public static final double ROUTE_TOTAL_SPENT_SECOND = 240;
-    public static final double ROUTE_TOTAL_SPENT_THIRD = 310.8;
+    public static final double ROUTE_TOTAL_COST_FIRST = 40.0;
+    public static final double ROUTE_TOTAL_COST_SECOND = 240.0;
+    public static final double ROUTE_TOTAL_COST_THIRD = 310.8;
 
     @Test
-    void testGetLoyaltyPrice() {
-//        OrderCRUD orderCRUD = mock(OrderCRUD.class);
-//        RouteCRUD routeCRUD = mock(RouteCRUD.class);
-//
-//        var request = new OrderRequest(
-//                null, null, 0.0, null, 0,
-//                null, null, null
-//        );
-//
-//        var routeResponse = new RouteResponse(
-//                0, 0, null, null, 0, ROUTE_PRICE, 0
-//        );
-//
-//        // ROUTE_TOTAL_SPENT_FIRST
-//        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_SPENT_FIRST);
-//        when(routeCRUD.findByStartEnd(request)).thenReturn(Optional.of(routeResponse));
-//
-//        var loyaltyRatioFirst = calculateRatio(ROUTE_TOTAL_SPENT_FIRST);
-//
-//        double expectedFirst = loyaltyRatioFirst * ROUTE_PRICE;
-//        var actualFirst = new LoyaltyService(orderCRUD, routeCRUD).getLoyaltyPrice(request);
-//
-//        assertEquals(expectedFirst, actualFirst.loyaltyPrice());
-//
-//        // ROUTE_TOTAL_SPENT_SECOND
-//        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_SPENT_SECOND);
-//        when(routeCRUD.findByStartEnd(request)).thenReturn(Optional.of(routeResponse));
-//
-//        var loyaltyRatioSecond = calculateRatio(ROUTE_TOTAL_SPENT_SECOND);
-//
-//        double expectedSecond = loyaltyRatioSecond * ROUTE_PRICE;
-//        var actualSecond = new LoyaltyService(orderCRUD, routeCRUD).getLoyaltyPrice(request);
-//
-//        assertEquals(expectedSecond, actualSecond.loyaltyPrice());
-//
-//        // ROUTE_TOTAL_SPENT_THIRD
-//        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_SPENT_THIRD);
-//        when(routeCRUD.findByStartEnd(request)).thenReturn(Optional.of(routeResponse));
-//
-//        var loyaltyRatioThird = calculateRatio(ROUTE_TOTAL_SPENT_THIRD);
-//
-//        double expectedThird = loyaltyRatioThird * ROUTE_PRICE;
-//        var actualThird = new LoyaltyService(orderCRUD, routeCRUD).getLoyaltyPrice(request);
-//
-//        assertEquals(expectedThird, actualThird.loyaltyPrice());
+    void testGetLoyaltyPriceFirst() {
+        var orderCRUD = mock(OrderCRUD.class);
+        var routeCharacteristics = mock(RouteCharacteristics.class);
+
+        var request = getTestOrderRequest();
+        var routeCharacteristicsResp = getRouteCharacteristicsResp();
+
+        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_COST_FIRST);
+        when(routeCharacteristics.getRouteCharacteristics(request)).thenReturn(routeCharacteristicsResp);
+
+        var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_FIRST);
+
+        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
+
+        assertEquals(expectedFirst, actualFirst.loyaltyPrice());
     }
 
     @Test
-    void testGetLoyaltyPriceNullPointerException() {
-//        OrderCRUD orderCRUD = mock(OrderCRUD.class);
-//        RouteCRUD routeCRUD = mock(RouteCRUD.class);
-//
-//        var request = new OrderRequest(
-//                null, null, 0.0, null, 0,
-//                null, null, null
-//        );
-//
-//        // ROUTE_TOTAL_SPENT_FIRST
-//        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_SPENT_FIRST);
-//        when(routeCRUD.findByStartEnd(request)).thenThrow(new NullPointerException());
-//
-//        assertThrows(NullPointerException.class, () -> routeCRUD.findByStartEnd(request));
+    void testGetLoyaltyPriceSecond() {
+        var orderCRUD = mock(OrderCRUD.class);
+        var routeCharacteristics = mock(RouteCharacteristics.class);
+
+        var request = getTestOrderRequest();
+        var routeCharacteristicsResp = getRouteCharacteristicsResp();
+
+        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_COST_SECOND);
+        when(routeCharacteristics.getRouteCharacteristics(request)).thenReturn(routeCharacteristicsResp);
+
+        var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_SECOND);
+
+        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
+
+        assertEquals(expectedFirst, actualFirst.loyaltyPrice());
     }
 
+    @Test
+    void testGetLoyaltyPriceThird() {
+        var orderCRUD = mock(OrderCRUD.class);
+        var routeCharacteristics = mock(RouteCharacteristics.class);
 
-    private static double calculateRatio(double countCost) {
+        var request = getTestOrderRequest();
+        var routeCharacteristicsResp = getRouteCharacteristicsResp();
+
+        when(orderCRUD.sumCostByCustomer(request)).thenReturn(ROUTE_TOTAL_COST_THIRD);
+        when(routeCharacteristics.getRouteCharacteristics(request)).thenReturn(routeCharacteristicsResp);
+
+        var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_THIRD);
+
+        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
+
+        assertEquals(expectedFirst, actualFirst.loyaltyPrice());
+    }
+
+    private double determineLoyaltyRatio(double totalCost) {
         double loyaltyRatio;
-        if (countCost <= 200) {
-            loyaltyRatio = 1;
-        } else if (countCost <= 300) {
-            loyaltyRatio = 0.97;
+        if (totalCost <= COUNT_COST_MINIMAL) {
+            loyaltyRatio = LOYALTY_RATIO_MINIMAL;
+        } else if (totalCost <= COUNT_COST_MEDIUM) {
+            loyaltyRatio = LOYALTY_RATIO_MEDIUM;
         } else {
-            loyaltyRatio = 0.95;
+            loyaltyRatio = LOYALTY_RATIO_MAXIMUM;
         }
         return loyaltyRatio;
     }

@@ -1,10 +1,14 @@
 package com.epam.alextuleninov.taxiservice;
 
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
+import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
+import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
+import com.epam.alextuleninov.taxiservice.model.car.category.CarCategory;
+import com.epam.alextuleninov.taxiservice.model.car.status.CarStatus;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
 import com.epam.alextuleninov.taxiservice.model.route.adress.Address;
 import com.epam.alextuleninov.taxiservice.model.route.Route;
@@ -76,19 +80,12 @@ public final class TestUtils {
         );
     }
 
-    public static Route getTestRoute() {
-        var address = new Address(
-                ConstantsTest.ADDRESS_ID_VALUE,
-                ConstantsTest.ADDRESS_START_END_VALUE,
-                ConstantsTest.ADDRESS_START_END_UK_VALUE
-        );
-
-        return new Route(
-                ConstantsTest.ROUTE_ID_VALUE,
-                address,
-                ConstantsTest.ROUTE_DISTANCE_VALUE,
-                ConstantsTest.ROUTE_PRICE_VALUE,
-                ConstantsTest.ROUTE_TRAVEL_TIME_VALUE
+    public static CarRequest getTestCarRequest() {
+        return new CarRequest(
+                "Audi A6 AX 0000 KX",
+                4,
+                CarCategory.PASSENGER.toString(),
+                CarStatus.AVAILABLE.toString()
         );
     }
 
@@ -106,6 +103,12 @@ public final class TestUtils {
                 ConstantsTest.ORDER_COST_VALUE,
                 ConstantsTest.ORDER_STARTED_AT_VALUE.toLocalDateTime(),
                 ConstantsTest.ORDER_FINISHED_AT_VALUE.toLocalDateTime()
+        );
+    }
+
+    public static RouteCharacteristicsResponse getRouteCharacteristicsResp() {
+        return new RouteCharacteristicsResponse(
+                4.0, 300
         );
     }
 }

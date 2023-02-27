@@ -27,15 +27,16 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRegister() {
-        // if user exists
+    void testRegisterIfUserExists() {
         when(userDAO.existsByEmail(getTestUserRequest().email())).thenReturn(true).thenReturn(false);
 
         boolean registerAbsent = userService.register(getTestUserRequest());
 
         assertFalse(registerAbsent);
+    }
 
-        // if user not exists
+    @Test
+    void testRegisterIfUserNotExists() {
         when(userDAO.create(getTestUserRequest())).thenReturn(
                 new User(
                         1,

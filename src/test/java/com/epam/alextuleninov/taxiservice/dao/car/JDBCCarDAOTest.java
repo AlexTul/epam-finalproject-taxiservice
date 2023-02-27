@@ -17,8 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.epam.alextuleninov.taxiservice.TestUtils.getTestOrderRequest;
-import static com.epam.alextuleninov.taxiservice.TestUtils.getTestCar;
+import static com.epam.alextuleninov.taxiservice.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -36,6 +35,15 @@ public class JDBCCarDAOTest {
         resultSet = mock(ResultSet.class);
         ResultSetMapper<Car> mapper = new CarMapper();
         carDAO = new JDBCCarDAO(dataSource, mapper);
+    }
+
+    @Test
+    void testCreate() {
+        try (var preparedStatement = prepareMocks(dataSource)) {
+            assertDoesNotThrow(() -> carDAO.create(getTestCarRequest()));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test

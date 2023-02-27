@@ -14,7 +14,7 @@ public interface RouteCharacteristics {
     /**
      * Determine the characteristics of the route depending on the user's request.
      *
-     * @param request               request from user
+     * @param request request from user
      */
     RouteCharacteristicsResponse getRouteCharacteristics(OrderRequest request);
 }

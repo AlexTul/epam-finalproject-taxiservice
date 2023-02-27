@@ -23,7 +23,7 @@ import com.epam.alextuleninov.taxiservice.service.crud.order.OrderService;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserService;
 import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRide;
-import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRideRideService;
+import com.epam.alextuleninov.taxiservice.service.dateride.DateTimeRideService;
 import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
 import com.epam.alextuleninov.taxiservice.service.loyalty.LoyaltyService;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
@@ -66,9 +66,9 @@ public class AppContext {
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);
         this.userCRUD = new UserService(userDAO);
-        this.loyaltyService = new LoyaltyService(orderCRUD);
+        this.loyaltyService = new LoyaltyService(orderCRUD, routeCharacteristics);
         this.verifyOrderService = new VerifyOrderService(carCRUD);
-        this.dateTimeRide = new DateTimeRideRideService();
+        this.dateTimeRide = new DateTimeRideService();
         this.emailSender = new EmailConfig(properties);
         log.info("AppContext.class is initialized");
     }

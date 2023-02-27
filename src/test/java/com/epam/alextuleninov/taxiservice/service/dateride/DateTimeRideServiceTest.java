@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DateTimeRideRideServiceTest {
+public class DateTimeRideServiceTest {
 
     public static final long TIME_FOR_START_ORDER_SECOND = 5 * 60;
 
@@ -19,8 +19,8 @@ public class DateTimeRideRideServiceTest {
         // imitation of order time outside of machine delivery time
         var startRouteForRequest = LocalDateTime.now()
                 .plusSeconds(TIME_FOR_START_ORDER_SECOND);
-        // calculation of the time of delivery of the car through the com.epam.alextuleninov.taxiservice.service
-        var actual = new DateTimeRideRideService()
+        // calculation of the time of delivery of the car through the service
+        var actual = new DateTimeRideService()
                 .count(startRouteForRequest);
 
         assertEquals(expected.format(Constants.FORMATTER), actual.format(Constants.FORMATTER));

@@ -21,7 +21,6 @@ class LocaleFilterTest {
     private FilterChain chain;
     private FilterConfig config;
 
-    // mock HttpServletRequest, HttpServletResponse, FilterChain, FilterConfig
     @BeforeEach
     void setUp() {
         req = mock(HttpServletRequest.class);
@@ -45,7 +44,6 @@ class LocaleFilterTest {
 
     @Test
     void testUALocale() throws ServletException, IOException {
-        // mock the returned value
         when(this.req.getParameter("locale")).thenReturn("uk_UA");
         when(this.req.getServletPath()).thenReturn("login.jsp");
 
