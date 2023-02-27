@@ -64,7 +64,6 @@ public class AuthenticationFilter implements Filter {
                 moveToMenu(req, resp, Role.UNKNOWN);
             }
         } else {
-            // validation of entered data
             if (DataValidator.initValidationLogInCredentials(req)) {
                 if (userCRUD.authentication(login, password)) {
                     Role role = Role.valueOf(userCRUD.findRoleByEmail(login));

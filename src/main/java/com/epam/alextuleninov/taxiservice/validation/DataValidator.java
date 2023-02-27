@@ -1,18 +1,14 @@
 package com.epam.alextuleninov.taxiservice.validation;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
-import static com.epam.alextuleninov.taxiservice.Routes.*;
 
 /**
  * The DataValidator class contains the methods for
@@ -143,12 +139,12 @@ public final class DataValidator {
     public static boolean initValidationOrderData(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
-        if (!validateNumber(req.getParameter("numberOfPassengers"))) {
+        if (!validateNumber(req.getParameter(SCOPE_NUMBER_OF_PASSENGERS))) {
             log.info("Number of passengers not validated");
             changeLocale(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE, NUMBER_PASSENGERS_NOT_VALID_UK, NUMBER_PASSENGERS_NOT_VALID);
             return false;
         }
-        if (!validateLocalDateTime(req.getParameter("dateOfTravel"))) {
+        if (!validateLocalDateTime(req.getParameter(SCOPE_DATE_OF_TRAVEL))) {
             log.info("Date of travel not validated");
             changeLocale(locale, req, SCOPE_DATE_TIME_VALIDATE, DATE_TIME_NOT_VALID_UK, DATE_TIME_NOT_VALID);
             return false;

@@ -1,5 +1,3 @@
-<%@ page import="com.epam.alextuleninov.taxiservice.model.car.category.CarCategory" %>
-<%@ page import="com.epam.alextuleninov.taxiservice.model.car.status.CarStatus" %>
 <%@ include file="/WEB-INF/jspf/directive/taglib.jspf" %>
 <%@ include file="/WEB-INF/jspf/directive/page.jspf" %>
 <%--Locale--%>
