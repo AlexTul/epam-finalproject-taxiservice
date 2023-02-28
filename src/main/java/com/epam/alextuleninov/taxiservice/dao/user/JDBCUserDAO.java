@@ -83,7 +83,7 @@ public class JDBCUserDAO implements UserDAO {
     }
 
     /**
-     * Find all users by client from the database.
+     * Find all users with role like 'client' from the database.
      *
      * @return all users from the database
      */
@@ -111,8 +111,13 @@ public class JDBCUserDAO implements UserDAO {
         return result;
     }
 
+    /**
+     * Find all users from the database with pagination.
+     *
+     * @return all users from database
+     */
     @Override
-    public Set<User> findAllClientWithPagination(PageableRequest pageable) {
+    public Set<User> findAll(PageableRequest pageable) {
         Set<User> users = new TreeSet<>();
 
         String sql = "select * from users u" +
@@ -355,27 +360,6 @@ public class JDBCUserDAO implements UserDAO {
                 throw new UnexpectedDataAccessException(e);
             } finally {
                 connection.setAutoCommit(autoCommit);
-            }
-        } catch (SQLException e) {
-            throw new UnexpectedDataAccessException(e);
-        }
-    }
-
-    /**
-     * Delete the user from database.
-     *
-     * @param id id of user
-     */
-    public void deleteById(long id) {
-        try (Connection connection = dataSource.getConnection()) {
-            try (var ps = connection.prepareStatement(
-                    """
-                            delete from users u where u.id = ?
-                            """
-            )) {
-
-                ps.setLong(1, id);
-                ps.executeUpdate();
             }
         } catch (SQLException e) {
             throw new UnexpectedDataAccessException(e);

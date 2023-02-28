@@ -2,6 +2,8 @@ package com.epam.alextuleninov.taxiservice.data.user;
 
 import com.epam.alextuleninov.taxiservice.model.user.User;
 
+import java.util.Objects;
+
 /**
  * Class for the UserResponse.
  *
@@ -68,13 +70,26 @@ public class UserResponse {
         this.role = role;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserResponse that = (UserResponse) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(role, that.role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email, role);
+    }
+
     /**
      * Create the new class from User.
      *
      * @param user          user entity
      * @return              class from user
      */
-    public static UserResponse formUser(User user) {
+    public static UserResponse fromUser(User user) {
         return new UserResponse(
                 user.getId(),
                 user.getLastName(),

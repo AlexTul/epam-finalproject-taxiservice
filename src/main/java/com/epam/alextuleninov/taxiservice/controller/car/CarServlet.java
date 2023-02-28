@@ -101,7 +101,7 @@ public class CarServlet extends HttpServlet {
             req.getSession().removeAttribute(SCOPE_ACTION);
             req.getSession().removeAttribute(SCOPE_UPDATE_CAR_ID);
         } else if (deleteCarID != null) {
-            carCRUD.deleteById(Integer.parseInt(deleteCarID));
+            carCRUD.deleteByID(Integer.parseInt(deleteCarID));
         } else if (carName != null) {
             carCRUD.create(CarRequest.getCarRequest(req));
         }

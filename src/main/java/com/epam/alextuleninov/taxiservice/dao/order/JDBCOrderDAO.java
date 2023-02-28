@@ -284,7 +284,7 @@ public class JDBCOrderDAO implements OrderDAO {
      * @return order by id from database in response format
      */
     @Override
-    public Optional<Order> findById(long id) {
+    public Optional<Order> findByID(long id) {
         try (Connection connection = dataSource.getConnection()) {
             try (var getAllCarsByOrderID = connection.prepareStatement(
                     """
@@ -480,7 +480,7 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param request request with parameter
      */
     @Override
-    public void updateById(long id, OrderRequest request) {
+    public void updateByID(long id, OrderRequest request) {
         try (Connection connection = dataSource.getConnection()) {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
@@ -561,7 +561,8 @@ public class JDBCOrderDAO implements OrderDAO {
      *
      * @param id id of order
      */
-    public void deleteById(long id) {
+    @Override
+    public void deleteByID(long id) {
         try (Connection connection = dataSource.getConnection()) {
             try (var psOrderCar = connection.prepareStatement(
                     """

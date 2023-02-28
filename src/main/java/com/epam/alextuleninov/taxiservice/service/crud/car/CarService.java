@@ -86,7 +86,7 @@ public class CarService implements CarCRUD {
 
     @Override
     public void updateByID(int id, CarRequest request) {
-        carDAO.updateById(id, request);
+        carDAO.updateByID(id, request);
     }
 
     /**
@@ -95,7 +95,7 @@ public class CarService implements CarCRUD {
      * @param id            id of car
      */
     @Override
-    public void deleteById(int id) {
-        carDAO.deleteById(id);
+    public void deleteByID(int id) {
+        carDAO.deleteByID(id);
     }
 }

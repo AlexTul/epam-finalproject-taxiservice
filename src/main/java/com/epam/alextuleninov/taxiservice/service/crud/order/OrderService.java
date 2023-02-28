@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_SORT_ALL;
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_SORT_NOTHING;
+
 /**
  * Class CRUD for Order.
  *
@@ -99,8 +102,8 @@ public class OrderService implements OrderCRUD {
      * @return              order by id from database in response format
      */
     @Override
-    public Optional<OrderResponse> findById(long id) {
-        return orderDAO.findById(id).map(OrderResponse::fromOrder);
+    public Optional<OrderResponse> findByID(long id) {
+        return orderDAO.findByID(id).map(OrderResponse::fromOrder);
     }
 
     /**
@@ -116,7 +119,7 @@ public class OrderService implements OrderCRUD {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toCollection(LinkedList::new));
-        listStartedAtDates.addAll(0, Arrays.asList("--------------------------", "all"));
+        listStartedAtDates.addAll(0, Arrays.asList(SCOPE_SORT_NOTHING, SCOPE_SORT_ALL));
 
         return listStartedAtDates;
     }
@@ -171,8 +174,8 @@ public class OrderService implements OrderCRUD {
      * @param request  request with parameter
      */
     @Override
-    public void updateById(long id, OrderRequest request) {
-        orderDAO.updateById(id, request);
+    public void updateByID(long id, OrderRequest request) {
+        orderDAO.updateByID(id, request);
     }
 
     /**
@@ -181,7 +184,7 @@ public class OrderService implements OrderCRUD {
      * @param id            id of category
      */
     @Override
-    public void deleteById(long id) {
-        orderDAO.deleteById(id);
+    public void deleteByID(long id) {
+        orderDAO.deleteByID(id);
     }
 }

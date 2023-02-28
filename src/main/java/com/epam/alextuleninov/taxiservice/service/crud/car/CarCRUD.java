@@ -77,5 +77,5 @@ public interface CarCRUD {
      *
      * @param id            id of car
      */
-    void deleteById(int id);
+    void deleteByID(int id);
 }

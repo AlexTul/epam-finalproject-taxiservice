@@ -1,18 +1,24 @@
 package com.epam.alextuleninov.taxiservice;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public final class ConstantsTest {
 
     // region user
+    public static final long USER_ID_ADMIN_VALUE = 0;
+    public static final String USER_FIRST_NAME_ADMIN_VALUE = "Admin";
+    public static final String USER_LAST_NAME_ADMIN_VALUE = "Admin";
+    public static final String USER_EMAIL_ADMIN_VALUE = "admin@gmail.com";
+    public static final String USER_PASSWORD_ADMIN_VALUE = "QAsQaqGMoG1K5hQCCVFd";
+    public static final String USER_ENCRYPT_PASSWORD_ADMIN_VALUE = "9a497b0374e8e798f44291ad4a2fe4aad20f11bb";
+    public static final String USER_ROLE_ADMIN_VALUE = "ADMINISTRATOR";
     public static final long USER_ID_VALUE = 1;
     public static final String USER_FIRST_NAME_VALUE = "Test";
     public static final String USER_LAST_NAME_VALUE = "Test";
     public static final String USER_EMAIL_VALUE = "test@gmail.com";
     public static final String USER_PASSWORD_VALUE = "QAsQaqGMoG1K5hQCCVFd";
     public static final String USER_ENCRYPT_PASSWORD_VALUE = "9a497b0374e8e798f44291ad4a2fe4aad20f11bb";
-    public static final String USER_ROLE_VALUE = "CLIENT";
+    public static final String USER_ROLE_CLIENT_VALUE = "CLIENT";
     // endregion user
 
     // region car

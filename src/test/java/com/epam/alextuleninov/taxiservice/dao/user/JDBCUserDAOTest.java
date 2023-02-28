@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.epam.alextuleninov.taxiservice.TestUtils.*;
+import static com.epam.alextuleninov.taxiservice.exceptions.user.UserExceptions.userNotFound;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -36,6 +37,11 @@ public class JDBCUserDAOTest {
         ResultSetMapper<User> userMapper = new UserMapper();
         userDAO = new JDBCUserDAO(dataSource, userMapper);
         resultSet = mock(ResultSet.class);
+    }
+
+    @Test
+    void testСreate() throws SQLException {
+
     }
 
     @Test
@@ -68,31 +74,60 @@ public class JDBCUserDAOTest {
     }
 
     @Test
+    void testFindAll() throws SQLException {
+        try (var preparedStatement = prepareMocks(dataSource)) {
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+            // if value is present
+            prepareResultSetPresent(resultSet);
+            Set<User> resultPresent = userDAO.findAll(getTestPageableRequest());
+
+            assertEquals(1, resultPresent.size());
+            assertEquals(getTestUser(), resultPresent.stream().toList().get(0));
+
+            // if value is absent
+            prepareResultSetAbsent(resultSet);
+            Set<User> resultAbsent = userDAO.findAll(getTestPageableRequest());
+
+            assertEquals(0, resultAbsent.size());
+        }
+    }
+
+    @Test
+    void testSqlExceptionFindAll() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        try {
+            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findAll(getTestPageableRequest()));
+        } catch (UnexpectedDataAccessException ignored) {
+        }
+    }
+
+    @Test
     void testFindByEmail() throws SQLException {
-//        try (var preparedStatement = prepareMocks(dataSource)) {
-//            when(preparedStatement.executeQuery()).thenReturn(resultSet);
-//
-//            // if value is present
-//            prepareResultSetPresent(resultSet);
-//            User resultPresent = userDAO.findByEmail(getTestOrderRequest()).orElse(null);
-//
-//            assertEquals(getTestUser(), resultPresent);
-//
-//            // if value is absent
-//            prepareResultSetAbsent(resultSet);
-//            Optional<User> resultAbsent = userDAO.findByEmail(getTestOrderRequest());
-//
-//            assertEquals(Optional.empty(), resultAbsent);
-//        }
+        try (var preparedStatement = prepareMocks(dataSource)) {
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+            // if value is present
+            prepareResultSetPresent(resultSet);
+            Optional<User> resultPresent = userDAO.findByEmail(getTestOrderRequest().customer());
+
+            assertEquals(getTestUser(), resultPresent.orElseThrow(() -> userNotFound(getTestOrderRequest().customer())));
+
+            // if value is absent
+            prepareResultSetAbsent(resultSet);
+            Optional<User> resultAbsent = userDAO.findByEmail(getTestOrderRequest().customer());
+
+            assertEquals(Optional.empty(), resultAbsent);
+        }
     }
 
     @Test
     void testSqlExceptionFindByEmail() throws SQLException {
-//        when(dataSource.getConnection()).thenThrow(new SQLException());
-//        try {
-//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findByEmail(getTestOrderRequest())
-//                    .orElse(null));
-//        } catch (UnexpectedDataAccessException ignored) {}
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        try {
+            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findByEmail(getTestOrderRequest().customer())
+                    .orElseThrow(() -> userNotFound(getTestOrderRequest().customer())));
+        } catch (UnexpectedDataAccessException ignored) {}
     }
 
     @Test
@@ -115,6 +150,14 @@ public class JDBCUserDAOTest {
     }
 
     @Test
+    void testSqlExceptionFindRoleByEmail() throws SQLException {
+//        when(dataSource.getConnection()).thenThrow(new SQLException());
+//        try {
+//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findRoleByEmail(getTestOrderRequest().customer()));
+//        } catch (UnexpectedDataAccessException ignored) {}
+    }
+
+    @Test
     void testExistsByEmail() throws SQLException {
         try (var preparedStatement = prepareMocks(dataSource)) {
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
@@ -131,6 +174,14 @@ public class JDBCUserDAOTest {
 
             assertFalse(resultAbsent);
         }
+    }
+
+    @Test
+    void testSqlExceptionExistsByEmail() throws SQLException {
+//        when(dataSource.getConnection()).thenThrow(new SQLException());
+//        try {
+//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.existsByEmail(getTestOrderRequest().customer()));
+//        } catch (UnexpectedDataAccessException ignored) {}
     }
 
     @Test
@@ -154,6 +205,88 @@ public class JDBCUserDAOTest {
         }
     }
 
+    @Test
+    void testSqlExceptionExistsByEmailPassword() throws SQLException {
+//        when(dataSource.getConnection()).thenThrow(new SQLException());
+//        try {
+//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.existsByEmail(getTestOrderRequest().customer()));
+//        } catch (UnexpectedDataAccessException ignored) {}
+    }
+
+    @Test
+    void testFindNumberRecords() throws SQLException {
+        try (var preparedStatement = prepareMocks(dataSource)) {
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+            // if value is present
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getLong(1)).thenReturn(1L);
+            long resultPresent = userDAO.findNumberRecords();
+
+            assertEquals(1, resultPresent);
+
+            // if value is absent
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getLong(1)).thenReturn(0L);
+            long resultAbsent = userDAO.findNumberRecords();
+
+            assertEquals(0, resultAbsent);
+        }
+    }
+
+    @Test
+    void testSqlExceptionFindNumberRecords() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findNumberRecords());
+    }
+
+    @Test
+    void testChangeCredentialsByEmail() throws SQLException {
+        try (var ignored = prepareMocks(dataSource)) {
+            assertDoesNotThrow(() -> userDAO.changeCredentialsByEmail(
+                    getTestUserRequest().email(), getTestUserRequest()));
+        }
+    }
+
+    @Test
+    void testSqlExceptionChangeCredentialsByEmail() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.changeCredentialsByEmail(
+                getTestUserRequest().email(), getTestUserRequest()));
+    }
+
+    @Test
+    void testChangePasswordByEmail() throws SQLException {
+        try (var ignored = prepareMocks(dataSource)) {
+            assertDoesNotThrow(() -> userDAO.changePasswordByEmail(
+                    getTestUserRequest().email(), getTestUserRequest().password()));
+        }
+    }
+
+    @Test
+    void testSqlExceptionChangePasswordByEmail() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.changePasswordByEmail(
+                getTestUserRequest().email(), getTestUserRequest().password()));
+    }
+
+    @Test
+    void testDeleteById() throws SQLException {
+        try (var preparedStatement = prepareMocks(dataSource)) {
+            when(preparedStatement.executeQuery()).thenReturn(resultSet);
+            when(resultSet.next()).thenReturn(true).thenReturn(false);
+            when(resultSet.getLong(1)).thenReturn(1L);
+
+            assertDoesNotThrow(() -> userDAO.deleteByEmail(getTestUser().getEmail()));
+        }
+    }
+
+    @Test
+    void testSqlExceptionDeleteById() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.deleteByEmail(getTestUser().getEmail()));
+    }
+
     private PreparedStatement prepareMocks(DataSource dataSource) throws SQLException {
         Connection connection = mock(Connection.class);
         PreparedStatement preparedStatement = mock(PreparedStatement.class);
@@ -175,7 +308,7 @@ public class JDBCUserDAOTest {
         when(resultSet.getString(DataSourceFields.USER_LAST_NAME)).thenReturn(ConstantsTest.USER_LAST_NAME_VALUE);
         when(resultSet.getString(DataSourceFields.USER_EMAIL)).thenReturn(ConstantsTest.USER_EMAIL_VALUE);
         when(resultSet.getString(DataSourceFields.USER_PASSWORD)).thenReturn(null);
-        when(resultSet.getString(DataSourceFields.USER_ROLE)).thenReturn(ConstantsTest.USER_ROLE_VALUE);
+        when(resultSet.getString(DataSourceFields.USER_ROLE)).thenReturn(ConstantsTest.USER_ROLE_CLIENT_VALUE);
     }
 
     private static void prepareResultSetAbsent(ResultSet resultSet) throws SQLException {

@@ -24,18 +24,18 @@ public interface UserDAO {
     User create(UserRequest request);
 
     /**
-     * Find all users by client from the database.
+     * Find all users with role like 'client' from the database.
      *
-     * @return all users from database
+     * @return all users from the database
      */
     Set<User> findAllClient();
 
     /**
-     * Find all users by client from the database with pagination.
+     * Find all users from the database with pagination.
      *
      * @return all users from database
      */
-    Set<User> findAllClientWithPagination(PageableRequest pageable);
+    Set<User> findAll(PageableRequest pageable);
 
     /**
      * Find user by email from the database.
@@ -91,13 +91,6 @@ public interface UserDAO {
      * @param password new user`s password
      */
     void changePasswordByEmail(String email, String password);
-
-    /**
-     * Delete the user from database.
-     *
-     * @param id id of user
-     */
-    void deleteById(long id);
 
     /**
      * Delete the user from database.

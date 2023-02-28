@@ -90,13 +90,6 @@ public interface UserCRUD {
     /**
      * Delete the user from database.
      *
-     * @param id id of user
-     */
-    void deleteByID(long id);
-
-    /**
-     * Delete the user from database.
-     *
      * @param email email of user
      */
     void deleteByEmail(String email);

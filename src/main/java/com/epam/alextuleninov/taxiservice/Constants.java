@@ -60,6 +60,8 @@ public final class Constants {
     public static final String SCOPE_NUMBER_PASSENGERS_VALIDATE = "numberOfPassengersValidate";
     public static final String SCOPE_LOYALTY_PRICE = "loyaltyPrice";
     public static final String SCOPE_PRICE_OF_TRAVEL = "priceOfTravel";
+    public static final String SCOPE_SORT_NOTHING = "--------------------------";
+    public static final String SCOPE_SORT_ALL = "all";
     public static final String SCOPE_SORT_BY_DATE = "sortByDate";
     public static final String SCOPE_SORT_BY_COST = "sortByCost";
     public static final String SCOPE_FILTER_BY_CUSTOMER = "filterByCustomer";

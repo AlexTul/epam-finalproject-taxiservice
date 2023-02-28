@@ -5,6 +5,7 @@ import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class for the OrderResponse.
@@ -190,6 +191,19 @@ public class OrderResponse {
 
     public void setFinishedAt(String finishedAt) {
         this.finishedAt = finishedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderResponse that = (OrderResponse) o;
+        return id == that.id && customerId == that.customerId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customerId);
     }
 
     /**

@@ -2,6 +2,8 @@ package com.epam.alextuleninov.taxiservice.data.car;
 
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 
+import java.util.Objects;
+
 public class CarResponse {
 
     private int id;
@@ -56,6 +58,19 @@ public class CarResponse {
 
     public String getCarStatus() {
         return carStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CarResponse that = (CarResponse) o;
+        return numberOfPassengers == that.numberOfPassengers && Objects.equals(carName, that.carName) && Objects.equals(carCategory, that.carCategory) && Objects.equals(carStatus, that.carStatus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(carName, numberOfPassengers, carCategory, carStatus);
     }
 
     public void setCarStatus(String carStatus) {

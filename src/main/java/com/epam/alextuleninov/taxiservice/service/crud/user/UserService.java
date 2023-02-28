@@ -11,6 +11,9 @@ import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_SORT_ALL;
+import static com.epam.alextuleninov.taxiservice.Constants.SCOPE_SORT_NOTHING;
+
 /**
  * Class CRUD for User.
  *
@@ -59,10 +62,10 @@ public class UserService implements UserCRUD {
      */
     @Override
     public List<UserResponse> findAllClients(PageableRequest pageable) {
-        return userDAO.findAllClientWithPagination(pageable).stream()
+        return userDAO.findAll(pageable).stream()
                 .filter(user -> user.getRole().equals(Role.CLIENT))
                 .sorted(Comparator.comparingLong(User::getId))
-                .map(UserResponse::formUser).toList();
+                .map(UserResponse::fromUser).toList();
     }
 
     /**
@@ -75,14 +78,14 @@ public class UserService implements UserCRUD {
         var listLoginsClient = userDAO.findAllClient().stream()
                 .map(User::getEmail)
                 .collect(Collectors.toCollection(LinkedList::new));
-        listLoginsClient.addAll(0, Arrays.asList("--------------------------", "all"));
+        listLoginsClient.addAll(0, Arrays.asList(SCOPE_SORT_NOTHING, SCOPE_SORT_ALL));
 
         return listLoginsClient;
     }
 
     @Override
     public Optional<UserResponse> findByEmail(String email) {
-        return userDAO.findByEmail(email).map(UserResponse::formUser);
+        return userDAO.findByEmail(email).map(UserResponse::fromUser);
     }
 
     /**
@@ -156,16 +159,6 @@ public class UserService implements UserCRUD {
                 .encrypt(newPassword);
 
         userDAO.changePasswordByEmail(email, encryptPassword);
-    }
-
-    /**
-     * Delete the user from database.
-     *
-     * @param id id of user
-     */
-    @Override
-    public void deleteByID(long id) {
-        userDAO.deleteById(id);
     }
 
     /**

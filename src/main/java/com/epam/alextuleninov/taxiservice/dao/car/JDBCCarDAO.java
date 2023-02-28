@@ -239,7 +239,7 @@ public class JDBCCarDAO implements CarDAO {
      * @param request request with parameter
      */
     @Override
-    public void updateById(int id, CarRequest request) {
+    public void updateByID(int id, CarRequest request) {
         try (Connection connection = dataSource.getConnection()) {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
@@ -278,7 +278,7 @@ public class JDBCCarDAO implements CarDAO {
      * @param id id of car
      */
     @Override
-    public void deleteById(int id) {
+    public void deleteByID(int id) {
         try (Connection connection = dataSource.getConnection()) {
             try (var psFindOrders = connection.prepareStatement(
                     """

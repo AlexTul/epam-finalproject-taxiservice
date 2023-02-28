@@ -64,7 +64,7 @@ public interface OrderDAO {
      *
      * @return              order by id from database in response format
      */
-    Optional<Order> findById(long id);
+    Optional<Order> findByID(long id);
 
     /**
      * Find all dates by start order from the database.
@@ -110,12 +110,12 @@ public interface OrderDAO {
      * @param id            id of order
      * @param orderRequest  request with parameter
      */
-    void updateById(long id, OrderRequest orderRequest);
+    void updateByID(long id, OrderRequest orderRequest);
 
     /**
      * Delete the category in the database.
      *
      * @param id            id of order
      */
-    void deleteById(long id);
+    void deleteByID(long id);
 }

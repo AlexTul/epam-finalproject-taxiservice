@@ -115,10 +115,10 @@ public class ReportAdminServlet extends HttpServlet {
         long numberRecordsInDatabase;
         String customer = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_CUSTOMER);
         String localeDate = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_DATE);
-        if (customer != null && !customer.equals("all")) {
+        if (customer != null && !customer.equals(SCOPE_SORT_ALL)) {
             numberRecordsInDatabase = orderCRUD.findNumberRecordsByCustomer(customer);
             req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
-        } else if (localeDate != null && !localeDate.equals("all")) {
+        } else if (localeDate != null && !localeDate.equals(SCOPE_SORT_ALL)) {
             LocalDateTime localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), FORMATTER);
             numberRecordsInDatabase = orderCRUD.findNumberRecordsByDateStartedAt(localeDateTime);
             req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabase);
@@ -174,12 +174,12 @@ public class ReportAdminServlet extends HttpServlet {
         String customer = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_CUSTOMER);
         String localeDate = (String) req.getSession().getAttribute(SCOPE_FILTER_BY_DATE);
 
-        if (customer != null && !customer.equals("all")) {
+        if (customer != null && !customer.equals(SCOPE_SORT_ALL)) {
             PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
                     ADMIN_REPORT_CUSTOM_UK + " " + customer, ADMIN_REPORT_CUSTOM + " " + customer);
 
             return orderCRUD.findAllByCustomer(customer, pageable);
-        } else if (localeDate != null && !localeDate.equals("all")) {
+        } else if (localeDate != null && !localeDate.equals(SCOPE_SORT_ALL)) {
             PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
                     ADMIN_REPORT_DATE_UK + " " + localeDate, ADMIN_REPORT_DATE + " " + localeDate);
 

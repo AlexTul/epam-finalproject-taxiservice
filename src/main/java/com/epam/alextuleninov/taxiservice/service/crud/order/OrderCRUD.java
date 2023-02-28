@@ -64,7 +64,7 @@ public interface OrderCRUD {
      *
      * @return              order by id from database in response format
      */
-    Optional<OrderResponse> findById(long id);
+    Optional<OrderResponse> findByID(long id);
 
     /**
      * Find all dates by start order from the database.
@@ -110,12 +110,12 @@ public interface OrderCRUD {
      * @param id            id of order
      * @param request       request with parameter
      */
-    void updateById(long id, OrderRequest request);
+    void updateByID(long id, OrderRequest request);
 
     /**
      * Delete the order from database.
      *
      * @param id            id of order
      */
-    void deleteById(long id);
+    void deleteByID(long id);
 }

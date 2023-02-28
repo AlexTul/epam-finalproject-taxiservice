@@ -90,7 +90,7 @@ public class OrderServlet extends HttpServlet {
                     id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
                 }
 
-                var orderResponse = orderCRUD.findById(id).orElseThrow(() -> orderNotFound(id));
+                var orderResponse = orderCRUD.findByID(id).orElseThrow(() -> orderNotFound(id));
 
                 req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
                 req.getSession().removeAttribute(SCOPE_ACTION);
@@ -137,7 +137,7 @@ public class OrderServlet extends HttpServlet {
         }
 
         if (updateOrderID != null) {
-            orderCRUD.updateById(Long.parseLong(updateOrderID), request);
+            orderCRUD.updateByID(Long.parseLong(updateOrderID), request);
             req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
             req.getSession().removeAttribute(SCOPE_CARS);
             req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
@@ -147,7 +147,7 @@ public class OrderServlet extends HttpServlet {
                 resp.sendRedirect(URL_REPORT_CUSTOMER);
             }
         } else if (deleteOrderID != null) {
-            orderCRUD.deleteById(Long.parseLong(deleteOrderID));
+            orderCRUD.deleteByID(Long.parseLong(deleteOrderID));
             if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
                 resp.sendRedirect(URL_REPORT_ADMIN);
             } else {

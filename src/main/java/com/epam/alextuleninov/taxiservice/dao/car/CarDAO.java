@@ -67,12 +67,12 @@ public interface CarDAO {
      * @param id            id of car
      * @param request       request with parameter
      */
-    void updateById(int id, CarRequest request);
+    void updateByID(int id, CarRequest request);
 
     /**
      * Delete the car from database.
      *
      * @param id            id of car
      */
-    void deleteById(int id);
+    void deleteByID(int id);
 }
