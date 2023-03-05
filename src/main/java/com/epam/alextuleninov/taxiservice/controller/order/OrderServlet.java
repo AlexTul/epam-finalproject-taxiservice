@@ -221,6 +221,8 @@ public class OrderServlet extends HttpServlet {
                 req.getSession().removeAttribute(SCOPE_ACTION);
 
                 resp.sendRedirect(URL_MESSAGE);
+
+                req.getSession().removeAttribute(SCOPE_DATE_TIME_OF_TRAVEL);
                 return false;
             } else {
                 var stringOfCars = getStringOfCars(cars);

@@ -86,6 +86,11 @@ public final class Constants {
     public static final double LOYALTY_RATIO_MAXIMUM = 0.95;
     // endregion of the loyalty
 
+    // region of the cars characteristics
+    public static final int NUMBER_OF_PASSENGER_CAR = 4;
+    public static final int NUMBER_OF_CARGO_CAR = 2;
+    // endregion of the cars characteristics
+
     // region to format date and time
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     // endregion to format date and time

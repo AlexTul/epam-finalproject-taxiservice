@@ -33,13 +33,13 @@ public class CarsInNewOrdersTimeRange {
      * @param request  request with order`s parameters
      * @return              list with cars from orders
      */
-    public List<Car> getCarsInNewOrdersTimeRange(OrderRequest request) {
+    public List<Car> getAvailableCars(OrderRequest request) {
 
-        var allOrdersByRange = orderCRUD.findAllByRange(request);
+        var allOrdersInNewOrdersTimeRange = orderCRUD.findAllByRange(request);
 
         // add to the car`s collection the cars that have orders that overlap with the new order
         Set<Car> bookingCars = new HashSet<>();
-        for (Order variable : allOrdersByRange) {
+        for (Order variable : allOrdersInNewOrdersTimeRange) {
             bookingCars.addAll(variable.getCars());
         }
 
