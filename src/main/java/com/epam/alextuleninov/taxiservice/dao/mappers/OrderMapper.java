@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.dao.mappers;
 
-import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
 import com.epam.alextuleninov.taxiservice.model.user.User;
@@ -8,7 +7,6 @@ import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 /**
  * Class for entity`s mapping.

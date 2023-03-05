@@ -160,6 +160,8 @@ public class OrderServlet extends HttpServlet {
             req.getSession().removeAttribute(SCOPE_ACTION);
             req.getSession().removeAttribute(SCOPE_CARS);
             req.getSession().removeAttribute(SCOPE_CARS);
+            req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER);
+            req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER_UK);
             req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
 
             req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
@@ -219,10 +221,9 @@ public class OrderServlet extends HttpServlet {
                 req.getSession().setAttribute(SCOPE_MESSAGE_ORDER_UK, USER_ORDER_CANCEL_UK);
 
                 req.getSession().removeAttribute(SCOPE_ACTION);
+                req.getSession().removeAttribute(SCOPE_DATE_TIME_OF_TRAVEL);
 
                 resp.sendRedirect(URL_MESSAGE);
-
-                req.getSession().removeAttribute(SCOPE_DATE_TIME_OF_TRAVEL);
                 return false;
             } else {
                 var stringOfCars = getStringOfCars(cars);

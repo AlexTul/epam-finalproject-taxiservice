@@ -11,60 +11,21 @@
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
 
-    <!-- Filters-->
-<!--    <filter>-->
-<!--        <filter-name>EncodingFilter</filter-name>-->
-<!--        <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.EncodingFilter</filter-class>-->
-<!--        <init-param>-->
-<!--            <param-name>encoding</param-name>-->
-<!--            <param-value>UTF-8</param-value>-->
-<!--        </init-param>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>EncodingFilter</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--    </filter-mapping>-->
-
+    <!-- Local Filter -->
     <filter>
         <filter-name>LocaleFilter</filter-name>
         <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.LocaleFilter</filter-class>
-<!--        <init-param>-->
-<!--            <param-name>defaultLocale</param-name>-->
-<!--            <param-value>en</param-value>-->
-<!--        </init-param>-->
     </filter>
     <filter-mapping>
         <filter-name>LocaleFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-<!--    <filter>-->
-<!--        <filter-name>AuthenticationFilter</filter-name>-->
-<!--        <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.AuthenticationFilter</filter-class>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>AuthenticationFilter</filter-name>-->
-<!--&lt;!&ndash;        <url-pattern>report-admin.jsp</url-pattern>&ndash;&gt;-->
-<!--        <url-pattern>/login</url-pattern>-->
-<!--&lt;!&ndash;        <servlet-name>Controller</servlet-name>&ndash;&gt;-->
-<!--    </filter-mapping>-->
-
-<!--    <filter>-->
-<!--        <filter-name>AuthorizationFilter</filter-name>-->
-<!--        <filter-class>com.epam.alextuleninov.taxiservice.controller.filter.AuthorizationFilter</filter-class>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>AuthorizationFilter</filter-name>-->
-<!--&lt;!&ndash;        <url-pattern>*.jsp</url-pattern>&ndash;&gt;-->
-<!--        <url-pattern>/report</url-pattern>-->
-<!--&lt;!&ndash;        <servlet-name>Controller</servlet-name>&ndash;&gt;-->
-<!--    </filter-mapping>-->
-
-<!--     Error page-->
-        <error-page>
-            <error-code>404</error-code>
-            <location>/WEB-INF/jsp/error.jsp</location>
-        </error-page>
+    <!-- Error page-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/error.jsp</location>
+    </error-page>
 
     <!-- Session customize -->
     <session-config>

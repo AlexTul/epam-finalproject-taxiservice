@@ -36,7 +36,7 @@ public class MessageServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (req.getSession().getAttribute(SCOPE_MESSAGE_ORDER) != null
-                || req.getSession().getAttribute(SCOPE_MESSAGE_ORDER) != null
+                || req.getSession().getAttribute(SCOPE_MESSAGE_ORDER_UK) != null
                 || req.getSession().getAttribute(SCOPE_DATE_TIME_OF_TRAVEL) != null) {
 
             req.getRequestDispatcher(PAGE_MESSAGE_ORDER)

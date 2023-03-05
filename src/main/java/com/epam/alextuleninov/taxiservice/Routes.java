@@ -15,7 +15,6 @@ public final class Routes {
     public static final String PAGE_ORDER = "/WEB-INF/jsp/order.jsp";
     public static final String PAGE_ORDER_UPDATE = "/WEB-INF/jsp/order-update.jsp";
     public static final String PAGE_CONFIRM = "/WEB-INF/jsp/confirm.jsp";
-    public static final String PAGE_ORDER_SUCCESSFUL = "/WEB-INF/jsp/order-successful.jsp";
     public static final String PAGE_ADMIN_MENU = "/WEB-INF/jsp/admin-menu.jsp";
     public static final String PAGE_CUSTOMER_MENU = "/WEB-INF/jsp/customer-menu.jsp";
     public static final String PAGE_REPORT = "/WEB-INF/jsp/report-admin.jsp";
@@ -42,7 +41,6 @@ public final class Routes {
     public static final String URL_REPORT_ADMIN = "/report-admin";
     public static final String URL_REPORT_CUSTOMER = "/report-customer";
     public static final String URL_REPORT_ADMIN_ = "/report-admin/*";
-    public static final String URL_SUC = "/successful";
     public static final String URL_MESSAGE = "/message";
     public static final String URL_AUTH = "/auth";
     public static final String URL_REGISTER = "/register";

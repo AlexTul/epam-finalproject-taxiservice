@@ -1,12 +1,7 @@
 package com.epam.alextuleninov.taxiservice.dao.mappers;
 
-import com.epam.alextuleninov.taxiservice.model.car.Car;
-import com.epam.alextuleninov.taxiservice.model.user.User;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Interface for entity`s mapping.

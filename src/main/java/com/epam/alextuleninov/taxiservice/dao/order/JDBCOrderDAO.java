@@ -162,11 +162,11 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAll(PageableRequest pageable) {
-        String sqlID = "select o.id from orders o" +
+        String sql = "select o.id from orders o" +
                 " order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return getOrders(sqlID);
+        return getOrders(sql);
     }
 
     /**
@@ -250,13 +250,13 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByCustomer(String customer, PageableRequest pageable) {
-        String sqlID = "select o.id from orders o" +
+        String sql = "select o.id from orders o" +
                 " join users u on u.id = o.customer_id" +
                 " where u.email like '" + customer +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return getOrders(sqlID);
+        return getOrders(sql);
     }
 
     /**
@@ -268,14 +268,14 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByDate(LocalDateTime startedAt, PageableRequest pageable) {
-        String sqlID = "select o.id from orders o" +
+        String sql = "select o.id from orders o" +
                 " join users u on u.id = o.customer_id" +
                 " where o.started_at >= '" + Timestamp.valueOf(startedAt) +
                 "' and o.started_at < '" + Timestamp.valueOf(startedAt.plusDays(1)) +
                 "' order by o." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
-        return getOrders(sqlID);
+        return getOrders(sql);
     }
 
     /**
@@ -589,15 +589,15 @@ public class JDBCOrderDAO implements OrderDAO {
     /**
      * Find all orders from the database by SQL.
      *
-     * @param sqlID database query
+     * @param sql database query
      * @return query result
      */
-    private List<Order> getOrders(String sqlID) {
+    private List<Order> getOrders(String sql) {
         List<Order> result = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             try (var getAllOrdersID = connection.prepareStatement(
-                    sqlID
+                    sql
             );
 
                  var getAllCarsByOrderID = connection.prepareStatement(

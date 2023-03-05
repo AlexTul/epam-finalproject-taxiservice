@@ -371,6 +371,7 @@ public class JDBCUserDAO implements UserDAO {
      *
      * @param email email of user
      */
+    @Override
     public void deleteByEmail(String email) {
         try (Connection connection = dataSource.getConnection()) {
             try (var ps = connection.prepareStatement(
