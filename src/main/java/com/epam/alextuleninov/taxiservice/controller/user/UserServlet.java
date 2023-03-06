@@ -53,6 +53,7 @@ public class UserServlet extends HttpServlet {
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
 
+        // update user in the database
         if (action != null && action.equals("update")) {
             processRequestGetUpdate(req);
 
@@ -90,31 +91,15 @@ public class UserServlet extends HttpServlet {
 
         if (updateUserLogin != null) {
             if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
-                var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
-
-                userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
-
-                String finalUpdateUserLogin = updateUserLogin;
-                new Thread(() ->
-                emailSender.send(EMAIL_UPDATE_PASSWORD,
-                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword), finalUpdateUserLogin)
-                ).start();
-
-                req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
-                req.getSession().removeAttribute(SCOPE_ACTION);
-                req.getSession().removeAttribute(SCOPE_USER_RESPONSE);
-                req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+                processUpdateUser(req, updateUserLogin);
 
                 resp.sendRedirect(URL_USER);
             } else {
-
                 req.getRequestDispatcher(PAGE_USER_ACTION)
                         .forward(req, resp);
             }
         } else if (deleteUserLogin != null) {
-            userCRUD.deleteByEmail(deleteUserLogin);
-
-            new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, deleteUserLogin)).start();
+            processDeleteUser(deleteUserLogin);
 
             resp.sendRedirect(URL_USER);
         }
@@ -129,7 +114,7 @@ public class UserServlet extends HttpServlet {
      * To process Get requests from admin:
      * - add parameters to user`s action page for updating user in the database.
      *
-     * @param req  HttpServletRequest request
+     * @param req HttpServletRequest request
      */
     private void processRequestGetUpdate(HttpServletRequest req) {
         String updateUserByLogin = req.getParameter(SCOPE_LOGIN);
@@ -167,5 +152,38 @@ public class UserServlet extends HttpServlet {
 
         var allClients = userCRUD.findAllClients(PageableRequest.getPageableRequest(page));
         req.getSession().setAttribute(SCOPE_USER_RESPONSES, allClients);
+    }
+
+    /**
+     * To process update user in the database.
+     *
+     * @param req             HttpServletRequest request
+     * @param updateUserLogin identifier to update the user from the request
+     */
+    private void processUpdateUser(HttpServletRequest req, String updateUserLogin) {
+        var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
+
+        userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
+
+        new Thread(() ->
+                emailSender.send(EMAIL_UPDATE_PASSWORD,
+                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword), updateUserLogin)
+        ).start();
+
+        req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
+        req.getSession().removeAttribute(SCOPE_ACTION);
+        req.getSession().removeAttribute(SCOPE_USER_RESPONSE);
+        req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
+    }
+
+    /**
+     * To process delete user in the database.
+     *
+     * @param deleteUserLogin identifier to delete the user from the request
+     */
+    private void processDeleteUser(String deleteUserLogin) {
+        userCRUD.deleteByEmail(deleteUserLogin);
+
+        new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, deleteUserLogin)).start();
     }
 }
