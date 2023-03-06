@@ -63,25 +63,9 @@ public class RegisterServlet extends HttpServlet {
             throws IOException {
 
         if (DataValidator.initValidationRegisterCredentials(req)) {
-            boolean register = userCRUD.register(UserRequest.getUserRequest(req));
+            processRegisterUser(req);
 
-            if (!register) {
-                log.info("Email: " + req.getParameter("email") + " already taken");
-                req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_FAIL);
-                req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_FAIL_UK);
-
-                resp.sendRedirect(URL_MESSAGE);
-            } else {
-                log.info("User successfully registered");
-                req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_SUC);
-                req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_SUC_UK);
-
-                new Thread(() ->
-                        emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN))
-                ).start();
-
-                resp.sendRedirect(URL_MESSAGE);
-            }
+            resp.sendRedirect(URL_MESSAGE);
         } else {
             resp.sendRedirect(URL_REGISTER);
         }
@@ -90,5 +74,28 @@ public class RegisterServlet extends HttpServlet {
     @Override
     public void destroy() {
         log.info(getServletName() + " destroyed");
+    }
+
+    /**
+     * To process register user in the database.
+     *
+     * @param req  HttpServletRequest request
+     */
+    private void processRegisterUser(HttpServletRequest req) {
+        boolean register = userCRUD.register(UserRequest.getUserRequest(req));
+
+        if (!register) {
+            log.info("Email: " + req.getParameter("email") + " already taken");
+            req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_FAIL);
+            req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_FAIL_UK);
+        } else {
+            log.info("User successfully registered");
+            req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_SUC);
+            req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_SUC_UK);
+
+            new Thread(() ->
+                    emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN))
+            ).start();
+        }
     }
 }
