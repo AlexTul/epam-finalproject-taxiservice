@@ -28,19 +28,19 @@
 
                 <label for="firstname" class="sr-only">First name form</label>
                 <input type="text" id="firstname" name="firstname" class="form-control"
-                       value="${sessionScope.userResponse.firstName}"
+                       value="${requestScope.userResponse.firstName}"
                        minlength="2" maxlength="20" pattern="^[A-Za-zА-ЩЬЮЯҐІЇЄа-щьюяґіїє'\\- ]{1,20}" required>
                 <p style="color: red">${sessionScope.firstname}</p><br>
 
                 <label for="lastname" class="sr-only">Last name form</label>
                 <input type="text" id="lastname" name="lastname" class="form-control"
-                       value="${sessionScope.userResponse.lastName}"
+                       value="${requestScope.userResponse.lastName}"
                        minlength="2" maxlength="20" pattern="^[A-Za-zА-ЩЬЮЯҐІЇЄа-щьюяґіїє'\\- ]{1,20}" required>
                 <p style="color: red">${sessionScope.lastname}</p><br>
 
                 <label for="email" class="sr-only">Login form</label>
                 <input type="text" id="email" name="login" class="form-control"
-                       value="${sessionScope.userResponse.email}"
+                       value="${requestScope.userResponse.email}"
                        minlength="2" maxlength="40" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" required>
                 <p style="color: red">${sessionScope.loginValidate}</p><br>
 

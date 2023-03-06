@@ -92,7 +92,7 @@ public class UserResponse {
     public static UserResponse fromUser(User user) {
         return new UserResponse(
                 user.getId(),
-                user.getLastName(),
+                user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getRole().toString()

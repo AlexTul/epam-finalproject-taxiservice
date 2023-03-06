@@ -67,7 +67,7 @@ public class ProfileServlet extends HttpServlet {
             var userResponse = userCRUD.findByEmail(login)
                     .orElseThrow(() -> userNotFound(login));
 
-            req.getSession().setAttribute(SCOPE_USER_RESPONSE, userResponse);
+            req.setAttribute(SCOPE_USER_RESPONSE, userResponse);
 
             req.getRequestDispatcher(PAGE_PROFILE)
                     .forward(req, resp);
@@ -76,7 +76,8 @@ public class ProfileServlet extends HttpServlet {
 
     /**
      * To process Post requests:
-     * - update user`s credentials;
+     * - update user`s password by administrator;
+     * - change user`s credentials.
      *
      * @param req HttpServletRequest request
      */
@@ -88,33 +89,13 @@ public class ProfileServlet extends HttpServlet {
 
         if (action != null && action.equals("updatePassword")) {
             if(validationPasswordData(req, resp)) {
-                var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
-                var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
+                processUpdatePassword(req);
 
-                userCRUD.changePasswordByEmail(login, newPassword);
-
-                new Thread(() ->
-                        emailSender.send(EMAIL_UPDATE_PASSWORD,
-                                String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword),
-                                login)
-                ).start();
-
-                req.getSession().removeAttribute(SCOPE_ACTION);
                 resp.sendRedirect(URL_PROFILE);
             }
         } else {
             if (DataValidator.initValidationChangeCredentials(req)) {
-                var userRequest = UserRequest.getUserRequest(req);
-
-                String oldLogin = (String) req.getSession().getAttribute(SCOPE_LOGIN);
-                userCRUD.changeCredentialsByEmail(oldLogin, userRequest);
-                req.getSession().setAttribute(SCOPE_LOGIN, userRequest.email());
-
-                new Thread(() ->
-                        emailSender.send(EMAIL_UPDATE_CREDENTIALS,
-                                String.format(EMAIL_UPDATE_CREDENTIALS_BODY, userRequest.firstName(), userRequest.lastName(), userRequest.email()),
-                                userRequest.email())
-                ).start();
+                processChangeCredentials(req);
 
                 resp.sendRedirect(URL_LOGOUT);
             } else {
@@ -177,5 +158,44 @@ public class ProfileServlet extends HttpServlet {
             return false;
         }
         return true;
+    }
+
+    /**
+     * To process update user`s password by administrator.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processUpdatePassword(HttpServletRequest req) {
+        var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
+        var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
+
+        userCRUD.changePasswordByEmail(login, newPassword);
+
+        new Thread(() ->
+                emailSender.send(EMAIL_UPDATE_PASSWORD,
+                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword),
+                        login)
+        ).start();
+
+        req.getSession().removeAttribute(SCOPE_ACTION);
+    }
+
+    /**
+     * To process change user`s credentials by user.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processChangeCredentials(HttpServletRequest req) {
+        var userRequest = UserRequest.getUserRequest(req);
+
+        String oldLogin = (String) req.getSession().getAttribute(SCOPE_LOGIN);
+        userCRUD.changeCredentialsByEmail(oldLogin, userRequest);
+        req.getSession().setAttribute(SCOPE_LOGIN, userRequest.email());
+
+        new Thread(() ->
+                emailSender.send(EMAIL_UPDATE_CREDENTIALS,
+                        String.format(EMAIL_UPDATE_CREDENTIALS_BODY, userRequest.firstName(), userRequest.lastName(), userRequest.email()),
+                        userRequest.email())
+        ).start();
     }
 }
