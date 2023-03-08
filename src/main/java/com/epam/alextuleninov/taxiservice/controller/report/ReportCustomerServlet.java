@@ -2,9 +2,9 @@ package com.epam.alextuleninov.taxiservice.controller.report;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
-import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.sort.Sortable;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,17 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT_CUSTOMER;
 import static com.epam.alextuleninov.taxiservice.Routes.URL_REPORT_CUSTOMER;
 
 /**
- * Servlet for to process a Http request from a user.
+ * Servlet for to process a Http request from a customer.
  */
 @WebServlet(name = "ReportCustomerServlet", urlPatterns = URL_REPORT_CUSTOMER)
 public class ReportCustomerServlet extends HttpServlet {
@@ -32,10 +28,12 @@ public class ReportCustomerServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(ReportCustomerServlet.class);
 
     private OrderCRUD orderCRUD;
+    private Sortable sorter;
 
     @Override
     public void init() {
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
+        this.sorter = AppContext.getAppContext().getSorter();
         log.info(getServletName() + " initialized");
     }
 
@@ -49,7 +47,7 @@ public class ReportCustomerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        processRequest(req);
+        processRequestGet(req);
 
         req.getRequestDispatcher(PAGE_REPORT_CUSTOMER)
                 .forward(req, resp);
@@ -68,7 +66,7 @@ public class ReportCustomerServlet extends HttpServlet {
      *
      * @param req HttpServletRequest request
      */
-    private void processRequest(HttpServletRequest req) {
+    private void processRequestGet(HttpServletRequest req) {
         // section for configuration report page
         String sortTypeByDateFromRequest = req.getParameter(SCOPE_SORT_BY_DATE);
         Object sortTypeByDateFromSession = req.getSession().getAttribute(SCOPE_SORT_BY_DATE);
@@ -89,9 +87,8 @@ public class ReportCustomerServlet extends HttpServlet {
             sortTypeByCostFromSession = configureSort(sortTypeByCostFromRequest, req, SCOPE_SORT_BY_COST);
         }
 
-        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(customer);
         // set attribute for pagination, total_records = all records from database
-        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabaseByClient);
+        setNumberRecordsInDatabase(req);
 
         // config pagination
         var paginationConfig = new PaginationConfig();
@@ -101,7 +98,7 @@ public class ReportCustomerServlet extends HttpServlet {
         // find all orders with pagination for report`s page
         var allOrders = orderCRUD.findAllByCustomer(customer, PageableRequest.getPageableRequest(page));
         // sorting by date or sorting by cost
-        allOrders = getOrdersResponsesSortBy(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
+        allOrders = sorter.sorting(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
         req.setAttribute(SCOPE_ORDERS, allOrders);
     }
 
@@ -122,40 +119,14 @@ public class ReportCustomerServlet extends HttpServlet {
     }
 
     /**
-     * To process Get requests from user:
-     * sorting by date.
+     * Set attribute for pagination, total_records = all records from database.
      *
-     * @param sortTypeByDateFromSession sort type by date from session (attribute) for sorting orders by date
-     * @param sortTypeByCostFromSession sort type by cost from session (attribute) for sorting orders by cost
-     * @param allOrders                 all orders (from customer or date)
+     * @param req      HttpServletRequest request
      */
-    private List<OrderResponse> getOrdersResponsesSortBy(Object sortTypeByDateFromSession, Object sortTypeByCostFromSession,
-                                                         List<OrderResponse> allOrders) {
-        // sorting by date
-        if (sortTypeByDateFromSession != null) {
-            if (sortTypeByDateFromSession.equals(SORTING_ASC)) {
-                allOrders = allOrders.stream()
-                        .sorted(Comparator.comparing(OrderResponse::getCreatedAt))
-                        .collect(Collectors.toCollection(ArrayList::new));
-            } else {
-                allOrders = allOrders.stream()
-                        .sorted(Comparator.comparing(OrderResponse::getCreatedAt).reversed())
-                        .collect(Collectors.toCollection(ArrayList::new));
-            }
-        }
+    private void setNumberRecordsInDatabase(HttpServletRequest req) {
+        String customer = (String) req.getSession().getAttribute(SCOPE_LOGIN);
 
-        // sorting by cost
-        if (sortTypeByCostFromSession != null) {
-            if (sortTypeByCostFromSession.equals(SORTING_ASC)) {
-                allOrders = allOrders.stream()
-                        .sorted(Comparator.comparingDouble(OrderResponse::getCost))
-                        .collect(Collectors.toCollection(ArrayList::new));
-            } else {
-                allOrders = allOrders.stream()
-                        .sorted(Comparator.comparingDouble(OrderResponse::getCost).reversed())
-                        .collect(Collectors.toCollection(ArrayList::new));
-            }
-        }
-        return allOrders;
+        long numberRecordsInDatabaseByClient = orderCRUD.findNumberRecordsByCustomer(customer);
+        req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsInDatabaseByClient);
     }
 }

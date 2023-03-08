@@ -28,6 +28,8 @@ import com.epam.alextuleninov.taxiservice.service.loyalty.Loyalty;
 import com.epam.alextuleninov.taxiservice.service.loyalty.LoyaltyService;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristicsService;
+import com.epam.alextuleninov.taxiservice.service.sort.Sort;
+import com.epam.alextuleninov.taxiservice.service.sort.Sortable;
 import com.epam.alextuleninov.taxiservice.service.verifyorder.VerifyOrder;
 import com.epam.alextuleninov.taxiservice.service.verifyorder.VerifyOrderService;
 import org.slf4j.Logger;
@@ -52,6 +54,7 @@ public class AppContext {
     private final VerifyOrder verifyOrderService;
     private final DateTimeRide dateTimeRide;
     private final EmailConfig emailSender;
+    private final Sortable sorter;
 
     private AppContext() {
         DataSource dataSource = MyDataSource.getConnectionsPool();
@@ -70,6 +73,7 @@ public class AppContext {
         this.verifyOrderService = new VerifyOrderService(carCRUD);
         this.dateTimeRide = new DateTimeRideService();
         this.emailSender = new EmailConfig(properties);
+        this.sorter = new Sort();
         log.info("AppContext.class is initialized");
     }
 
@@ -111,5 +115,9 @@ public class AppContext {
 
     public EmailConfig getEmailSender() {
         return emailSender;
+    }
+
+    public Sortable getSorter() {
+        return sorter;
     }
 }
