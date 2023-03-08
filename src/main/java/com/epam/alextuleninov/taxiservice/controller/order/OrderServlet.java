@@ -55,8 +55,9 @@ public class OrderServlet extends HttpServlet {
 
     /**
      * To process Get requests from user:
-     * - if new order - forward on order page;
-     * - if update order - forward on order update page
+     * - if new order - forward on PAGE_ORDER;
+     * - if confirm order - forward on PAGE_CONFIRM;
+     * - if update order - forward on PAGE_ORDER_UPDATE.
      *
      * @param req  HttpServletRequest request
      * @param resp HttpServletResponse response
@@ -76,24 +77,12 @@ public class OrderServlet extends HttpServlet {
         if (action != null) {
             if (action.equals("confirm")) {
                 if (processRequestGetConfirm(req, resp)) {
+
                     req.getRequestDispatcher(PAGE_CONFIRM)
                             .forward(req, resp);
                 }
             } else if (action.equals("update")) {
-                String updateOrderByID = req.getParameter(SCOPE_ID);
-
-                long id;
-                if (updateOrderByID != null) {
-                    id = Long.parseLong(updateOrderByID);
-                    req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderByID);
-                } else {
-                    id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
-                }
-
-                var orderResponse = orderCRUD.findByID(id).orElseThrow(() -> orderNotFound(id));
-
-                req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
-                req.getSession().removeAttribute(SCOPE_ACTION);
+                processRequestGetUpdate(req);
 
                 req.getRequestDispatcher(PAGE_ORDER_UPDATE)
                         .forward(req, resp);
@@ -137,34 +126,15 @@ public class OrderServlet extends HttpServlet {
         }
 
         if (updateOrderID != null) {
-            orderCRUD.updateByID(Long.parseLong(updateOrderID), request);
-            req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
-            req.getSession().removeAttribute(SCOPE_CARS);
-            req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
-            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
-                resp.sendRedirect(URL_REPORT_ADMIN);
-            } else {
-                resp.sendRedirect(URL_REPORT_CUSTOMER);
-            }
+            processPostUpdateOrder(req, updateOrderID, request);
+
+            chooseResponseRedirectPage(req, resp);
         } else if (deleteOrderID != null) {
-            orderCRUD.deleteByID(Long.parseLong(deleteOrderID));
-            if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
-                resp.sendRedirect(URL_REPORT_ADMIN);
-            } else {
-                resp.sendRedirect(URL_REPORT_CUSTOMER);
-            }
+            processPostDeleteOrder(deleteOrderID);
+
+            chooseResponseRedirectPage(req, resp);
         } else {
-            orderCRUD.create(request);
-            carCRUD.changeCarStatus(request);
-
-            req.getSession().removeAttribute(SCOPE_ACTION);
-            req.getSession().removeAttribute(SCOPE_CARS);
-            req.getSession().removeAttribute(SCOPE_CARS);
-            req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER);
-            req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER_UK);
-            req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
-
-            req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
+            processPostCreateOrder(req, request);
 
             resp.sendRedirect(URL_MESSAGE);
         }
@@ -193,7 +163,7 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
-     * To process Post requests from user:
+     * To process Get requests from user:
      * validation an order`s data, calculate the data and time of trip,
      * generating a request for confirming order, calculate loyalty price,
      * setting the attribute in the user`s session.
@@ -248,6 +218,29 @@ public class OrderServlet extends HttpServlet {
     }
 
     /**
+     * To process Get requests from user:
+     * - if update order - generating data for PAGE_ORDER_UPDATE.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processRequestGetUpdate(HttpServletRequest req) {
+        String updateOrderByID = req.getParameter(SCOPE_ID);
+
+        long id;
+        if (updateOrderByID != null) {
+            id = Long.parseLong(updateOrderByID);
+            req.getSession().setAttribute(SCOPE_UPDATE_ORDER_ID, updateOrderByID);
+        } else {
+            id = Integer.parseInt((String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID));
+        }
+
+        var orderResponse = orderCRUD.findByID(id).orElseThrow(() -> orderNotFound(id));
+
+        req.setAttribute(SCOPE_ORDER_RESPONSE, orderResponse);
+        req.getSession().removeAttribute(SCOPE_ACTION);
+    }
+
+    /**
      * Get string of cars from order.
      *
      * @param cars list with cars
@@ -259,5 +252,60 @@ public class OrderServlet extends HttpServlet {
             stringListOfCars.append(variable.getCarName()).append(", ").append(variable.getCarCategory()).append("; ");
         }
         return stringListOfCars.toString();
+    }
+
+    /**
+     * To process update order in the database.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processPostUpdateOrder(HttpServletRequest req, String updateOrderID, OrderRequest request) {
+        orderCRUD.updateByID(Long.parseLong(updateOrderID), request);
+        req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
+        req.getSession().removeAttribute(SCOPE_CARS);
+        req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
+    }
+
+    /**
+     * To process delete order in the database.
+     *
+     * @param deleteOrderID order`s ID for deleting from the database
+     */
+    private void processPostDeleteOrder(String deleteOrderID) {
+        orderCRUD.deleteByID(Long.parseLong(deleteOrderID));
+    }
+
+    /**
+     * To process create order in the database.
+     *
+     * @param req HttpServletRequest request
+     */
+    private void processPostCreateOrder(HttpServletRequest req, OrderRequest request) {
+        orderCRUD.create(request);
+        carCRUD.changeCarStatus(request);
+
+        req.getSession().removeAttribute(SCOPE_ACTION);
+        req.getSession().removeAttribute(SCOPE_CARS);
+        req.getSession().removeAttribute(SCOPE_CARS);
+        req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER);
+        req.getSession().removeAttribute(SCOPE_MESSAGE_ORDER_UK);
+        req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);
+
+        req.getSession().setAttribute(SCOPE_DATE_TIME_OF_TRAVEL, request.startedAt().format(FORMATTER));
+    }
+
+    /**
+     * Choose page for redirect from user`s role.
+     *
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
+     */
+    private void chooseResponseRedirectPage(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        if (req.getSession().getAttribute(SCOPE_ROLE).equals(Role.ADMINISTRATOR)) {
+            resp.sendRedirect(URL_REPORT_ADMIN);
+        } else {
+            resp.sendRedirect(URL_REPORT_CUSTOMER);
+        }
     }
 }

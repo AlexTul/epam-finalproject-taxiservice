@@ -110,6 +110,7 @@ public class AuthenticationFilter implements Filter {
             req.getRequestDispatcher(PAGE_CUSTOMER_MENU)
                     .forward(req, resp);
         } else {
+
             req.getRequestDispatcher(PAGE_LOGIN)
                     .forward(req, resp);
         }
