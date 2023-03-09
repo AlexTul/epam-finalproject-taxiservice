@@ -4,6 +4,7 @@ import com.epam.alextuleninov.taxiservice.ConstantsTest;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.CarMapper;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
+import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,6 +28,7 @@ public class JDBCCarDAOTest {
     private DataSource dataSource;
     private ResultSet resultSet;
     private CarDAO carDAO;
+    private ResultSetMapper<Car> mapper;
 
     @BeforeEach
     void setUp() {
@@ -37,25 +36,47 @@ public class JDBCCarDAOTest {
         resultSet = mock(ResultSet.class);
         ResultSetMapper<Car> mapper = new CarMapper();
         carDAO = new JDBCCarDAO(dataSource, mapper);
+        this.mapper = mapper;
     }
 
     @Test
-    void testCreate() {
-        try (var preparedStatement = prepareMocks(dataSource)) {
-            when(preparedStatement.executeUpdate()).thenReturn(1);
-//            createCar.setString(1, request.carName());
-//            createCar.setInt(2, request.numberOfPassengers());
-//            createCar.setString(3, request.carCategory());
-//            createCar.setString(4, request.carStatus());
-//
-//            when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
-//            when(resultSet.next()).thenReturn(true).thenReturn(false);
-//            when(resultSet.getInt(1)).thenReturn(0);
-//
-//            assertDoesNotThrow(() -> carDAO.create(getTestCarRequest()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    void testCreate() throws SQLException {
+        Connection connection = mock(Connection.class);
+        DataSource dataSource = mock(DataSource.class);
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        ResultSet generatedKeys = mock(ResultSet.class);
+        var request = new CarRequest(
+                getTestCarRequest().carName(),
+                getTestCarRequest().numberOfPassengers(),
+                getTestCarRequest().carCategory(),
+                getTestCarRequest().carStatus()
+        );
+
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+        when(preparedStatement.getGeneratedKeys()).thenReturn(generatedKeys);
+        when(generatedKeys.next()).thenReturn(true);
+        when(generatedKeys.getInt(1)).thenReturn(123);
+
+        var carDAO = new JDBCCarDAO(dataSource, mapper);
+
+        var createdCar = carDAO.create(request);
+
+        assertNotNull(createdCar);
+        assertEquals(123, createdCar.getId());
+        assertEquals(request.carName(), createdCar.getCarName());
+        assertEquals(request.numberOfPassengers(), createdCar.getNumberOfPassengers());
+        assertEquals(request.carCategory(), createdCar.getCarCategory());
+        assertEquals(request.carStatus(), createdCar.getCarStatus());
+    }
+
+    @Test
+    void testSQLExceptionCreate() throws SQLException {
+        DataSource dataSource = mock(DataSource.class);
+        var carDAO = new JDBCCarDAO(dataSource, mapper);
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> carDAO.create(getTestCarRequest()));
     }
 
     @Test
@@ -79,7 +100,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindAll() throws SQLException {
+    void testSQLExceptionFindAll() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         try {
             assertThrows(UnexpectedDataAccessException.class, (Executable) carDAO.findAll(getTestPageableRequest()));
@@ -108,7 +129,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindAllByCategoryStatus() throws SQLException {
+    void testSQLExceptionFindAllByCategoryStatus() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         try {
             assertThrows(UnexpectedDataAccessException.class, (Executable) carDAO.findAllByCategoryStatus(getTestOrderRequest()));
@@ -137,11 +158,9 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindByID() throws SQLException {
-//        when(dataSource.getConnection()).thenThrow(new SQLException());
-//        try {
-//            assertThrows(UnexpectedDataAccessException.class, carDAO.findByID(0));
-//        } catch (UnexpectedDataAccessException ignored) {}
+    void testSQLExceptionFindByID() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> carDAO.findByID(0));
     }
 
     @Test
@@ -152,7 +171,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionChangeCarStatus() throws SQLException {
+    void testSQLExceptionChangeCarStatus() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> carDAO.changeCarStatus(getTestOrderRequest()));
     }
@@ -179,7 +198,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindNumberRecords() throws SQLException {
+    void testSQLExceptionFindNumberRecords() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> carDAO.findNumberRecords());
     }
@@ -192,7 +211,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionUpdateById() throws SQLException {
+    void testSQLExceptionUpdateById() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> carDAO.updateByID(0, getTestCarRequest()));
     }
@@ -209,7 +228,7 @@ public class JDBCCarDAOTest {
     }
 
     @Test
-    void testSqlExceptionDeleteById() throws SQLException {
+    void testSQLExceptionDeleteById() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> carDAO.deleteByID(0));
     }

@@ -1,6 +1,5 @@
 package com.epam.alextuleninov.taxiservice.model.car;
 
-import com.epam.alextuleninov.taxiservice.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
