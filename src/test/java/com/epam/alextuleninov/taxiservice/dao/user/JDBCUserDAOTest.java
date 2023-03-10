@@ -4,18 +4,15 @@ import com.epam.alextuleninov.taxiservice.ConstantsTest;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.dao.mappers.UserMapper;
+import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,18 +27,52 @@ public class JDBCUserDAOTest {
     private DataSource dataSource;
     private UserDAO userDAO;
     private ResultSet resultSet;
+    private ResultSetMapper<User> mapper;
 
     @BeforeEach
     void setUp() {
-        dataSource = mock(DataSource.class);
-        ResultSetMapper<User> userMapper = new UserMapper();
-        userDAO = new JDBCUserDAO(dataSource, userMapper);
-        resultSet = mock(ResultSet.class);
+        this.dataSource = mock(DataSource.class);
+        this.mapper = new UserMapper();
+        this.userDAO = new JDBCUserDAO(dataSource, mapper);
+        this.resultSet = mock(ResultSet.class);
     }
 
     @Test
-    void testСreate() throws SQLException {
+    void testCreate() throws SQLException {
+        Connection connection = mock(Connection.class);
+        DataSource dataSource = mock(DataSource.class);
+        PreparedStatement preparedStatement = mock(PreparedStatement.class);
+        ResultSet generatedKeys = mock(ResultSet.class);
+        var request = new UserRequest(
+                getTestUserRequest().firstName(),
+                getTestUserRequest().lastName(),
+                getTestUserRequest().email(),
+                getTestUserRequest().password()
+        );
 
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS))).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+        when(preparedStatement.getGeneratedKeys()).thenReturn(generatedKeys);
+        when(generatedKeys.next()).thenReturn(true);
+        when(generatedKeys.getLong(1)).thenReturn(123L);
+
+        var userDAO = new JDBCUserDAO(dataSource, mapper);
+
+        var createdUser = userDAO.create(request);
+
+        assertNotNull(createdUser);
+        assertEquals(123L, createdUser.getId());
+        assertEquals(request.firstName(), createdUser.getFirstName());
+        assertEquals(request.lastName(), createdUser.getLastName());
+        assertEquals(request.email(), createdUser.getEmail());
+        assertNull(createdUser.getPassword());
+    }
+
+    @Test
+    void testSQLExceptionCreate() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.create(getTestUserRequest()));
     }
 
     @Test
@@ -65,12 +96,9 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindAllClient() throws SQLException {
+    void testSQLExceptionFindAllClient() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findAllClient());
-        } catch (UnexpectedDataAccessException ignored) {
-        }
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findAllClient());
     }
 
     @Test
@@ -94,12 +122,9 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindAll() throws SQLException {
+    void testSQLExceptionFindAll() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findAll(getTestPageableRequest()));
-        } catch (UnexpectedDataAccessException ignored) {
-        }
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findAll(getTestPageableRequest()));
     }
 
     @Test
@@ -122,12 +147,10 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindByEmail() throws SQLException {
+    void testSQLExceptionFindByEmail() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findByEmail(getTestOrderRequest().customer())
-                    .orElseThrow(() -> userNotFound(getTestOrderRequest().customer())));
-        } catch (UnexpectedDataAccessException ignored) {}
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findByEmail(getTestOrderRequest().customer())
+                .orElseThrow(() -> userNotFound(getTestOrderRequest().customer())));
     }
 
     @Test
@@ -150,11 +173,9 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindRoleByEmail() throws SQLException {
-//        when(dataSource.getConnection()).thenThrow(new SQLException());
-//        try {
-//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.findRoleByEmail(getTestOrderRequest().customer()));
-//        } catch (UnexpectedDataAccessException ignored) {}
+    void testSQLExceptionFindRoleByEmail() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findRoleByEmail(getTestOrderRequest().customer()));
     }
 
     @Test
@@ -177,11 +198,9 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionExistsByEmail() throws SQLException {
-//        when(dataSource.getConnection()).thenThrow(new SQLException());
-//        try {
-//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.existsByEmail(getTestOrderRequest().customer()));
-//        } catch (UnexpectedDataAccessException ignored) {}
+    void testSQLExceptionExistsByEmail() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.existsByEmail(getTestOrderRequest().customer()));
     }
 
     @Test
@@ -206,11 +225,9 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionExistsByEmailPassword() throws SQLException {
-//        when(dataSource.getConnection()).thenThrow(new SQLException());
-//        try {
-//            assertThrows(UnexpectedDataAccessException.class, (Executable) userDAO.existsByEmail(getTestOrderRequest().customer()));
-//        } catch (UnexpectedDataAccessException ignored) {}
+    void testSQLExceptionExistsByEmailPassword() throws SQLException {
+        when(dataSource.getConnection()).thenThrow(new SQLException());
+        assertThrows(UnexpectedDataAccessException.class, () -> userDAO.existsByEmail(getTestOrderRequest().customer()));
     }
 
     @Test
@@ -235,7 +252,7 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionFindNumberRecords() throws SQLException {
+    void testSQLExceptionFindNumberRecords() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> userDAO.findNumberRecords());
     }
@@ -249,7 +266,7 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionChangeCredentialsByEmail() throws SQLException {
+    void testSQLExceptionChangeCredentialsByEmail() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> userDAO.changeCredentialsByEmail(
                 getTestUserRequest().email(), getTestUserRequest()));
@@ -264,7 +281,7 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionChangePasswordByEmail() throws SQLException {
+    void testSQLExceptionChangePasswordByEmail() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> userDAO.changePasswordByEmail(
                 getTestUserRequest().email(), getTestUserRequest().password()));
@@ -282,7 +299,7 @@ public class JDBCUserDAOTest {
     }
 
     @Test
-    void testSqlExceptionDeleteById() throws SQLException {
+    void testSQLExceptionDeleteById() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> userDAO.deleteByEmail(getTestUser().getEmail()));
     }

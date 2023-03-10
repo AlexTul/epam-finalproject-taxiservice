@@ -9,7 +9,6 @@ import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAc
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -32,10 +31,10 @@ public class JDBCCarDAOTest {
 
     @BeforeEach
     void setUp() {
-        dataSource = mock(DataSource.class);
-        resultSet = mock(ResultSet.class);
+        this.dataSource = mock(DataSource.class);
+        this.resultSet = mock(ResultSet.class);
         ResultSetMapper<Car> mapper = new CarMapper();
-        carDAO = new JDBCCarDAO(dataSource, mapper);
+        this.carDAO = new JDBCCarDAO(dataSource, mapper);
         this.mapper = mapper;
     }
 
@@ -73,8 +72,6 @@ public class JDBCCarDAOTest {
 
     @Test
     void testSQLExceptionCreate() throws SQLException {
-        DataSource dataSource = mock(DataSource.class);
-        var carDAO = new JDBCCarDAO(dataSource, mapper);
         when(dataSource.getConnection()).thenThrow(new SQLException());
         assertThrows(UnexpectedDataAccessException.class, () -> carDAO.create(getTestCarRequest()));
     }
@@ -102,10 +99,7 @@ public class JDBCCarDAOTest {
     @Test
     void testSQLExceptionFindAll() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) carDAO.findAll(getTestPageableRequest()));
-        } catch (UnexpectedDataAccessException ignored) {
-        }
+        assertThrows(UnexpectedDataAccessException.class, () -> carDAO.findAll(getTestPageableRequest()));
     }
 
     @Test
@@ -131,10 +125,7 @@ public class JDBCCarDAOTest {
     @Test
     void testSQLExceptionFindAllByCategoryStatus() throws SQLException {
         when(dataSource.getConnection()).thenThrow(new SQLException());
-        try {
-            assertThrows(UnexpectedDataAccessException.class, (Executable) carDAO.findAllByCategoryStatus(getTestOrderRequest()));
-        } catch (UnexpectedDataAccessException ignored) {
-        }
+        assertThrows(UnexpectedDataAccessException.class, () -> carDAO.findAllByCategoryStatus(getTestOrderRequest()));
     }
 
     @Test

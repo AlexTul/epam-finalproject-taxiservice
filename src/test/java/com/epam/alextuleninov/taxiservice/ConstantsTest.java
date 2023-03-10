@@ -29,23 +29,14 @@ public final class ConstantsTest {
     public static final String CAR_STATUS_VALUE = "AVAILABLE";
     // endregion car
 
-    // region route
-    public static final long ROUTE_ID_VALUE = 0;
-    public static final long ROUTE_DISTANCE_VALUE = 2;
-    public static final double ROUTE_PRICE_VALUE = 40.0;
-    public static final int ROUTE_TRAVEL_TIME_VALUE = 600;
-    // endregion route
-
-    // region address
-    public static final long ADDRESS_ID_VALUE = 0;
-    public static final String ADDRESS_START_END_VALUE = "Pivnichnyy lane, 1-10 - Depovska street, 1 - 30";
-    public static final String ADDRESS_START_END_UK_VALUE = "Poltavskyy Shlyah, 1-10 - Depovska street, 1 - 30";
-    // endregion address
-
     // region order
     public static final long ORDER_ID_VALUE = 0;
     public static final Timestamp ORDER_DATE_VALUE = Timestamp.valueOf("2023-01-28 11:39:11.129002");
     public static final int ORDER_PASSENGERS_VALUE = 4;
+    public static final String ORDER_START_TRAVEL_VALUE = "Pivnichnyy lane, 1-10 - Depovska street, 1 - 30";
+    public static final String ORDER_END_TRAVEL_VALUE = "Poltavskyy Shlyah, 1-10 - Depovska street, 1 - 30";
+    public static final double ORDER_DISTANCE_TRAVEL_VALUE = 4;
+    public static final int ORDER_DURATION_TRAVEL_VALUE = 300;
     public static final double ORDER_COST_VALUE = 40.0;
     public static final Timestamp ORDER_STARTED_AT_VALUE = Timestamp.valueOf("2023-02-03 14:39:00.000000");
     public static final Timestamp ORDER_FINISHED_AT_VALUE = Timestamp.valueOf("2023-02-03 14:54:00.000000");
@@ -54,6 +45,4 @@ public final class ConstantsTest {
     // message
     public static final String ADMIN_REPORT_ALL_UK = " усі замовлення";
     public static final String ADMIN_REPORT_ALL = " all orders";
-    public static final String USER_UK = "Вибачте, ваші дані не валідні.";
-    public static final String USER = "Sorry, your data not validated.";
 }

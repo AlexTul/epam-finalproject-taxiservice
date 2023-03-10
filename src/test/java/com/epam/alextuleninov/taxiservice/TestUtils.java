@@ -39,6 +39,26 @@ public final class TestUtils {
         );
     }
 
+    public static Order getTestOrder() {
+        List<Car> cars = new ArrayList<>();
+        cars.add(getTestCar());
+
+        return new Order(
+                ConstantsTest.ORDER_ID_VALUE,
+                ConstantsTest.ORDER_DATE_VALUE.toLocalDateTime(),
+                getTestUser(),
+                ConstantsTest.ORDER_PASSENGERS_VALUE,
+                cars,
+                ConstantsTest.ORDER_START_TRAVEL_VALUE,
+                ConstantsTest.ORDER_END_TRAVEL_VALUE,
+                ConstantsTest.ORDER_DISTANCE_TRAVEL_VALUE,
+                ConstantsTest.ORDER_DURATION_TRAVEL_VALUE,
+                ConstantsTest.ORDER_COST_VALUE,
+                ConstantsTest.ORDER_STARTED_AT_VALUE.toLocalDateTime(),
+                ConstantsTest.ORDER_FINISHED_AT_VALUE.toLocalDateTime()
+        );
+    }
+
     public static PageableRequest getTestPageableRequest() {
         return new PageableRequest(
                 DataSourceFields.ORDER_ID,
@@ -79,16 +99,6 @@ public final class TestUtils {
         );
     }
 
-    public static Car getTestCar() {
-        return new Car(
-                ConstantsTest.CAR_ID_VALUE,
-                ConstantsTest.CAR_NAME_VALUE,
-                ConstantsTest.CAR_PASSENGERS_VALUE,
-                ConstantsTest.CAR_CAR_CATEGORY_VALUE,
-                ConstantsTest.CAR_STATUS_VALUE
-        );
-    }
-
     public static CarRequest getTestCarRequest() {
         return new CarRequest(
                 "Audi A6 AX 0000 KX",
@@ -98,23 +108,13 @@ public final class TestUtils {
         );
     }
 
-    public static Order getTestOrder() {
-        List<Car> cars = new ArrayList<>();
-        cars.add(getTestCar());
-
-        return new Order(
-                ConstantsTest.ORDER_ID_VALUE,
-                ConstantsTest.ORDER_DATE_VALUE.toLocalDateTime(),
-                getTestUser(),
-                ConstantsTest.ORDER_PASSENGERS_VALUE,
-                cars,
-                "Pivnichnyy lane, 1-10 - Depovska street, 1 - 30",
-                "Pivnichnyy lane, 1-10 - Depovska street, 1 - 30",
-                4,
-                300,
-                ConstantsTest.ORDER_COST_VALUE,
-                ConstantsTest.ORDER_STARTED_AT_VALUE.toLocalDateTime(),
-                ConstantsTest.ORDER_FINISHED_AT_VALUE.toLocalDateTime()
+    public static Car getTestCar() {
+        return new Car(
+                ConstantsTest.CAR_ID_VALUE,
+                ConstantsTest.CAR_NAME_VALUE,
+                ConstantsTest.CAR_PASSENGERS_VALUE,
+                ConstantsTest.CAR_CAR_CATEGORY_VALUE,
+                ConstantsTest.CAR_STATUS_VALUE
         );
     }
 

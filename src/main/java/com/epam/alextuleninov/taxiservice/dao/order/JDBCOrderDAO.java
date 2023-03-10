@@ -315,7 +315,7 @@ public class JDBCOrderDAO implements OrderDAO {
 
                 ResultSet resultSet = psGetOrderByID.executeQuery();
                 if (resultSet.next()) {
-                    return Optional.of(orderMap(resultSet, carsByOrder));
+                    return Optional.of(orderMap(id, resultSet, carsByOrder));
                 } else {
                     return Optional.empty();
                 }
@@ -685,9 +685,9 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param resultSet   result set
      * @param carsByOrder list with cars by order
      */
-    private Order orderMap(ResultSet resultSet, List<Car> carsByOrder) throws SQLException {
+    private Order orderMap(long id, ResultSet resultSet, List<Car> carsByOrder) throws SQLException {
         return new Order(
-                resultSet.getLong(DataSourceFields.ORDER_ID),
+                id,
                 resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
                 userMapper.map(resultSet),
                 resultSet.getInt(DataSourceFields.ORDER_PASSENGERS),

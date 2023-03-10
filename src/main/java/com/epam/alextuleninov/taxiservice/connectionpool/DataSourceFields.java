@@ -30,18 +30,15 @@ public final class DataSourceFields {
     public static final String ROUTE_TRAVEL_TIME = "travel_time";
     // endregion route
 
-    // region addresses
-    public static final String ADDRESS_ID = "id";
-    public static final String ADDRESS_START_END = "start_end";
-    public static final String ADDRESS_START_END_UK = "start_end_uk";
-    // endregion addresses
-
     // region order
     public static final String ORDER_ID = "id";
     public static final String ORDER_DATE = "date";
     public static final String ORDER_CUSTOMER_ID = "customer_id";
     public static final String ORDER_PASSENGERS = "order_passengers";
-    public static final String ORDER_ROUTE_ID = "route_id";
+    public static final String ORDER_START_TRAVEL = "start_travel";
+    public static final String ORDER_END_TRAVEL = "end_travel";
+    public static final String ORDER_TRAVEL_DISTANCE = "travel_distance";
+    public static final String ORDER_TRAVEL_DURATION = "travel_duration";
     public static final String ORDER_COST = "cost";
     public static final String ORDER_STARTED_AT = "started_at";
     public static final String ORDER_FINISHED_AT = "finished_at";
