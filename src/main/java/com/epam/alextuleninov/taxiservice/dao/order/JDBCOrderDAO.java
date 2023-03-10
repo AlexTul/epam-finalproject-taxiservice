@@ -26,16 +26,13 @@ public class JDBCOrderDAO implements OrderDAO {
     private final DataSource dataSource;
     private final ResultSetMapper<Car> carMapper;
     private final ResultSetMapper<User> userMapper;
-    private final ResultSetMapper<Order> orderMapper;
 
     public JDBCOrderDAO(DataSource dataSource,
                         ResultSetMapper<Car> carMapper,
-                        ResultSetMapper<User> userMapper,
-                        ResultSetMapper<Order> orderMapper) {
+                        ResultSetMapper<User> userMapper) {
         this.dataSource = dataSource;
         this.carMapper = carMapper;
         this.userMapper = userMapper;
-        this.orderMapper = orderMapper;
     }
 
     /**
@@ -177,7 +174,7 @@ public class JDBCOrderDAO implements OrderDAO {
      */
     @Override
     public List<Order> findAllByRange(OrderRequest request) {
-        List<Order> orders = new ArrayList<>();
+        List<Order> result = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             try (var getAllOrdersIDByRange = connection.prepareStatement(
@@ -199,7 +196,7 @@ public class JDBCOrderDAO implements OrderDAO {
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
-                                 where o.started_at < ? and finished_at > ?
+                                 where o.id = ?
                                  """
                  )) {
 
@@ -212,33 +209,38 @@ public class JDBCOrderDAO implements OrderDAO {
                 getAllOrdersIDByRange.setTimestamp(2, Timestamp.valueOf(finishedAt));
 
                 // find all order id for car`s select
+                List<Long> ordersID = new ArrayList<>();
+                long id;
                 Map<Long, List<Car>> mapOrderCars = new HashMap<>();
                 ResultSet rsAllOrdersIDByNow = getAllOrdersIDByRange.executeQuery();
                 while (rsAllOrdersIDByNow.next()) {
+                    id = rsAllOrdersIDByNow.getLong(DataSourceFields.ORDER_ID);
+                    ordersID.add(id);
                     List<Car> carsByOrder = new ArrayList<>();
 
                     // find all cars by order`s id
-                    getAllCarsByOrderID.setLong(1, rsAllOrdersIDByNow.getLong(DataSourceFields.ORDER_ID));
+                    getAllCarsByOrderID.setLong(1, id);
                     getAllCarsByOrderID.setString(2, request.carCategory());
                     ResultSet rsAllCarsByOrderID = getAllCarsByOrderID.executeQuery();
                     while (rsAllCarsByOrderID.next()) {
                         carsByOrder.add(carMapper.map(rsAllCarsByOrderID));
                     }
-                    mapOrderCars.put(rsAllOrdersIDByNow.getLong(DataSourceFields.ORDER_ID), carsByOrder);
+                    mapOrderCars.put(id, carsByOrder);
                 }
 
-                // find all orders by now
-                getAllOrdersByRange.setTimestamp(1, Timestamp.valueOf(startedAt));
-                getAllOrdersByRange.setTimestamp(2, Timestamp.valueOf(finishedAt));
-                ResultSet rsAllOrders = getAllOrdersByRange.executeQuery();
-                ordersMap(orders, rsAllOrders, mapOrderCars);
+                // get all orders by now
+                for (Long variable : ordersID) {
+                    getAllOrdersByRange.setLong(1, variable);
+                    ResultSet rsAllOrders = getAllOrdersByRange.executeQuery();
+                    ordersMap(result, variable, rsAllOrders, mapOrderCars);
+                }
             }
         } catch (NullPointerException e) {
-            return orders;
+            return result;
         } catch (SQLException e) {
             throw new UnexpectedDataAccessException(e);
         }
-        return orders;
+        return result;
     }
 
     /**
@@ -639,7 +641,7 @@ public class JDBCOrderDAO implements OrderDAO {
                 for (Long variable : ordersID) {
                     getAllOrders.setLong(1, variable);
                     ResultSet rsAllOrders = getAllOrders.executeQuery();
-                    ordersMap(result, rsAllOrders, mapOrderCars);
+                    ordersMap(result, variable, rsAllOrders, mapOrderCars);
                 }
             }
         } catch (NullPointerException e) {
@@ -657,16 +659,16 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param rsAllOrders  result set
      * @param mapOrderCars map with cars by order
      */
-    private void ordersMap(List<Order> result, ResultSet rsAllOrders, Map<Long, List<Car>> mapOrderCars)
+    private void ordersMap(List<Order> result, long variable, ResultSet rsAllOrders, Map<Long, List<Car>> mapOrderCars)
             throws SQLException {
         while (rsAllOrders.next()) {
             result.add(
                     new Order(
-                            rsAllOrders.getLong(DataSourceFields.ORDER_ID),
+                            variable,
                             rsAllOrders.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
                             userMapper.map(rsAllOrders),
                             rsAllOrders.getInt(DataSourceFields.ORDER_PASSENGERS),
-                            mapOrderCars.get(rsAllOrders.getLong(DataSourceFields.ORDER_ID)),
+                            mapOrderCars.get(variable),
                             rsAllOrders.getString(DataSourceFields.ROUTE_START_TRAVEL),
                             rsAllOrders.getString(DataSourceFields.ROUTE_END_TRAVEL),
                             rsAllOrders.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
