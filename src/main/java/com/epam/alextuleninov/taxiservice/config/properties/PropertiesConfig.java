@@ -18,7 +18,7 @@ public class PropertiesConfig {
     /**
      * Get properties from properties file.
      */
-    public Properties jdbcProperties() {
+    public Properties properties() {
         try (var in = getClass().getClassLoader().getResourceAsStream(Constants.SETTINGS_FILE)) {
             var properties = new Properties();
             properties.load(in);

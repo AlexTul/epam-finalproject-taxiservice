@@ -1,5 +1,6 @@
 package com.epam.alextuleninov.taxiservice.service.routecharacteristics;
 
+import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
 import org.json.JSONArray;
@@ -22,7 +23,7 @@ public class RouteCharacteristicsService implements RouteCharacteristics {
     /**
      * Determine the characteristics of the route depending on the user's request.
      *
-     * @param request               request from user
+     * @param request request from user
      */
     @Override
     public RouteCharacteristicsResponse getRouteCharacteristics(OrderRequest request) {
@@ -59,12 +60,12 @@ public class RouteCharacteristicsService implements RouteCharacteristics {
     /**
      * Build query string.
      *
-     * @param request               request from user
+     * @param request request from user
      */
     private static String buildQueryString(OrderRequest request) {
         String start = request.startTravel().replaceAll(" ", "%20");
         String end = request.endTravel().replaceAll(" ", "%20");
-        String key = "AjFmesvITcGySxN2OzTDZ6Eb26T0aE-QCJB3ykvMKLCJQRcdKce877tRI4sTM5U5";
+        String key = new PropertiesConfig().properties().getProperty("key");
         return String.format(
                 "https://dev.virtualearth.net/REST/V1/Routes/Driving?wp.0=%s&wp.1=%s&avoid=minimizeTolls&key=%s",
                 start,

@@ -61,7 +61,7 @@ public class AppContext {
         ResultSetMapper<User> userMapper = new UserMapper();
         UserDAO userDAO = new JDBCUserDAO(dataSource, userMapper);
         OrderDAO orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper);
-        Properties properties = new PropertiesConfig().jdbcProperties();
+        Properties properties = new PropertiesConfig().properties();
         this.routeCharacteristics = new RouteCharacteristicsService();
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);

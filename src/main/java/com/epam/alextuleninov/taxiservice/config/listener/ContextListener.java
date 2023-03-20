@@ -37,7 +37,7 @@ public class ContextListener implements ServletContextListener {
         MyDataSource.getConnectionsPool().close();
         java.sql.Driver mySqlDriver;
         try {
-            mySqlDriver = DriverManager.getDriver(new PropertiesConfig().jdbcProperties().getProperty("jdbcUrl"));
+            mySqlDriver = DriverManager.getDriver(new PropertiesConfig().properties().getProperty("jdbcUrl"));
             DriverManager.deregisterDriver(mySqlDriver);
         } catch (SQLException e) {
             throw new RuntimeException(e);

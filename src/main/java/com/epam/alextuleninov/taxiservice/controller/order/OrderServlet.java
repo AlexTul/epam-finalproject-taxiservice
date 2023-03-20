@@ -26,6 +26,7 @@ import java.util.List;
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
 import static com.epam.alextuleninov.taxiservice.exceptions.order.OrderExceptions.orderNotFound;
+import static java.lang.Math.ceil;
 
 /**
  * OrderServlet for to process a Http request from a user.
@@ -203,7 +204,7 @@ public class OrderServlet extends HttpServlet {
                 var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
 
                 req.getSession().setAttribute(SCOPE_CARS, cars);
-                req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
+                req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, ceil(loyaltyPrice.loyaltyPrice()));
                 req.getSession().setAttribute(SCOPE_START_TRAVEL, req.getParameter(SCOPE_START_TRAVEL));
                 req.getSession().setAttribute(SCOPE_END_TRAVEL, req.getParameter(SCOPE_END_TRAVEL));
                 req.getSession().setAttribute(SCOPE_TRAVEL_DISTANCE, routeChar.travelDistance());

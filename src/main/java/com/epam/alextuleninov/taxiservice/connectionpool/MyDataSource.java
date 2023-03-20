@@ -18,7 +18,7 @@ public class MyDataSource {
     private static final HikariDataSource ds;
 
     static {
-        var properties = new PropertiesConfig().jdbcProperties();
+        var properties = new PropertiesConfig().properties();
         config.setDriverClassName(properties.getProperty("driver"));
         config.setJdbcUrl(properties.getProperty("jdbcUrl"));
         config.setUsername(properties.getProperty("username"));
