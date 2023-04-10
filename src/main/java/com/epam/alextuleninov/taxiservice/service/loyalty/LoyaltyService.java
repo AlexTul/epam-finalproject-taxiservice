@@ -7,6 +7,8 @@ import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
 import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
+import static java.lang.Math.ceil;
+import static java.lang.Math.max;
 
 /**
  * Interface for count loyalty price.
@@ -38,9 +40,9 @@ public class LoyaltyService implements Loyalty {
         var routeCharacteristicsResp = routeCharacteristics.getRouteCharacteristics(request);
         double price = routeCharacteristicsResp.travelDistance() * Constants.TRAVEL_PRICE_KILOMETER;
         // if the price is less than the minimum
-        price = Math.max(price, Constants.TRAVEL_PRICE_MINIMAL);
+        price = max(price, Constants.TRAVEL_PRICE_MINIMAL);
 
-        return new LoyaltyRatio(loyaltyRatio * price);
+        return new LoyaltyRatio(ceil(loyaltyRatio * price));
     }
 
     /**
