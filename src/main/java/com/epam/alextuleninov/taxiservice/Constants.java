@@ -7,6 +7,10 @@ import java.time.format.DateTimeFormatter;
  */
 public final class Constants {
 
+    public Constants() {
+        throw new AssertionError("non-instantiable class");
+    }
+
     // region connection pool
     public static final String SETTINGS_FILE = "app.properties";
     // endregion connection pool
@@ -69,6 +73,8 @@ public final class Constants {
     public static final String SCOPE_ACTION = "action";
     public static final String SCOPE_AUTHENTICATION = "authentication";
     public static final String SCOPE_PASSWORD_CONFIRMING = "passwordConfirming";
+    public static final String SCOPE_MESSAGE_ADDRESS_INVALID = "addressInvalid";
+    public static final String SCOPE_MESSAGE_ADDRESS_INVALID_UK = "addressInvalidUK";
     // endregion scope
 
     // region of the travel
@@ -130,6 +136,8 @@ public final class Constants {
     public static final String USER_AUTHENTICATED_NOT_UK = "Користувач не аутентифікований";
     public static final String PASSWORD_CONFIRMING_NOT = "Passwords do not match";
     public static final String PASSWORD_CONFIRMING_NOT_UK = "Паролі не співпадають";
+    public static final String ADDRESS_INVALID = "Address is not correct";
+    public static final String ADDRESS_INVALID_UK = "Адреса не корректна";
     // endregion message
 
     // region email

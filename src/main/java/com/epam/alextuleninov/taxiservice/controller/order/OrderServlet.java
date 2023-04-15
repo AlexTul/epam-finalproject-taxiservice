@@ -2,6 +2,7 @@ package com.epam.alextuleninov.taxiservice.controller.order;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
+import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
@@ -16,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +82,14 @@ public class OrderServlet extends HttpServlet {
 
                     req.getRequestDispatcher(PAGE_CONFIRM)
                             .forward(req, resp);
+                } else {
+                    processRequestGet(req);
+
+                    req.getRequestDispatcher(PAGE_ORDER)
+                            .forward(req, resp);
+
+                    req.getSession().removeAttribute(SCOPE_MESSAGE_ADDRESS_INVALID);
+                    req.getSession().removeAttribute(SCOPE_MESSAGE_ADDRESS_INVALID_UK);
                 }
             } else if (action.equals("update")) {
                 processRequestGetUpdate(req);
@@ -88,7 +98,6 @@ public class OrderServlet extends HttpServlet {
                         .forward(req, resp);
             }
         } else {
-            // show all orders in the database
             processRequestGet(req);
 
             req.getRequestDispatcher(PAGE_ORDER)
@@ -159,6 +168,7 @@ public class OrderServlet extends HttpServlet {
         if (cars != null) {
             var orderRequest = OrderRequest.getOrderRequest(req, cars, null);
             carCRUD.changeCarStatus(orderRequest);
+            req.getSession().removeAttribute(SCOPE_CARS);
         }
     }
 
@@ -198,7 +208,18 @@ public class OrderServlet extends HttpServlet {
             } else {
                 var stringOfCars = getStringOfCars(cars);
 
-                var routeChar = routeCharacteristics.getRouteCharacteristics(request);
+                RouteCharacteristicsResponse routeChar;
+                try {
+                    routeChar = routeCharacteristics.getRouteCharacteristics(request);
+                } catch (JSONException e) {
+                    req.getSession().setAttribute(SCOPE_CARS, cars);
+                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID, ADDRESS_INVALID);
+                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID_UK, ADDRESS_INVALID_UK);
+
+                    req.getSession().removeAttribute(SCOPE_ACTION);
+
+                    return false;
+                }
 
                 var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
 

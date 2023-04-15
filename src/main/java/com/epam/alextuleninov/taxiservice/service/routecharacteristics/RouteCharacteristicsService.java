@@ -4,6 +4,7 @@ import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;

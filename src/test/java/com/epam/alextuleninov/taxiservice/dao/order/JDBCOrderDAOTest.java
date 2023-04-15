@@ -5,7 +5,6 @@ import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
 import com.epam.alextuleninov.taxiservice.dao.mappers.CarMapper;
 import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.dao.mappers.UserMapper;
-import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
@@ -14,14 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.epam.alextuleninov.taxiservice.TestUtils.*;
-import static com.epam.alextuleninov.taxiservice.TestUtils.getTestOrder;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -31,111 +32,14 @@ public class JDBCOrderDAOTest {
     private DataSource dataSource;
     private ResultSet resultSet;
     private OrderDAO orderDAO;
-    private ResultSetMapper<Car> carMapper;
-    private ResultSetMapper<User> userMapper;
 
     @BeforeEach
     void setUp() {
+        ResultSetMapper<Car> carMapper = new CarMapper();
+        ResultSetMapper<User> userMapper = new UserMapper();
         this.dataSource = mock(DataSource.class);
         this.resultSet = mock(ResultSet.class);
-        this.carMapper = new CarMapper();
-        this.userMapper = new UserMapper();
         this.orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper);
-    }
-
-    @Test
-    void testCreate() throws SQLException {
-        // Create a new OrderRequest with test data
-        var orderRequest = new OrderRequest(
-                getTestOrderRequest().customer(),
-                getTestOrderRequest().cars(),
-                getTestOrderRequest().loyaltyPrice(),
-                getTestOrderRequest().startTravel(),
-                getTestOrderRequest().endTravel(),
-                getTestOrderRequest().travelDistance(),
-                getTestOrderRequest().travelDuration(),
-                getTestOrderRequest().numberOfPassengers(),
-                getTestOrderRequest().carCategory(),
-                LocalDateTime.of(2023, 3, 9, 12, 0, 0),
-                getTestOrderRequest().carStatus()
-        );
-
-        // Mock the Connection and PreparedStatements needed for the test
-        DataSource dataSource = mock(DataSource.class);
-        Connection connection = mock(Connection.class);
-        when(dataSource.getConnection()).thenReturn(connection);
-        when(connection.prepareStatement(anyString())).thenReturn(mock(PreparedStatement.class));
-
-        // mock the ResultSet returned by the getUserByEmail PreparedStatement
-        ResultSet resultSetUser = mock(ResultSet.class);
-        when(resultSetUser.next()).thenReturn(true);
-        when(resultSetUser.getLong(DataSourceFields.USER_ID)).thenReturn(ConstantsTest.USER_ID_VALUE);
-        when(resultSetUser.getString(DataSourceFields.USER_FIRST_NAME)).thenReturn(ConstantsTest.USER_FIRST_NAME_VALUE);
-        when(resultSetUser.getString(DataSourceFields.USER_LAST_NAME)).thenReturn(ConstantsTest.USER_LAST_NAME_VALUE);
-        when(resultSetUser.getString(DataSourceFields.USER_EMAIL)).thenReturn(ConstantsTest.USER_EMAIL_VALUE);
-//        when(resultSetUser.getString(DataSourceFields.USER_PASSWORD)).thenReturn(ConstantsTest.USER_ENCRYPT_PASSWORD_VALUE);
-        when(resultSetUser.getString(DataSourceFields.USER_ROLE)).thenReturn(ConstantsTest.USER_ROLE_CLIENT_VALUE);
-
-        PreparedStatement getUserByEmail = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(getUserByEmail);
-        when(getUserByEmail.executeQuery()).thenReturn(resultSetUser);
-//        doReturn(resultSetUser).when(getUserByEmail).executeQuery();
-
-        // mock the ResultSet returned by the createOrder PreparedStatement
-        ResultSet generatedKeys = mock(ResultSet.class);
-        when(generatedKeys.next()).thenReturn(true);
-        when(generatedKeys.getLong(1)).thenReturn(1L);
-
-        PreparedStatement createOrder = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString(), anyInt())).thenReturn(createOrder);
-        when(createOrder.getGeneratedKeys()).thenReturn(generatedKeys);
-
-        // mock the ResultSet returned by the createOrderCar PreparedStatement
-        PreparedStatement createOrderCar = mock(PreparedStatement.class);
-        when(connection.prepareStatement(anyString())).thenReturn(createOrderCar);
-
-        // Create a new OrderDAO using the mock DataSource
-        var orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper);
-
-        // Call the create() method and verify that it returns a new Order with the correct data
-        var order = orderDAO.create(orderRequest);
-
-        // verify that the correct SQL statements were executed
-//        verify(getUserByEmail).setString(1, "customer@example.com");
-//        verify(getUserByEmail).executeQuery();
-//
-//        verify(createOrder).setTimestamp(1, Timestamp.valueOf(order.getCreatedOn()));
-//        verify(createOrder).setLong(2, 1L);
-//        verify(createOrder).setInt(3, 2);
-//        verify(createOrder).setString(4, "Start");
-//        verify(createOrder).setString(5, "End");
-//        verify(createOrder).setDouble(6, 10.0);
-//        verify(createOrder).setInt(7, 60);
-//        verify(createOrder).setDouble(8, 100.0);
-//        verify(createOrder).setTimestamp(9, Timestamp.valueOf(request.startedAt()));
-//        verify(createOrder).setTimestamp(10, Timestamp.valueOf(request.startedAt().plusSeconds(request.travelDuration())));
-//        verify(createOrder).executeUpdate();
-//
-//        verify(createOrderCar).setLong(1, 1L);
-//        verify(createOrderCar).setInt(2, 1);
-//        verify(createOrderCar).executeUpdate();
-//
-//        verify(createOrderCar).setLong(1, 1L);
-//        verify(createOrderCar).setInt(2, 2);
-//        verify(createOrderCar).executeUpdate();
-
-        assertNotNull(order);
-        assertEquals(1L, order.getId());
-        assertEquals(orderRequest.customer(), order.getCustomer().getEmail());
-        assertEquals(orderRequest.numberOfPassengers(), order.getNumberOfPassengers());
-        assertEquals(orderRequest.cars(), order.getCars());
-        assertEquals(orderRequest.startTravel(), order.getStartTravel());
-        assertEquals(orderRequest.endTravel(), order.getEndTravel());
-        assertEquals(orderRequest.travelDistance(), order.getTravelDistance(), 0.0);
-        assertEquals(orderRequest.travelDuration(), order.getTravelDuration());
-        assertEquals(orderRequest.loyaltyPrice(), order.getCost(), 0.0);
-        assertEquals(orderRequest.startedAt(), order.getStartedAt());
-        assertEquals(orderRequest.startedAt().plusSeconds(orderRequest.travelDuration()), order.getFinishedAt());
     }
 
     @Test

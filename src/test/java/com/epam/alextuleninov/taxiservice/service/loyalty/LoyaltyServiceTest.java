@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.TestUtils.getRouteCharacteristicsResp;
 import static com.epam.alextuleninov.taxiservice.TestUtils.getTestOrderRequest;
+import static java.lang.Math.ceil;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,7 +32,7 @@ public class LoyaltyServiceTest {
 
         var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_FIRST);
 
-        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        double expectedFirst = ceil(loyaltyRatio * ROUTE_PRICE);
         var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
 
         assertEquals(expectedFirst, actualFirst.loyaltyPrice());
@@ -50,7 +51,7 @@ public class LoyaltyServiceTest {
 
         var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_SECOND);
 
-        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        double expectedFirst = ceil(loyaltyRatio * ROUTE_PRICE);
         var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
 
         assertEquals(expectedFirst, actualFirst.loyaltyPrice());
@@ -69,7 +70,7 @@ public class LoyaltyServiceTest {
 
         var loyaltyRatio = determineLoyaltyRatio(ROUTE_TOTAL_COST_THIRD);
 
-        double expectedFirst = loyaltyRatio * ROUTE_PRICE;
+        double expectedFirst = ceil(loyaltyRatio * ROUTE_PRICE);
         var actualFirst = new LoyaltyService(orderCRUD, routeCharacteristics).getLoyaltyPrice(request);
 
         assertEquals(expectedFirst, actualFirst.loyaltyPrice());

@@ -15,6 +15,9 @@
 </head>
 <body>
 
+<c:set var="addressInvalid" value="${sessionScope.locale eq 'en' ?
+                                sessionScope.addressInvalid : sessionScope.addressInvalidUK}"/>
+
 <div class="container-fluid" style="text-align: center">
     <jsp:include page="/WEB-INF/templates/_header.jsp"></jsp:include>
 
@@ -30,6 +33,7 @@
                         key="make.order"/></h2>
 
                 <%-- Choose start, end of travel --%>
+                <p style="color: red">${addressInvalid}</p>
                 <label for="start" class="sr-only">Start travel form</label>
                 <input type="text" id="start" name="startTravel" class="form-control"
                        placeholder="<fmt:message key="start.travel"/>"
