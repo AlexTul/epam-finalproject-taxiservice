@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
@@ -29,18 +30,19 @@ public class ProfileServlet extends HttpServlet {
 
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
+    private Properties properties;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
+        this.properties = AppContext.getAppContext().getProperties();
         log.info(getServletName() + " initialized");
     }
 
     /**
      * To process Get requests:
      * - forward on profile page;
-     *
      *
      * @param req HttpServletRequest request
      */
@@ -88,7 +90,7 @@ public class ProfileServlet extends HttpServlet {
         String action = (String) req.getSession().getAttribute(SCOPE_ACTION);
 
         if (action != null && action.equals("updatePassword")) {
-            if(validationPasswordData(req, resp)) {
+            if (validationPasswordData(req, resp)) {
                 processUpdatePassword(req);
 
                 resp.sendRedirect(URL_PROFILE);
@@ -113,8 +115,8 @@ public class ProfileServlet extends HttpServlet {
      * To process Post requests from user:
      * validation password data for changing.
      *
-     * @param req    HttpServletRequest request
-     * @param resp   HttpServletResponse response
+     * @param req  HttpServletRequest request
+     * @param resp HttpServletResponse response
      * @return true if user credentials is valid
      */
     private boolean validationPasswordData(HttpServletRequest req, HttpServletResponse resp)
@@ -138,7 +140,7 @@ public class ProfileServlet extends HttpServlet {
             return false;
         }
 
-        if(!newPassword.equals(confirmPassword)) {
+        if (!newPassword.equals(confirmPassword)) {
             log.info("New password and confirmation password do not match");
             if (locale.equals("uk_UA")) {
                 req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, PASSWORD_CONFIRMING_NOT_UK);
@@ -172,10 +174,11 @@ public class ProfileServlet extends HttpServlet {
         userCRUD.changePasswordByEmail(login, newPassword);
 
         new Thread(() ->
-                emailSender.send(EMAIL_UPDATE_PASSWORD,
-                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword),
-                        login)
-        ).start();
+                emailSender.send(
+                        properties.getProperty("email.update.password.subject"),
+                        String.format(properties.getProperty("email.update.password.body"), newPassword),
+                        login
+                )).start();
 
         req.getSession().removeAttribute(SCOPE_ACTION);
     }
@@ -193,9 +196,10 @@ public class ProfileServlet extends HttpServlet {
         req.getSession().setAttribute(SCOPE_LOGIN, userRequest.email());
 
         new Thread(() ->
-                emailSender.send(EMAIL_UPDATE_CREDENTIALS,
-                        String.format(EMAIL_UPDATE_CREDENTIALS_BODY, userRequest.firstName(), userRequest.lastName(), userRequest.email()),
-                        userRequest.email())
-        ).start();
+                emailSender.send(
+                        properties.getProperty("email.update.credentials.subject"),
+                        String.format(properties.getProperty("email.update.credentials.body"), userRequest.firstName(), userRequest.lastName(), userRequest.email()),
+                        userRequest.email()
+                )).start();
     }
 }

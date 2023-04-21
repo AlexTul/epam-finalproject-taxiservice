@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
@@ -28,11 +29,13 @@ public class RegisterServlet extends HttpServlet {
 
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
+    private Properties properties;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
+        this.properties = AppContext.getAppContext().getProperties();
         log.info(getServletName() + " initialized");
     }
 
@@ -94,8 +97,11 @@ public class RegisterServlet extends HttpServlet {
             req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_SUC_UK);
 
             new Thread(() ->
-                    emailSender.send(EMAIL_REGISTER_SUBJECT, EMAIL_REGISTER_BODY, req.getParameter(SCOPE_LOGIN))
-            ).start();
+                    emailSender.send(
+                            properties.getProperty("email.register.subject"),
+                            properties.getProperty("email.register.body"),
+                            req.getParameter(SCOPE_LOGIN)
+                    )).start();
         }
     }
 }

@@ -53,6 +53,7 @@ public class AppContext {
     private final DateTimeRide dateTimeRide;
     private final EmailConfig emailSender;
     private final Sortable sorter;
+    private final Properties properties;
 
     private AppContext() {
         DataSource dataSource = MyDataSource.getConnectionsPool();
@@ -61,7 +62,7 @@ public class AppContext {
         ResultSetMapper<User> userMapper = new UserMapper();
         UserDAO userDAO = new JDBCUserDAO(dataSource, userMapper);
         OrderDAO orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper);
-        Properties properties = new PropertiesConfig().properties();
+        this.properties = new PropertiesConfig().properties();
         this.routeCharacteristics = new RouteCharacteristicsService();
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);
@@ -80,6 +81,10 @@ public class AppContext {
 
     public static AppContext getAppContext() {
         return appContext;
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 
     public RouteCharacteristics getRouteCharacteristics() {

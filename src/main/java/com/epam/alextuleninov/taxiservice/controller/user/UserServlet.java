@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
@@ -30,11 +31,13 @@ public class UserServlet extends HttpServlet {
 
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
+    private Properties properties;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
+        this.properties = AppContext.getAppContext().getProperties();
         log.info(getServletName() + " initialized");
     }
 
@@ -166,9 +169,11 @@ public class UserServlet extends HttpServlet {
         userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
 
         new Thread(() ->
-                emailSender.send(EMAIL_UPDATE_PASSWORD,
-                        String.format(EMAIL_UPDATE_PASSWORD_BODY, newPassword), updateUserLogin)
-        ).start();
+                emailSender.send(
+                        properties.getProperty("email.update.password.subject"),
+                        String.format(properties.getProperty("email.update.password.body"), newPassword),
+                        updateUserLogin
+                )).start();
 
         req.getSession().removeAttribute(SCOPE_UPDATE_USER_LOGIN);
         req.getSession().removeAttribute(SCOPE_ACTION);
@@ -184,6 +189,11 @@ public class UserServlet extends HttpServlet {
     private void processDeleteUser(String deleteUserLogin) {
         userCRUD.deleteByEmail(deleteUserLogin);
 
-        new Thread(() -> emailSender.send(EMAIL_DELETE_USER_SUBJECT, EMAIL_DELETE_USER_BODY, deleteUserLogin)).start();
+        new Thread(() ->
+                emailSender.send(
+                        properties.getProperty("email.delete.user.subject"),
+                        properties.getProperty("email.delete.user.body"),
+                        deleteUserLogin
+                )).start();
     }
 }

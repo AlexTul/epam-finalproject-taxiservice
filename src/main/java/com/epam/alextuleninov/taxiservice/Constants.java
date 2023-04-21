@@ -104,7 +104,6 @@ public final class Constants {
     // region pagination settings
     public static final int PAGE_SIZE = 5;
     public static final String SORTING_ASC = "asc";
-    public static final String SORTING_DESC = "desc";
     // endregion pagination settings
 
     // region message
@@ -139,19 +138,4 @@ public final class Constants {
     public static final String ADDRESS_INVALID = "Address is not correct";
     public static final String ADDRESS_INVALID_UK = "Адреса не корректна";
     // endregion message
-
-    // region email
-    public static final String EMAIL_REGISTER_SUBJECT = "Registration in a Taxi Service";
-    public static final String EMAIL_REGISTER_BODY = "Dear user,<br>welcome to Taxi Service.<br>" +
-            "Thank you for your choosing!<br><br>Best regards!<br>Taxi Service team<br>";
-    public static final String EMAIL_DELETE_USER_SUBJECT = "Deleting profile in a Taxi Service";
-    public static final String EMAIL_DELETE_USER_BODY = "Dear user,<br>your profile was delete in Taxi Service.<br><br>" +
-            "Best regards!<br>Taxi Service team<br>";
-    public static final String EMAIL_UPDATE_PASSWORD = "Updating password in a Taxi Service";
-    public static final String EMAIL_UPDATE_PASSWORD_BODY = "Dear user,<br>your password was change in Market Place.<br>" +
-            "Your password is: %s.<br>Best regards!<br>Taxi Service team<br>";
-    public static final String EMAIL_UPDATE_CREDENTIALS = "Updating credentials in a Taxi Service";
-    public static final String EMAIL_UPDATE_CREDENTIALS_BODY = "Dear user,<br>your credentials was change in Market Place.<br>" +
-            "Your first name is: %s, last name is: %s, email is: %s.<br>Best regards,<br>Taxi Service team<br>";
-    // endregion email
 }

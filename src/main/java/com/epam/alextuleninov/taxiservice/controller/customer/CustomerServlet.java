@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.controller.client;
+package com.epam.alextuleninov.taxiservice.controller.customer;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
