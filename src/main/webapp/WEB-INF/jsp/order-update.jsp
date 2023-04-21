@@ -61,7 +61,9 @@
                 <%-- Choose the date for ride --%>
                 <label for="dateRide"><fmt:message key="enter.date.time.trip"/>:</label>
                 <input type="datetime-local" id="dateRide" name="dateOfTravel"><br>
-                <label><fmt:message key="car.delivery.time"/></label><br>
+                <p style="color: red">${sessionScope.dateTimeValidate}</p>
+                <label><fmt:message key="car.delivery.time"/></label>
+                <br>
                 <%-- Choose the date for ride --%>
 
                 <%-- To order button --%>

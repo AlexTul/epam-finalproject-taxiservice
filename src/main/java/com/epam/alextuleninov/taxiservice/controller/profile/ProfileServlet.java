@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.controller.profile;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
+import com.epam.alextuleninov.taxiservice.config.mail.EmailByLocaleConfig;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
@@ -31,12 +32,16 @@ public class ProfileServlet extends HttpServlet {
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
     private Properties properties;
+    private Properties propertiesUk;
+    private EmailByLocaleConfig emailByLocaleConfig;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
         this.properties = AppContext.getAppContext().getProperties();
+        this.propertiesUk = AppContext.getAppContext().getPropertiesUk();
+        this.emailByLocaleConfig = AppContext.getAppContext().getEmailByLocaleConfig();
         log.info(getServletName() + " initialized");
     }
 
@@ -130,9 +135,9 @@ public class ProfileServlet extends HttpServlet {
         if (!userCRUD.authentication(login, oldPassword)) {
             log.info("User not authenticated");
             if (locale.equals("uk_UA")) {
-                req.getSession().setAttribute(SCOPE_AUTHENTICATION, USER_AUTHENTICATED_NOT_UK);
+                req.getSession().setAttribute(SCOPE_AUTHENTICATION, propertiesUk.getProperty("user.authenticated.not.uk"));
             } else {
-                req.getSession().setAttribute(SCOPE_AUTHENTICATION, USER_AUTHENTICATED_NOT);
+                req.getSession().setAttribute(SCOPE_AUTHENTICATION, properties.getProperty("user.authenticated.not"));
             }
 
             req.getSession().removeAttribute(SCOPE_PASSWORD_CONFIRMING);
@@ -143,9 +148,9 @@ public class ProfileServlet extends HttpServlet {
         if (!newPassword.equals(confirmPassword)) {
             log.info("New password and confirmation password do not match");
             if (locale.equals("uk_UA")) {
-                req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, PASSWORD_CONFIRMING_NOT_UK);
+                req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, propertiesUk.getProperty("password.confirming.not.uk"));
             } else {
-                req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, PASSWORD_CONFIRMING_NOT);
+                req.getSession().setAttribute(SCOPE_PASSWORD_CONFIRMING, properties.getProperty("password.confirming.not"));
             }
 
             req.getSession().removeAttribute(SCOPE_AUTHENTICATION);
@@ -168,6 +173,7 @@ public class ProfileServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processUpdatePassword(HttpServletRequest req) {
+        var locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
         var login = (String) req.getSession().getAttribute(SCOPE_LOGIN);
         var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
 
@@ -175,8 +181,12 @@ public class ProfileServlet extends HttpServlet {
 
         new Thread(() ->
                 emailSender.send(
-                        properties.getProperty("email.update.password.subject"),
-                        String.format(properties.getProperty("email.update.password.body"), newPassword),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                propertiesUk.getProperty("email.update.password.subject.uk"),
+                                properties.getProperty("email.update.password.subject")),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                String.format(propertiesUk.getProperty("email.update.password.body.uk"), newPassword),
+                                String.format(properties.getProperty("email.update.password.body"), newPassword)),
                         login
                 )).start();
 
@@ -189,6 +199,7 @@ public class ProfileServlet extends HttpServlet {
      * @param req HttpServletRequest request
      */
     private void processChangeCredentials(HttpServletRequest req) {
+        var locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
         var userRequest = UserRequest.getUserRequest(req);
 
         String oldLogin = (String) req.getSession().getAttribute(SCOPE_LOGIN);
@@ -197,8 +208,14 @@ public class ProfileServlet extends HttpServlet {
 
         new Thread(() ->
                 emailSender.send(
-                        properties.getProperty("email.update.credentials.subject"),
-                        String.format(properties.getProperty("email.update.credentials.body"), userRequest.firstName(), userRequest.lastName(), userRequest.email()),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                propertiesUk.getProperty("email.update.credentials.subject.uk"),
+                                properties.getProperty("email.update.credentials.subject")),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                String.format(propertiesUk.getProperty("email.update.credentials.body.uk"),
+                                        userRequest.firstName(), userRequest.lastName(), userRequest.email()),
+                                String.format(properties.getProperty("email.update.credentials.body"),
+                                        userRequest.firstName(), userRequest.lastName(), userRequest.email())),
                         userRequest.email()
                 )).start();
     }

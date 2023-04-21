@@ -1,6 +1,7 @@
-package com.epam.alextuleninov.taxiservice.controller.registration;
+package com.epam.alextuleninov.taxiservice.controller.register;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
+import com.epam.alextuleninov.taxiservice.config.mail.EmailByLocaleConfig;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
@@ -30,12 +31,16 @@ public class RegisterServlet extends HttpServlet {
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
     private Properties properties;
+    private Properties propertiesUk;
+    private EmailByLocaleConfig emailByLocaleConfig;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
         this.properties = AppContext.getAppContext().getProperties();
+        this.propertiesUk = AppContext.getAppContext().getPropertiesUk();
+        this.emailByLocaleConfig = AppContext.getAppContext().getEmailByLocaleConfig();
         log.info(getServletName() + " initialized");
     }
 
@@ -82,24 +87,29 @@ public class RegisterServlet extends HttpServlet {
     /**
      * To process register user in the database.
      *
-     * @param req  HttpServletRequest request
+     * @param req HttpServletRequest request
      */
     private void processRegisterUser(HttpServletRequest req) {
+        var locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
         boolean register = userCRUD.register(UserRequest.getUserRequest(req));
 
         if (!register) {
             log.info("Email: " + req.getParameter("email") + " already taken");
-            req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_FAIL);
-            req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_FAIL_UK);
+            req.getSession().setAttribute(SCOPE_MESSAGE, properties.getProperty("user.register.fail"));
+            req.getSession().setAttribute(SCOPE_MESSAGE_UK, propertiesUk.getProperty("user.register.fail.uk"));
         } else {
             log.info("User successfully registered");
-            req.getSession().setAttribute(SCOPE_MESSAGE, USER_REGISTER_SUC);
-            req.getSession().setAttribute(SCOPE_MESSAGE_UK, USER_REGISTER_SUC_UK);
+            req.getSession().setAttribute(SCOPE_MESSAGE, properties.getProperty("user.register.suc"));
+            req.getSession().setAttribute(SCOPE_MESSAGE_UK, propertiesUk.getProperty("user.register.suc.uk"));
 
             new Thread(() ->
                     emailSender.send(
-                            properties.getProperty("email.register.subject"),
-                            properties.getProperty("email.register.body"),
+                            emailByLocaleConfig.getTextByLocale(locale,
+                                    propertiesUk.getProperty("email.register.subject.uk"),
+                                    properties.getProperty("email.register.subject")),
+                            emailByLocaleConfig.getTextByLocale(locale,
+                                    propertiesUk.getProperty("email.register.body.uk"),
+                                    properties.getProperty("email.register.body")),
                             req.getParameter(SCOPE_LOGIN)
                     )).start();
         }

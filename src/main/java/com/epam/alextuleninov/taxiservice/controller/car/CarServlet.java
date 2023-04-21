@@ -50,6 +50,13 @@ public class CarServlet extends HttpServlet {
         String action = req.getParameter(SCOPE_ACTION) == null ?
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
+        String updateCarID = (String) req.getSession().getAttribute(SCOPE_UPDATE_CAR_ID);
+
+        if (action != null && action.equals("car")) {
+            updateCarID = null;
+            action = null;
+            req.getSession().removeAttribute(SCOPE_ACTION);
+        }
 
         if (action != null) {
             if (action.equals("add")) {
@@ -63,6 +70,10 @@ public class CarServlet extends HttpServlet {
                 req.getRequestDispatcher(PAGE_CAR_ACTION)
                         .forward(req, resp);
             }
+        } else if (updateCarID != null) {
+
+            req.getRequestDispatcher(PAGE_CAR_ACTION)
+                    .forward(req, resp);
         } else {
             // show all cars in the database
             processRequestGet(req);
@@ -98,8 +109,9 @@ public class CarServlet extends HttpServlet {
 
         if (updateCarID != null) {
             carCRUD.updateByID(Integer.parseInt(updateCarID), CarRequest.getCarRequest(req));
-            req.getSession().removeAttribute(SCOPE_ACTION);
             req.getSession().removeAttribute(SCOPE_UPDATE_CAR_ID);
+            req.getSession().removeAttribute(SCOPE_ACTION);
+            req.getSession().removeAttribute(SCOPE_CAR_RESPONSE);
         } else if (deleteCarID != null) {
             carCRUD.deleteByID(Integer.parseInt(deleteCarID));
         } else if (carName != null) {
@@ -133,7 +145,7 @@ public class CarServlet extends HttpServlet {
 
         var carResponse = carCRUD.findByID(id).orElseThrow(() -> carNotFound(id));
 
-        req.setAttribute(SCOPE_CAR_RESPONSES, carResponse);
+        req.getSession().setAttribute(SCOPE_CAR_RESPONSE, carResponse);
         req.getSession().removeAttribute(SCOPE_ACTION);
     }
 

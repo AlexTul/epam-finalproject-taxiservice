@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.PAGE_REPORT;
@@ -35,12 +36,14 @@ public class ReportAdminServlet extends HttpServlet {
     private OrderCRUD orderCRUD;
     private UserCRUD userCRUD;
     private Sortable sorter;
+    private Properties properties;
 
     @Override
     public void init() {
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.sorter = AppContext.getAppContext().getSorter();
+        this.properties = AppContext.getAppContext().getProperties();
         log.info(getServletName() + " initialized");
     }
 
@@ -188,18 +191,18 @@ public class ReportAdminServlet extends HttpServlet {
 
         if (customer != null && !customer.equals(SCOPE_SORT_ALL)) {
             PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
-                    ADMIN_REPORT_CUSTOM_UK + " " + customer, ADMIN_REPORT_CUSTOM + " " + customer);
+                    properties.getProperty("admin.report.custom.uk") + " " + customer, properties.getProperty("admin.report.custom") + " " + customer);
 
             return orderCRUD.findAllByCustomer(customer, pageable);
         } else if (localeDate != null && !localeDate.equals(SCOPE_SORT_ALL)) {
             PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
-                    ADMIN_REPORT_DATE_UK + " " + localeDate, ADMIN_REPORT_DATE + " " + localeDate);
+                    properties.getProperty("admin.report.date.uk") + " " + localeDate, properties.getProperty("admin.report.date") + " " + localeDate);
 
             var localeDateTime = LocalDateTime.parse(localeDate.concat(" 00:00"), FORMATTER);
             return orderCRUD.findAllByDate(localeDateTime, pageable);
         } else {
             PageMessageBuilder.buildMessageAdmin(req, locale, SCOPE_WHOSE_ORDERS,
-                    ADMIN_REPORT_ALL_UK, ADMIN_REPORT_ALL);
+                    properties.getProperty("admin.report.all.uk"), properties.getProperty("admin.report.all"));
 
             return orderCRUD.findAll(pageable);
         }

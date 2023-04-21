@@ -75,7 +75,7 @@ public class LogoutServlet extends HttpServlet {
         session.removeAttribute(SCOPE_LOCALE);
         session.removeAttribute(SCOPE_CARS);
         session.removeAttribute(SCOPE_LIST_OF_CARS);
-        session.removeAttribute(SCOPE_CAR_RESPONSES);
+        session.removeAttribute(SCOPE_CAR_RESPONSE);
         session.removeAttribute(SCOPE_DATE_OF_TRAVEL);
         session.removeAttribute(SCOPE_PRICE_OF_TRAVEL);
         session.removeAttribute(SCOPE_TRAVEL_DISTANCE);

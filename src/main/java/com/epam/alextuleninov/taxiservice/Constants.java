@@ -44,6 +44,7 @@ public final class Constants {
     public static final String SCOPE_UPDATE_CAR_ID = "updateCarID";
     public static final String SCOPE_LIST_OF_CARS = "listOfCars";
     public static final String SCOPE_CAR_RESPONSES = "carResponses";
+    public static final String SCOPE_CAR_RESPONSE = "carResponse";
     public static final String SCOPE_ORDERS = "orders";
     public static final String SCOPE_ORDER_RESPONSE = "orderResponse";
     public static final String SCOPE_ORDER_BY = "orderBy";
@@ -105,37 +106,4 @@ public final class Constants {
     public static final int PAGE_SIZE = 5;
     public static final String SORTING_ASC = "asc";
     // endregion pagination settings
-
-    // region message
-    public static final String FIRST_NAME_NOT_VALID_UK = "Ім'я не валідне";
-    public static final String FIRST_NAME_NOT_VALID = "First name is not valid";
-    public static final String LAST_NAME_NOT_VALID_UK = "Прізвище не валідне";
-    public static final String LAST_NAME_NOT_VALID = "Last name is not valid";
-    public static final String LOGIN_NOT_VALID_UK = "Логін не валідний";
-    public static final String LOGIN_NOT_VALID = "Login is not valid";
-    public static final String PASSWORD_NOT_VALID_UK = "Пароль не валідний";
-    public static final String PASSWORD_NOT_VALID = "Password is not valid";
-    public static final String ADMIN_REPORT_ALL_UK = " усі замовлення";
-    public static final String ADMIN_REPORT_ALL = " all orders";
-    public static final String ADMIN_REPORT_CUSTOM_UK = " за клієнтом";
-    public static final String ADMIN_REPORT_CUSTOM = " by client";
-    public static final String ADMIN_REPORT_DATE_UK = " за датою початку";
-    public static final String ADMIN_REPORT_DATE = " by started at date";
-    public static final String DATE_TIME_NOT_VALID_UK = "Дата та час вибрані раніше ніж теперішня дата та час";
-    public static final String DATE_TIME_NOT_VALID = "The date and time selected is earlier than the current date and time";
-    public static final String NUMBER_PASSENGERS_NOT_VALID_UK = "Кількість пасажирів повинна бути числом не меньше 1 та додатнім";
-    public static final String NUMBER_PASSENGERS_NOT_VALID = "The number of passengers must be a number not less than 1 and positive";
-    public static final String USER_REGISTER_SUC_UK = "Успішна реєстрація. Пройдіть на сторінку логіну";
-    public static final String USER_REGISTER_SUC = "Successful registration. Go to login page";
-    public static final String USER_REGISTER_FAIL_UK = "Вибачте, цей email існує";
-    public static final String USER_REGISTER_FAIL = "Sorry, this email exists";
-    public static final String USER_ORDER_CANCEL_UK = "Немає вільних машин, змініть або скасуйте замовлення";
-    public static final String USER_ORDER_CANCEL = "No available cars, change or cancel order";
-    public static final String USER_AUTHENTICATED_NOT = "User not authenticated";
-    public static final String USER_AUTHENTICATED_NOT_UK = "Користувач не аутентифікований";
-    public static final String PASSWORD_CONFIRMING_NOT = "Passwords do not match";
-    public static final String PASSWORD_CONFIRMING_NOT_UK = "Паролі не співпадають";
-    public static final String ADDRESS_INVALID = "Address is not correct";
-    public static final String ADDRESS_INVALID_UK = "Адреса не корректна";
-    // endregion message
 }

@@ -1,5 +1,6 @@
 package com.epam.alextuleninov.taxiservice.config.context;
 
+import com.epam.alextuleninov.taxiservice.config.mail.EmailByLocaleConfig;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import com.epam.alextuleninov.taxiservice.connectionpool.MyDataSource;
@@ -52,8 +53,10 @@ public class AppContext {
     private final VerifyOrder verifyOrderService;
     private final DateTimeRide dateTimeRide;
     private final EmailConfig emailSender;
+    private final EmailByLocaleConfig emailByLocaleConfig;
     private final Sortable sorter;
     private final Properties properties;
+    private final Properties propertiesUk;
 
     private AppContext() {
         DataSource dataSource = MyDataSource.getConnectionsPool();
@@ -62,7 +65,9 @@ public class AppContext {
         ResultSetMapper<User> userMapper = new UserMapper();
         UserDAO userDAO = new JDBCUserDAO(dataSource, userMapper);
         OrderDAO orderDAO = new JDBCOrderDAO(dataSource, carMapper, userMapper);
-        this.properties = new PropertiesConfig().properties();
+        Properties properties = new PropertiesConfig().properties();
+        this.properties = new PropertiesConfig().propertiesBundle();
+        this.propertiesUk = new PropertiesConfig().propertiesBundleUk();
         this.routeCharacteristics = new RouteCharacteristicsService();
         this.carCRUD = new CarService(carDAO);
         this.orderCRUD = new OrderService(orderDAO);
@@ -71,6 +76,7 @@ public class AppContext {
         this.verifyOrderService = new VerifyOrderService(carCRUD);
         this.dateTimeRide = new DateTimeRideService();
         this.emailSender = new EmailConfig(properties);
+        this.emailByLocaleConfig = new EmailByLocaleConfig();
         this.sorter = new Sort();
         log.info("AppContext.class is initialized");
     }
@@ -85,6 +91,10 @@ public class AppContext {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public Properties getPropertiesUk() {
+        return propertiesUk;
     }
 
     public RouteCharacteristics getRouteCharacteristics() {
@@ -117,6 +127,10 @@ public class AppContext {
 
     public EmailConfig getEmailSender() {
         return emailSender;
+    }
+
+    public EmailByLocaleConfig getEmailByLocaleConfig() {
+        return emailByLocaleConfig;
     }
 
     public Sortable getSorter() {

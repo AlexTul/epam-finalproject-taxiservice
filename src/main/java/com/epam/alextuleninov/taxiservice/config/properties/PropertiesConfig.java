@@ -28,4 +28,32 @@ public class PropertiesConfig {
             throw new UncheckedIOException(e);
         }
     }
+
+    /**
+     * Get properties from bundle properties file.
+     */
+    public Properties propertiesBundle() {
+        try (var in = getClass().getClassLoader().getResourceAsStream("resources.properties")) {
+            var properties = new Properties();
+            properties.load(in);
+            return properties;
+        } catch (IOException e) {
+            log.error("Error getting properties from resources file in PropertiesConfig.class", e);
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
+     * Get properties from bundle properties file.
+     */
+    public Properties propertiesBundleUk() {
+        try (var in = getClass().getClassLoader().getResourceAsStream("resources_uk_UA.properties")) {
+            var properties = new Properties();
+            properties.load(in);
+            return properties;
+        } catch (IOException e) {
+            log.error("Error getting properties from resources file in PropertiesConfig.class", e);
+            throw new UncheckedIOException(e);
+        }
+    }
 }

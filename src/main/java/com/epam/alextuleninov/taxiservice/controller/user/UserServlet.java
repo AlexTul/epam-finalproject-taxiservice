@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.controller.user;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
+import com.epam.alextuleninov.taxiservice.config.mail.EmailByLocaleConfig;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
@@ -32,12 +33,16 @@ public class UserServlet extends HttpServlet {
     private UserCRUD userCRUD;
     private EmailConfig emailSender;
     private Properties properties;
+    private Properties propertiesUk;
+    private EmailByLocaleConfig emailByLocaleConfig;
 
     @Override
     public void init() {
         this.userCRUD = AppContext.getAppContext().getUserCRUD();
         this.emailSender = AppContext.getAppContext().getEmailSender();
         this.properties = AppContext.getAppContext().getProperties();
+        this.propertiesUk = AppContext.getAppContext().getPropertiesUk();
+        this.emailByLocaleConfig = AppContext.getAppContext().getEmailByLocaleConfig();
         log.info(getServletName() + " initialized");
     }
 
@@ -55,10 +60,21 @@ public class UserServlet extends HttpServlet {
         String action = req.getParameter(SCOPE_ACTION) == null ?
                 (String) req.getSession().getAttribute(SCOPE_ACTION) : req.getParameter(SCOPE_ACTION);
         req.getSession().setAttribute(SCOPE_ACTION, action);
+        String updateUserLogin = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
+
+        if (action != null && action.equals("user")) {
+            updateUserLogin = null;
+            action = null;
+            req.getSession().removeAttribute(SCOPE_ACTION);
+        }
 
         // update user in the database
         if (action != null && action.equals("update")) {
             processRequestGetUpdate(req);
+
+            req.getRequestDispatcher(PAGE_USER_ACTION)
+                    .forward(req, resp);
+        } else if (updateUserLogin != null) {
 
             req.getRequestDispatcher(PAGE_USER_ACTION)
                     .forward(req, resp);
@@ -82,6 +98,7 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
+        var locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
 
         // update user in the database
         String updateUserLogin = (String) req.getSession().getAttribute(SCOPE_UPDATE_USER_LOGIN);
@@ -94,7 +111,7 @@ public class UserServlet extends HttpServlet {
 
         if (updateUserLogin != null) {
             if (DataValidator.initPasswordValidation(req, SCOPE_NEW_PASSWORD)) {
-                processUpdateUser(req, updateUserLogin);
+                processUpdateUser(locale, req, updateUserLogin);
 
                 resp.sendRedirect(URL_USER);
             } else {
@@ -102,7 +119,7 @@ public class UserServlet extends HttpServlet {
                         .forward(req, resp);
             }
         } else if (deleteUserLogin != null) {
-            processDeleteUser(deleteUserLogin);
+            processDeleteUser(locale, deleteUserLogin);
 
             resp.sendRedirect(URL_USER);
         }
@@ -163,15 +180,19 @@ public class UserServlet extends HttpServlet {
      * @param req             HttpServletRequest request
      * @param updateUserLogin identifier to update the user from the request
      */
-    private void processUpdateUser(HttpServletRequest req, String updateUserLogin) {
+    private void processUpdateUser(String locale, HttpServletRequest req, String updateUserLogin) {
         var newPassword = req.getParameter(SCOPE_NEW_PASSWORD);
 
         userCRUD.changePasswordByEmail(updateUserLogin, newPassword);
 
         new Thread(() ->
                 emailSender.send(
-                        properties.getProperty("email.update.password.subject"),
-                        String.format(properties.getProperty("email.update.password.body"), newPassword),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                propertiesUk.getProperty("email.update.password.subject.uk"),
+                                properties.getProperty("email.update.password.subject")),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                String.format(propertiesUk.getProperty("email.update.password.body.uk"), newPassword),
+                                String.format(properties.getProperty("email.update.password.body"), newPassword)),
                         updateUserLogin
                 )).start();
 
@@ -184,15 +205,20 @@ public class UserServlet extends HttpServlet {
     /**
      * To process delete user in the database.
      *
+     * @param locale          current locale
      * @param deleteUserLogin identifier to delete the user from the request
      */
-    private void processDeleteUser(String deleteUserLogin) {
+    private void processDeleteUser(String locale, String deleteUserLogin) {
         userCRUD.deleteByEmail(deleteUserLogin);
 
         new Thread(() ->
                 emailSender.send(
-                        properties.getProperty("email.delete.user.subject"),
-                        properties.getProperty("email.delete.user.body"),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                propertiesUk.getProperty("email.delete.user.subject.uk"),
+                                properties.getProperty("email.delete.user.subject")),
+                        emailByLocaleConfig.getTextByLocale(locale,
+                                propertiesUk.getProperty("email.delete.user.body.uk"),
+                                properties.getProperty("email.delete.user.body")),
                         deleteUserLogin
                 )).start();
     }

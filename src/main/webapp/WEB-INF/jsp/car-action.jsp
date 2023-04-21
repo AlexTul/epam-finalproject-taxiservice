@@ -29,12 +29,12 @@
 
                 <label for="carName"><fmt:message key="enter.car.name"/>:</label>
                 <input type="text" id="carName" name="carName" class="form-control"
-                       value="${requestScope.carResponses.carName}"
+                       value="${sessionScope.carResponse.carName}"
                        minlength="3" maxlength="20" required><br>
 
                 <label for="numberPassengers"><fmt:message key="enter.passengers"/>:</label>
                 <input type="number" id="numberPassengers" name="numberOfPassengers" class="form-control"
-                       value="${requestScope.carResponses.numberOfPassengers}"
+                       value="${sessionScope.carResponse.numberOfPassengers}"
                        min="1" minlength="1" maxlength="1" required>
                 <br>
 
@@ -67,7 +67,7 @@
         <div class="col-lg-1">
             <%-- Admin menu cars --%>
             <div id="nav-link" class="text-right">
-                <a class="text-info" href="/car"><fmt:message key="cars"/></a>
+                <a class="text-info" href="car?action=car"><fmt:message key="cars"/></a>
             </div>
             <%-- Admin menu cars --%>
         </div>

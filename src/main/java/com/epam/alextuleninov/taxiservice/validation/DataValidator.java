@@ -1,5 +1,6 @@
 package com.epam.alextuleninov.taxiservice.validation;
 
+import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +33,13 @@ public final class DataValidator {
      */
     public static boolean initValidationRegisterCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
             log.info("User first name not validated");
-            changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_FIRST_NAME,
+                    propertiesUk.getProperty("first.name.not.valid.uk"), properties.getProperty("first.name.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
@@ -44,7 +48,8 @@ public final class DataValidator {
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
             log.info("User last name not validated");
-            changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LAST_NAME,
+                    propertiesUk.getProperty("last.name.not.valid.uk"), properties.getProperty("last.name.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
@@ -53,7 +58,8 @@ public final class DataValidator {
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
             log.info("User login not validated");
-            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE,
+                    propertiesUk.getProperty("login.not.valid.uk"), properties.getProperty("login.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
@@ -62,7 +68,8 @@ public final class DataValidator {
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
             log.info("User password not validated");
-            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE,
+                    propertiesUk.getProperty("password.not.valid.uk"), properties.getProperty("password.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
@@ -80,10 +87,13 @@ public final class DataValidator {
      */
     public static boolean initValidationChangeCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
 
         if (!validateName(req.getParameter(SCOPE_FIRST_NAME))) {
             log.info("User first name not validated");
-            changeLocaleSession(locale, req, SCOPE_FIRST_NAME, FIRST_NAME_NOT_VALID_UK, FIRST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_FIRST_NAME,
+                    propertiesUk.getProperty("first.name.not.valid.uk"), properties.getProperty("first.name.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
@@ -91,7 +101,8 @@ public final class DataValidator {
         }
         if (!validateName(req.getParameter(SCOPE_LAST_NAME))) {
             log.info("User last name not validated");
-            changeLocaleSession(locale, req, SCOPE_LAST_NAME, LAST_NAME_NOT_VALID_UK, LAST_NAME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LAST_NAME,
+                    propertiesUk.getProperty("last.name.not.valid.uk"), properties.getProperty("last.name.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LOGIN_VALIDATE);
@@ -99,7 +110,8 @@ public final class DataValidator {
         }
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
             log.info("User login not validated");
-            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_LOGIN_VALIDATE,
+                    propertiesUk.getProperty("login.not.valid.uk"), properties.getProperty("login.not.valid"));
 
             req.getSession().removeAttribute(SCOPE_FIRST_NAME);
             req.getSession().removeAttribute(SCOPE_LAST_NAME);
@@ -116,15 +128,19 @@ public final class DataValidator {
      */
     public static boolean initValidationLogInCredentials(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
 
         if (!validateLogin(req.getParameter(SCOPE_LOGIN))) {
             log.info("User login not validated");
-            changeLocale(locale, req, SCOPE_LOGIN_VALIDATE, LOGIN_NOT_VALID_UK, LOGIN_NOT_VALID);
+            changeLocale(locale, req, SCOPE_LOGIN_VALIDATE,
+                    propertiesUk.getProperty("login.not.valid.uk"), properties.getProperty("login.not.valid"));
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_PASSWORD))) {
             log.info("User password not validated");
-            changeLocale(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocale(locale, req, SCOPE_PASSWORD_VALIDATE,
+                    propertiesUk.getProperty("password.not.valid.uk"), properties.getProperty("password.not.valid"));
             return false;
         }
         return true;
@@ -138,15 +154,19 @@ public final class DataValidator {
      */
     public static boolean initValidationOrderData(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
 
         if (!validateNumber(req.getParameter(SCOPE_NUMBER_OF_PASSENGERS))) {
             log.info("Number of passengers not validated");
-            changeLocale(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE, NUMBER_PASSENGERS_NOT_VALID_UK, NUMBER_PASSENGERS_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_NUMBER_PASSENGERS_VALIDATE,
+                    propertiesUk.getProperty("number.passengers.not.valid.uk"), properties.getProperty("number.passengers.not.valid"));
             return false;
         }
         if (!validateLocalDateTime(req.getParameter(SCOPE_DATE_OF_TRAVEL))) {
             log.info("Date of travel not validated");
-            changeLocale(locale, req, SCOPE_DATE_TIME_VALIDATE, DATE_TIME_NOT_VALID_UK, DATE_TIME_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_DATE_TIME_VALIDATE,
+                    propertiesUk.getProperty("date.time.not.valid.uk"), properties.getProperty("date.time.not.valid"));
             return false;
         }
         return true;
@@ -160,8 +180,12 @@ public final class DataValidator {
      */
     public static boolean initPasswordValidation(HttpServletRequest req, String scope) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
+
         if (!validatePassword(req.getParameter(scope))) {
-            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE,
+                    propertiesUk.getProperty("password.not.valid.uk"), properties.getProperty("password.not.valid"));
             return false;
         }
         return true;
@@ -175,16 +199,20 @@ public final class DataValidator {
      */
     public static boolean initValidationChangePassword(HttpServletRequest req) {
         String locale = (String) req.getSession().getAttribute(SCOPE_LOCALE);
+        var properties = new PropertiesConfig().propertiesBundle();
+        var propertiesUk = new PropertiesConfig().propertiesBundleUk();
 
         if (!validatePassword(req.getParameter(SCOPE_NEW_PASSWORD))) {
             log.info("User new password not validated");
-            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_PASSWORD_VALIDATE,
+                    propertiesUk.getProperty("password.not.valid.uk"), properties.getProperty("password.not.valid"));
             req.getSession().removeAttribute(SCOPE_CONFIRM_PASSWORD_VALIDATE);
             return false;
         }
         if (!validatePassword(req.getParameter(SCOPE_CONFIRM_PASSWORD))) {
             log.info("User confirm password not validated");
-            changeLocaleSession(locale, req, SCOPE_CONFIRM_PASSWORD_VALIDATE, PASSWORD_NOT_VALID_UK, PASSWORD_NOT_VALID);
+            changeLocaleSession(locale, req, SCOPE_CONFIRM_PASSWORD_VALIDATE,
+                    propertiesUk.getProperty("password.not.valid.uk"), properties.getProperty("password.not.valid"));
             req.getSession().removeAttribute(SCOPE_PASSWORD_VALIDATE);
             return false;
         }

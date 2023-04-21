@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static com.epam.alextuleninov.taxiservice.Routes.*;
@@ -43,6 +44,7 @@ public class OrderServlet extends HttpServlet {
     private DateTimeRide dateTimeRideService;
     private RouteCharacteristics routeCharacteristics;
     private OrderCRUD orderCRUD;
+    private Properties properties;
 
     @Override
     public void init() {
@@ -52,6 +54,7 @@ public class OrderServlet extends HttpServlet {
         this.dateTimeRideService = AppContext.getAppContext().getDateTimeRide();
         this.routeCharacteristics = AppContext.getAppContext().getRouteCharacteristics();
         this.orderCRUD = AppContext.getAppContext().getOrderCRUD();
+        this.properties = AppContext.getAppContext().getProperties();
         log.info(getServletName() + " initialized");
     }
 
@@ -84,10 +87,12 @@ public class OrderServlet extends HttpServlet {
                             .forward(req, resp);
                 } else {
                     processRequestGet(req);
+                    req.getSession().removeAttribute(SCOPE_ACTION);
 
                     req.getRequestDispatcher(PAGE_ORDER)
                             .forward(req, resp);
 
+                    req.getSession().removeAttribute(SCOPE_DATE_TIME_VALIDATE);
                     req.getSession().removeAttribute(SCOPE_MESSAGE_ADDRESS_INVALID);
                     req.getSession().removeAttribute(SCOPE_MESSAGE_ADDRESS_INVALID_UK);
                 }
@@ -186,7 +191,10 @@ public class OrderServlet extends HttpServlet {
         @SuppressWarnings("unchecked")
         var carsFromSession = (List<Car>) req.getSession().getAttribute(SCOPE_CARS);
 
-        if (carsFromSession == null && DataValidator.initValidationOrderData(req)) {
+        if (carsFromSession == null) {
+            if (!DataValidator.initValidationOrderData(req)) {
+                return false;
+            }
             // calculate the date and time of the trip, taking into account the time the car was delivered
             var dateTimeOfTravel = dateTimeRideService
                     .count(LocalDateTime.parse(req.getParameter(SCOPE_DATE_OF_TRAVEL)));
@@ -197,8 +205,8 @@ public class OrderServlet extends HttpServlet {
 
             if (cars.size() == 0) {
                 log.info("No available cars, order cancellation");
-                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER, USER_ORDER_CANCEL);
-                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER_UK, USER_ORDER_CANCEL_UK);
+                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER, properties.getProperty("user.order.cancel"));
+                req.getSession().setAttribute(SCOPE_MESSAGE_ORDER_UK, properties.getProperty("user.order.cancel.uk"));
 
                 req.getSession().removeAttribute(SCOPE_ACTION);
                 req.getSession().removeAttribute(SCOPE_DATE_TIME_OF_TRAVEL);
@@ -213,8 +221,8 @@ public class OrderServlet extends HttpServlet {
                     routeChar = routeCharacteristics.getRouteCharacteristics(request);
                 } catch (JSONException e) {
                     req.getSession().setAttribute(SCOPE_CARS, cars);
-                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID, ADDRESS_INVALID);
-                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID_UK, ADDRESS_INVALID_UK);
+                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID, properties.getProperty("address.invalid"));
+                    req.getSession().setAttribute(SCOPE_MESSAGE_ADDRESS_INVALID_UK, properties.getProperty("address.invalid.uk"));
 
                     req.getSession().removeAttribute(SCOPE_ACTION);
 

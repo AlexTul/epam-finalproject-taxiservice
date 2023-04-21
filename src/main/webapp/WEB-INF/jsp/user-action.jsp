@@ -50,11 +50,11 @@
         <div class="col-lg-6"></div>
 
         <div class="col-lg-1">
-            <%-- Admin menu cars --%>
+            <%-- Admin menu users --%>
             <div id="nav-link" class="text-right">
-                <a class="text-info" href="user"><fmt:message key="users"/></a>
+                <a class="text-info" href="user?action=user"><fmt:message key="users"/></a>
             </div>
-            <%-- Admin menu cars --%>
+            <%-- Admin menu users --%>
         </div>
 
         <div class="col-lg-5"></div>
