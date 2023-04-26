@@ -44,7 +44,7 @@ public class JDBCUserDAO implements UserDAO {
 
             try (PreparedStatement createUser = connection.prepareStatement(
                     """
-                            insert into users (first_name, last_name, email, password, role)
+                            insert into users (first_name, last_name, email, password, role_id)
                             values (?, ?, ?, ?, ?)
                             """,
                     Statement.RETURN_GENERATED_KEYS)) {
@@ -53,7 +53,7 @@ public class JDBCUserDAO implements UserDAO {
                 createUser.setString(2, request.lastName());
                 createUser.setString(3, request.email());
                 createUser.setString(4, request.password());
-                createUser.setString(5, Role.CLIENT.toString());
+                createUser.setInt(5, Role.CLIENT.ordinal());
 
                 createUser.executeUpdate();
 
@@ -95,7 +95,8 @@ public class JDBCUserDAO implements UserDAO {
             try (var getUsers = connection.prepareStatement(
                     """
                             select * from users u
-                            where u.role like 'CLIENT'
+                            join roles r on r.id = u.role_id
+                            where r.role like 'CLIENT'
                             """
             )) {
 
@@ -121,6 +122,7 @@ public class JDBCUserDAO implements UserDAO {
         Set<User> users = new TreeSet<>();
 
         String sql = "select * from users u" +
+                " join roles r on r.id = u.role_id" +
                 " order by u." + pageable.sortField() + " " + pageable.orderBy() +
                 " limit " + pageable.limit() + " offset " + pageable.offset();
 
@@ -154,7 +156,9 @@ public class JDBCUserDAO implements UserDAO {
         try (Connection connection = dataSource.getConnection()) {
             try (var getUserByEmail = connection.prepareStatement(
                     """
-                            select * from users as u where u.email like ?
+                            select * from users as u
+                            join roles r on r.id = u.role_id
+                            where u.email like ?
                             """
             )) {
                 getUserByEmail.setString(1, email);
@@ -185,7 +189,9 @@ public class JDBCUserDAO implements UserDAO {
         try (Connection connection = dataSource.getConnection()) {
             try (var getRoleByEmail = connection.prepareStatement(
                     """
-                            select role from users u where u.email like ?
+                            select r.role from users u
+                            join roles r on r.id = u.role_id
+                            where u.email like ?
                             """
             )) {
                 getRoleByEmail.setString(1, email);
@@ -214,7 +220,7 @@ public class JDBCUserDAO implements UserDAO {
         try (Connection connection = dataSource.getConnection()) {
             try (var getUsersEmail = connection.prepareStatement(
                     """
-                            select email from users u where u.email like ?
+                            select u.email from users u where u.email like ?
                             """
             )) {
                 getUsersEmail.setString(1, email);
@@ -249,7 +255,7 @@ public class JDBCUserDAO implements UserDAO {
         try (Connection connection = dataSource.getConnection()) {
             try (var getAuthentication = connection.prepareStatement(
                     """
-                            select email, password from users u where u.email like ? and u.password like ?
+                            select u.email, u.password from users u where u.email like ? and u.password like ?
                             """
             )) {
                 getAuthentication.setString(1, email);

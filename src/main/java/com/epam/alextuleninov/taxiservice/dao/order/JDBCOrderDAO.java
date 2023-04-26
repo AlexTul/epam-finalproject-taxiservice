@@ -49,7 +49,9 @@ public class JDBCOrderDAO implements OrderDAO {
 
             try (var getUserByEmail = connection.prepareStatement(
                     """
-                            select * from users as u where u.email like ?
+                            select * from users u
+                            join roles r on r.id = u.role_id
+                            where u.email like ?
                             """
             );
 
@@ -300,6 +302,7 @@ public class JDBCOrderDAO implements OrderDAO {
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
+                                 join roles r on r.id = u.role_id
                                  where o.id = ?
                                  """
                  )) {
@@ -614,6 +617,7 @@ public class JDBCOrderDAO implements OrderDAO {
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
+                                 join roles r on r.id = u.role_id
                                  where o.id = ?
                                  """
                  )) {

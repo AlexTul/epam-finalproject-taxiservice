@@ -2,14 +2,20 @@
 
 drop database if exists orders;
 
+create table if not exists roles
+(
+    id   bigserial primary key,
+    role text not null
+);
+
 create table if not exists users
 (
     id         bigserial primary key,
     first_name text,
     last_name  text,
-    email      text not null unique,
-    password   text not null,
-    role       text not null
+    email      text      not null unique,
+    password   text      not null,
+    role_id    bigserial not null references roles (id)
 );
 
 create table if not exists cars

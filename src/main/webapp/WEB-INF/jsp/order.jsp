@@ -59,7 +59,7 @@
                     <option value="<%=CarCategory.PASSENGER.toString()%>"><fmt:message key="passenger"/></option>
                     <option value="<%=CarCategory.CARGO.toString()%>"><fmt:message key="cargo"/></option>
                 </select>
-                <p style="color: red">${requestScope.numberOfPassengersValidate}</p>
+                <p style="color: red">${sessionScope.numberOfPassengersValidate}</p>
                 <%-- Choose car category --%>
 
                 <%-- Choose the date for ride --%>
