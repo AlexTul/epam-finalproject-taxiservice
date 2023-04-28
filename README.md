@@ -60,6 +60,5 @@ c. в якості мов обрати мінімум дві: одна на ос
 Admin credentials:<br>
 - login: admin@gmail.com
 - password: QAsQaqGMoG1K5hQCCVFd
-- QAsQaqGMoG1K5hQCCVFD
 
 To get a key for maps: https://www.bingmapsportal.com/Application#
