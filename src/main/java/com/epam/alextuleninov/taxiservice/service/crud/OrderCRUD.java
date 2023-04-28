@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.crud.order;
+package com.epam.alextuleninov.taxiservice.service.crud;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;

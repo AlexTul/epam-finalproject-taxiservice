@@ -2,7 +2,8 @@ package com.epam.alextuleninov.taxiservice.dao.order;
 
 import com.epam.alextuleninov.taxiservice.Constants;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
-import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
+import com.epam.alextuleninov.taxiservice.dao.OrderDAO;
+import com.epam.alextuleninov.taxiservice.dao.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;

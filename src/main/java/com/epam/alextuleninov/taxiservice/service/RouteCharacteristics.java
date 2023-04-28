@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.routecharacteristics;
+package com.epam.alextuleninov.taxiservice.service;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;

@@ -3,7 +3,7 @@ package com.epam.alextuleninov.taxiservice.controller.logout;
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
-import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.CarCRUD;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

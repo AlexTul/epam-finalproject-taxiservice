@@ -2,8 +2,9 @@ package com.epam.alextuleninov.taxiservice.dao.car;
 
 import com.epam.alextuleninov.taxiservice.ConstantsTest;
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
+import com.epam.alextuleninov.taxiservice.dao.CarDAO;
 import com.epam.alextuleninov.taxiservice.dao.mappers.CarMapper;
-import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
+import com.epam.alextuleninov.taxiservice.dao.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.exceptions.datasource.UnexpectedDataAccessException;
 import com.epam.alextuleninov.taxiservice.model.car.Car;

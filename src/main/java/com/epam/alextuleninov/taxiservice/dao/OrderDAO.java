@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.dao.order;
+package com.epam.alextuleninov.taxiservice.dao;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;

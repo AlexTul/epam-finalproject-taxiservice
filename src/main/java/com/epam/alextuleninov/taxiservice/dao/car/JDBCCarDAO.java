@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.dao.car;
 
-import com.epam.alextuleninov.taxiservice.dao.mappers.ResultSetMapper;
+import com.epam.alextuleninov.taxiservice.dao.CarDAO;
+import com.epam.alextuleninov.taxiservice.dao.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;

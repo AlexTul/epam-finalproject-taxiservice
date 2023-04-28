@@ -2,7 +2,7 @@ package com.epam.alextuleninov.taxiservice.controller.filter;
 
 import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
-import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.UserCRUD;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;

@@ -3,8 +3,8 @@ package com.epam.alextuleninov.taxiservice.service.routecharacteristics;
 import com.epam.alextuleninov.taxiservice.config.properties.PropertiesConfig;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.route.RouteCharacteristicsResponse;
+import com.epam.alextuleninov.taxiservice.service.RouteCharacteristics;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;

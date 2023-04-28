@@ -1,19 +1,19 @@
-package com.epam.alextuleninov.taxiservice.dao.user;
+package com.epam.alextuleninov.taxiservice.service.crud;
 
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
-import com.epam.alextuleninov.taxiservice.model.user.User;
+import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
- * Interface DAO for User.
+ * Interface CRUD for User.
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public interface UserDAO {
+public interface UserCRUD {
 
     /**
      * Create the user in the database.
@@ -21,37 +21,30 @@ public interface UserDAO {
      * @param request request with user`s parameters
      * @return created user from database
      */
-    User create(UserRequest request);
+    boolean register(UserRequest request);
 
     /**
-     * Find all users with role like 'client' from the database.
+     * Find all clients from database.
      *
-     * @return all users from the database
+     * @param pageable request with pagination information
+     * @return list with clients
      */
-    Set<User> findAllClient();
+    List<UserResponse> findAllClients(PageableRequest pageable);
 
     /**
-     * Find all users from the database with pagination.
+     * Find all logins of clients.
      *
-     * @return all users from database
+     * @return list with logins
      */
-    Set<User> findAll(PageableRequest pageable);
+    List<String> findAllLoginsClient();
 
     /**
-     * Find user by email from the database.
+     * Find client by email from database.
      *
      * @param email user`s email
-     * @return user from the database
+     * @return list with clients
      */
-    Optional<User> findByEmail(String email);
-
-    /**
-     * Find user`s role  by email from the database.
-     *
-     * @param email email by user
-     * @return user from database
-     */
-    String findRoleByEmail(String email);
+    Optional<UserResponse> findByEmail(String email);
 
     /**
      * Check if user exists by email in the database.
@@ -61,14 +54,16 @@ public interface UserDAO {
      */
     boolean existsByEmail(String email);
 
+
+    boolean authentication(String email, String password);
+
     /**
-     * Check if user exists by email and password in the database.
+     * Find user`s role  by email from the database.
      *
-     * @param email    email by user
-     * @param password password by user
-     * @return true if user exists in database
+     * @param email email by user
+     * @return user from database
      */
-    boolean existsByEmailPassword(String email, String password);
+    String findRoleByEmail(String email);
 
     /**
      * Find number of records from the database.
@@ -87,10 +82,10 @@ public interface UserDAO {
     /**
      * Change user`s password by email int the database.
      *
-     * @param email    user`s login
-     * @param password new user`s password
+     * @param email user`s login
+     * @param newPassword new password
      */
-    void changePasswordByEmail(String email, String password);
+    void changePasswordByEmail(String email, String newPassword);
 
     /**
      * Delete the user from database.

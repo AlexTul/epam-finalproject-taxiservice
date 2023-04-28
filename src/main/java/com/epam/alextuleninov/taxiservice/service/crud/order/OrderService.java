@@ -1,10 +1,11 @@
 package com.epam.alextuleninov.taxiservice.service.crud.order;
 
-import com.epam.alextuleninov.taxiservice.dao.order.OrderDAO;
+import com.epam.alextuleninov.taxiservice.dao.OrderDAO;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
+import com.epam.alextuleninov.taxiservice.service.crud.OrderCRUD;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

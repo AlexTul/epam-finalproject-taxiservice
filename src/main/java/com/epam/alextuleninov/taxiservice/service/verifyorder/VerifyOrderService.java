@@ -4,7 +4,8 @@ import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.car.category.CarCategory;
 import com.epam.alextuleninov.taxiservice.model.car.status.CarStatus;
-import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.VerifyOrder;
+import com.epam.alextuleninov.taxiservice.service.crud.CarCRUD;
 
 import java.util.ArrayList;
 import java.util.List;

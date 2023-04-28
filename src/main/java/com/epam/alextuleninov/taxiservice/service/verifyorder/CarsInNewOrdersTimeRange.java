@@ -4,8 +4,8 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
-import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
-import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.OrderCRUD;
 
 import java.util.HashSet;
 import java.util.List;

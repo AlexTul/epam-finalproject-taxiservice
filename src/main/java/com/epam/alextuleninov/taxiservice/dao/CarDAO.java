@@ -1,22 +1,20 @@
-package com.epam.alextuleninov.taxiservice.service.crud.car;
+package com.epam.alextuleninov.taxiservice.dao;
 
 import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
-import com.epam.alextuleninov.taxiservice.data.car.CarResponse;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 /**
- * Interface CRUD for Car.
+ * Interface DAO for Car.
  *
  * @author Oleksandr Tuleninov
  * @version 01
  */
-public interface CarCRUD {
+public interface CarDAO {
 
     /**
      * Create the car in the database.
@@ -24,15 +22,14 @@ public interface CarCRUD {
      * @param request       request with order parameters
      * @return              the created car from database
      */
-    CarResponse create(CarRequest request);
+    Car create(CarRequest request);
 
     /**
-     * Find all cars from database.
+     * Find all cars from the database with pagination.
      *
-     * @param pageable       request with pagination information
-     * @return               list with cars
+     * @return              all cars from database
      */
-    List<CarResponse> findAll(PageableRequest pageable);
+    Set<Car> findAll(PageableRequest pageable);
 
     /**
      * Find all cars by category status from the database.
@@ -48,7 +45,7 @@ public interface CarCRUD {
      * @param id            id of car
      * @return              car from the database
      */
-    Optional<CarResponse> findByID(int id);
+    Optional<Car> findByID(int id);
 
     /**
      * Change car status int the database.

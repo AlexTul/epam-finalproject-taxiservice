@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.dao.mappers;
 
 import com.epam.alextuleninov.taxiservice.connectionpool.DataSourceFields;
+import com.epam.alextuleninov.taxiservice.dao.ResultSetMapper;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
 

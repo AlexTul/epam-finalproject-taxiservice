@@ -1,12 +1,13 @@
 package com.epam.alextuleninov.taxiservice.service.crud.user;
 
 import com.epam.alextuleninov.taxiservice.config.security.PasswordEncoderConfig;
-import com.epam.alextuleninov.taxiservice.dao.user.UserDAO;
+import com.epam.alextuleninov.taxiservice.dao.UserDAO;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserRequest;
 import com.epam.alextuleninov.taxiservice.data.user.UserResponse;
 import com.epam.alextuleninov.taxiservice.model.user.User;
 import com.epam.alextuleninov.taxiservice.model.user.role.Role;
+import com.epam.alextuleninov.taxiservice.service.crud.UserCRUD;
 
 import java.util.*;
 import java.util.stream.Collectors;

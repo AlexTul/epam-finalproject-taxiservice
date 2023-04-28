@@ -5,7 +5,7 @@ import com.epam.alextuleninov.taxiservice.config.mail.EmailByLocaleConfig;
 import com.epam.alextuleninov.taxiservice.config.mail.EmailConfig;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.service.crud.user.UserCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.UserCRUD;
 import com.epam.alextuleninov.taxiservice.validation.DataValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

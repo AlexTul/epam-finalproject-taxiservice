@@ -1,8 +1,9 @@
 package com.epam.alextuleninov.taxiservice.service.crud.order;
 
-import com.epam.alextuleninov.taxiservice.dao.order.OrderDAO;
+import com.epam.alextuleninov.taxiservice.dao.OrderDAO;
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 import com.epam.alextuleninov.taxiservice.model.order.Order;
+import com.epam.alextuleninov.taxiservice.service.crud.OrderCRUD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

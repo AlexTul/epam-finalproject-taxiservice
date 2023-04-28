@@ -1,11 +1,12 @@
 package com.epam.alextuleninov.taxiservice.service.crud.car;
 
-import com.epam.alextuleninov.taxiservice.dao.car.CarDAO;
+import com.epam.alextuleninov.taxiservice.dao.CarDAO;
 import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.car.CarResponse;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;
+import com.epam.alextuleninov.taxiservice.service.crud.CarCRUD;
 
 import java.util.List;
 import java.util.Optional;

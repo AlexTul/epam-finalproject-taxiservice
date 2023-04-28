@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.dateride;
+package com.epam.alextuleninov.taxiservice.service;
 
 import java.time.LocalDateTime;
 

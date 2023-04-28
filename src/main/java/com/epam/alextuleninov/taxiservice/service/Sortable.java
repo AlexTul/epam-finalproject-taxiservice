@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.sort;
+package com.epam.alextuleninov.taxiservice.service;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
 

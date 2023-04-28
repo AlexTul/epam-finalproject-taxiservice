@@ -4,7 +4,7 @@ import com.epam.alextuleninov.taxiservice.config.context.AppContext;
 import com.epam.alextuleninov.taxiservice.config.pagination.PaginationConfig;
 import com.epam.alextuleninov.taxiservice.data.car.CarRequest;
 import com.epam.alextuleninov.taxiservice.data.pageable.PageableRequest;
-import com.epam.alextuleninov.taxiservice.service.crud.car.CarCRUD;
+import com.epam.alextuleninov.taxiservice.service.crud.CarCRUD;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

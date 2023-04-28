@@ -1,6 +1,7 @@
 package com.epam.alextuleninov.taxiservice.service.sort;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderResponse;
+import com.epam.alextuleninov.taxiservice.service.Sortable;
 
 import java.util.ArrayList;
 import java.util.Comparator;

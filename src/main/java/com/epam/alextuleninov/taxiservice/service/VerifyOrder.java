@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.verifyorder;
+package com.epam.alextuleninov.taxiservice.service;
 
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;
 import com.epam.alextuleninov.taxiservice.model.car.Car;

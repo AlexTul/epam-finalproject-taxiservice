@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.service.loyalty;
+package com.epam.alextuleninov.taxiservice.service;
 
 import com.epam.alextuleninov.taxiservice.data.loyalty.LoyaltyRatio;
 import com.epam.alextuleninov.taxiservice.data.order.OrderRequest;

@@ -1,4 +1,4 @@
-package com.epam.alextuleninov.taxiservice.dao.mappers;
+package com.epam.alextuleninov.taxiservice.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

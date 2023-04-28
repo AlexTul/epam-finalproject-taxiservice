@@ -1,7 +1,7 @@
 package com.epam.alextuleninov.taxiservice.service.loyalty;
 
-import com.epam.alextuleninov.taxiservice.service.crud.order.OrderCRUD;
-import com.epam.alextuleninov.taxiservice.service.routecharacteristics.RouteCharacteristics;
+import com.epam.alextuleninov.taxiservice.service.crud.OrderCRUD;
+import com.epam.alextuleninov.taxiservice.service.RouteCharacteristics;
 import org.junit.jupiter.api.Test;
 
 import static com.epam.alextuleninov.taxiservice.Constants.*;
