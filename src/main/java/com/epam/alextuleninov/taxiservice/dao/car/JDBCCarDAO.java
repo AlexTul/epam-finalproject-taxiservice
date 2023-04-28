@@ -39,7 +39,7 @@ public class JDBCCarDAO implements CarDAO {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (PreparedStatement createCar = connection.prepareStatement(
+            try (var createCar = connection.prepareStatement(
                     """
                             insert into cars (car_name, car_passengers, car_category, car_status)
                             values (?, ?, ?, ?)

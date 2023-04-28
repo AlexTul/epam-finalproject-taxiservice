@@ -15,23 +15,20 @@ import java.util.Objects;
  */
 public class Order {
 
-    private long id;
-    private LocalDateTime createdAt;
-    private User customer;
-    private int numberOfPassengers;
-    List<Car> cars;
-    private String startTravel;
-    private String endTravel;
-    private double travelDistance;
-    private int travelDuration;
-    private double cost;
-    private LocalDateTime startedAt;
-    private LocalDateTime finishedAt;
+    private final long id;
+    private final LocalDateTime createdAt;
+    private final User customer;
+    private final int numberOfPassengers;
+    private final List<Car> cars;
+    private final String startTravel;
+    private final String endTravel;
+    private final double travelDistance;
+    private final int travelDuration;
+    private final double cost;
+    private final LocalDateTime startedAt;
+    private final LocalDateTime finishedAt;
 
-    public Order() {
-    }
-
-    public Order(long id, LocalDateTime createdAt, User customer, int numberOfPassengers,
+    private Order(long id, LocalDateTime createdAt, User customer, int numberOfPassengers,
                  List<Car> cars, String startTravel, String endTravel, double travelDistance,
                  int travelDuration, double cost, LocalDateTime startedAt, LocalDateTime finishedAt) {
         this.id = id;
@@ -48,100 +45,59 @@ public class Order {
         this.finishedAt = finishedAt;
     }
 
-    public long getId() {
-        return id;
+    public static Order create(long id, LocalDateTime createdAt, User customer, int numberOfPassengers,
+                               List<Car> cars, String startTravel, String endTravel, double travelDistance,
+                               int travelDuration, double cost, LocalDateTime startedAt, LocalDateTime finishedAt) {
+        return new Order(id, createdAt, customer, numberOfPassengers, cars, startTravel,
+                endTravel, travelDistance, travelDuration, cost, startedAt, finishedAt);
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public User getCustomer() {
         return customer;
-    }
-
-    public void setCustomer(User customer) {
-        this.customer = customer;
     }
 
     public int getNumberOfPassengers() {
         return numberOfPassengers;
     }
 
-    public void setNumberOfPassengers(int numberOfPassengers) {
-        this.numberOfPassengers = numberOfPassengers;
-    }
-
     public List<Car> getCars() {
         return cars;
-    }
-
-    public void setCars(List<Car> cars) {
-        this.cars = cars;
     }
 
     public String getStartTravel() {
         return startTravel;
     }
 
-    public void setStartTravel(String startTravel) {
-        this.startTravel = startTravel;
-    }
-
     public String getEndTravel() {
         return endTravel;
-    }
-
-    public void setEndTravel(String endTravel) {
-        this.endTravel = endTravel;
     }
 
     public double getTravelDistance() {
         return travelDistance;
     }
 
-    public void setTravelDistance(double travelDistance) {
-        this.travelDistance = travelDistance;
-    }
-
     public int getTravelDuration() {
         return travelDuration;
-    }
-
-    public void setTravelDuration(int travelDuration) {
-        this.travelDuration = travelDuration;
     }
 
     public double getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
-
     public LocalDateTime getStartedAt() {
         return startedAt;
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
     public LocalDateTime getFinishedAt() {
         return finishedAt;
-    }
-
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
     }
 
     @Override
@@ -155,5 +111,86 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id, customer);
+    }
+
+    public static class OrderBuilder {
+
+        private long id;
+        private LocalDateTime createdAt;
+        private User customer;
+        private int numberOfPassengers;
+        private List<Car> cars;
+        private String startTravel;
+        private String endTravel;
+        private double travelDistance;
+        private int travelDuration;
+        private double cost;
+        private LocalDateTime startedAt;
+        private LocalDateTime finishedAt;
+
+        public OrderBuilder id(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public OrderBuilder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public OrderBuilder customer(User customer) {
+            this.customer = customer;
+            return this;
+        }
+
+        public OrderBuilder numberOfPassengers(int numberOfPassengers) {
+            this.numberOfPassengers = numberOfPassengers;
+            return this;
+        }
+
+        public OrderBuilder cars(List<Car> cars) {
+            this.cars = cars;
+            return this;
+        }
+
+        public OrderBuilder startTravel(String startTravel) {
+            this.startTravel = startTravel;
+            return this;
+        }
+
+        public OrderBuilder endTravel(String endTravel) {
+            this.endTravel = endTravel;
+            return this;
+        }
+
+        public OrderBuilder travelDistance(double travelDistance) {
+            this.travelDistance = travelDistance;
+            return this;
+        }
+
+        public OrderBuilder travelDuration(int travelDuration) {
+            this.travelDuration = travelDuration;
+            return this;
+        }
+
+        public OrderBuilder cost(double cost) {
+            this.cost = cost;
+            return this;
+        }
+
+        public OrderBuilder startedAt(LocalDateTime startedAt) {
+            this.startedAt = startedAt;
+            return this;
+        }
+
+        public OrderBuilder finishedAt(LocalDateTime finishedAt) {
+            this.finishedAt = finishedAt;
+            return this;
+        }
+
+        public Order build() {
+            return Order.create(id, createdAt, customer, numberOfPassengers, cars, startTravel,
+                    endTravel, travelDistance, travelDuration, cost, startedAt, finishedAt);
+        }
     }
 }

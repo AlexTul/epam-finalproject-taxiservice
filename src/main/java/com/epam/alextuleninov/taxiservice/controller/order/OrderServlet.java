@@ -87,7 +87,6 @@ public class OrderServlet extends HttpServlet {
                             .forward(req, resp);
                 } else {
                     processRequestGet(req);
-                    req.getSession().removeAttribute(SCOPE_ACTION);
 
                     req.getRequestDispatcher(PAGE_ORDER)
                             .forward(req, resp);
@@ -230,6 +229,7 @@ public class OrderServlet extends HttpServlet {
                 }
 
                 var loyaltyPrice = loyaltyService.getLoyaltyPrice(request);
+                req.getSession().removeAttribute(SCOPE_ACTION);
 
                 req.getSession().setAttribute(SCOPE_CARS, cars);
                 req.getSession().setAttribute(SCOPE_LOYALTY_PRICE, loyaltyPrice.loyaltyPrice());
@@ -290,6 +290,7 @@ public class OrderServlet extends HttpServlet {
      */
     private void processPostUpdateOrder(HttpServletRequest req, String updateOrderID, OrderRequest request) {
         orderCRUD.updateByID(Long.parseLong(updateOrderID), request);
+        carCRUD.changeCarStatus(request);
         req.getSession().removeAttribute(SCOPE_UPDATE_ORDER_ID);
         req.getSession().removeAttribute(SCOPE_CARS);
         req.getSession().removeAttribute(SCOPE_DATE_OF_TRAVEL);

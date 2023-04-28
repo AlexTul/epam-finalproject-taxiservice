@@ -18,18 +18,18 @@ public class UserMapper implements ResultSetMapper<User> {
     /**
      * The method for entity`s mapping.
      *
-     * @param resultSet         result set from database
-     * @return                  mapping entity
+     * @param resultSet result set from database
+     * @return mapping entity
      */
     @Override
     public User map(ResultSet resultSet) throws SQLException {
-        return new User(
-                resultSet.getLong(DataSourceFields.USER_ID),
-                resultSet.getString(DataSourceFields.USER_FIRST_NAME),
-                resultSet.getString(DataSourceFields.USER_LAST_NAME),
-                resultSet.getString(DataSourceFields.USER_EMAIL),
-                null,
-                Role.valueOf(resultSet.getString(DataSourceFields.USER_ROLE))
-        );
+        return new User.UserBuilder()
+                .id(resultSet.getLong(DataSourceFields.USER_ID))
+                .firstName(resultSet.getString(DataSourceFields.USER_FIRST_NAME))
+                .lastName(resultSet.getString(DataSourceFields.USER_LAST_NAME))
+                .email(resultSet.getString(DataSourceFields.USER_EMAIL))
+                .password(null)
+                .role(Role.valueOf(resultSet.getString(DataSourceFields.USER_ROLE)))
+                .build();
     }
 }

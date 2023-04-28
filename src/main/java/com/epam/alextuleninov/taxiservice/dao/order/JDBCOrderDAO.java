@@ -128,20 +128,20 @@ public class JDBCOrderDAO implements OrderDAO {
 
                 connection.commit();
 
-                return new Order(
-                        id,
-                        createdOn,
-                        user,
-                        request.numberOfPassengers(),
-                        request.cars(),
-                        request.startTravel(),
-                        request.endTravel(),
-                        request.travelDistance(),
-                        request.travelDuration(),
-                        request.loyaltyPrice(),
-                        startRoute,
-                        finishRoute
-                );
+                return new Order.OrderBuilder()
+                        .id(id)
+                        .createdAt(createdOn)
+                        .customer(user)
+                        .numberOfPassengers(request.numberOfPassengers())
+                        .cars(request.cars())
+                        .startTravel(request.startTravel())
+                        .endTravel(request.endTravel())
+                        .travelDistance(request.travelDistance())
+                        .travelDuration(request.travelDuration())
+                        .cost(request.loyaltyPrice())
+                        .startedAt(startRoute)
+                        .finishedAt(finishRoute)
+                        .build();
             } catch (Exception e) {
                 connection.rollback();
                 throw new UnexpectedDataAccessException(e);
@@ -198,6 +198,7 @@ public class JDBCOrderDAO implements OrderDAO {
                          """
                                  select * from orders o
                                  join users u on u.id = o.customer_id
+                                 join roles r on r.id = u.role_id
                                  where o.id = ?
                                  """
                  )) {
@@ -667,20 +668,20 @@ public class JDBCOrderDAO implements OrderDAO {
             throws SQLException {
         while (rsAllOrders.next()) {
             result.add(
-                    new Order(
-                            variable,
-                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
-                            userMapper.map(rsAllOrders),
-                            rsAllOrders.getInt(DataSourceFields.ORDER_PASSENGERS),
-                            mapOrderCars.get(variable),
-                            rsAllOrders.getString(DataSourceFields.ROUTE_START_TRAVEL),
-                            rsAllOrders.getString(DataSourceFields.ROUTE_END_TRAVEL),
-                            rsAllOrders.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
-                            rsAllOrders.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
-                            rsAllOrders.getDouble(DataSourceFields.ORDER_COST),
-                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
-                            rsAllOrders.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
-                    )
+                    new Order.OrderBuilder()
+                            .id(variable)
+                            .createdAt(rsAllOrders.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime())
+                            .customer(userMapper.map(rsAllOrders))
+                            .numberOfPassengers(rsAllOrders.getInt(DataSourceFields.ORDER_PASSENGERS))
+                            .cars(mapOrderCars.get(variable))
+                            .startTravel(rsAllOrders.getString(DataSourceFields.ROUTE_START_TRAVEL))
+                            .endTravel(rsAllOrders.getString(DataSourceFields.ROUTE_END_TRAVEL))
+                            .travelDistance(rsAllOrders.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE))
+                            .travelDuration(rsAllOrders.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION))
+                            .cost(rsAllOrders.getDouble(DataSourceFields.ORDER_COST))
+                            .startedAt(rsAllOrders.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime())
+                            .finishedAt(rsAllOrders.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime())
+                            .build()
             );
         }
     }
@@ -692,19 +693,19 @@ public class JDBCOrderDAO implements OrderDAO {
      * @param carsByOrder list with cars by order
      */
     private Order orderMap(long id, ResultSet resultSet, List<Car> carsByOrder) throws SQLException {
-        return new Order(
-                id,
-                resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime(),
-                userMapper.map(resultSet),
-                resultSet.getInt(DataSourceFields.ORDER_PASSENGERS),
-                carsByOrder,
-                resultSet.getString(DataSourceFields.ROUTE_START_TRAVEL),
-                resultSet.getString(DataSourceFields.ROUTE_END_TRAVEL),
-                resultSet.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE),
-                resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION),
-                resultSet.getDouble(DataSourceFields.ORDER_COST),
-                resultSet.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime(),
-                resultSet.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime()
-        );
+        return new Order.OrderBuilder()
+                .id(id)
+                .createdAt(resultSet.getTimestamp(DataSourceFields.ORDER_DATE).toLocalDateTime())
+                .customer(userMapper.map(resultSet))
+                .numberOfPassengers(resultSet.getInt(DataSourceFields.ORDER_PASSENGERS))
+                .cars(carsByOrder)
+                .startTravel(resultSet.getString(DataSourceFields.ROUTE_START_TRAVEL))
+                .endTravel(resultSet.getString(DataSourceFields.ROUTE_END_TRAVEL))
+                .travelDistance(resultSet.getDouble(DataSourceFields.ROUTE_TRAVEL_DISTANCE))
+                .travelDuration(resultSet.getInt(DataSourceFields.ROUTE_TRAVEL_DURATION))
+                .cost(resultSet.getDouble(DataSourceFields.ORDER_COST))
+                .startedAt(resultSet.getTimestamp(DataSourceFields.ORDER_STARTED_AT).toLocalDateTime())
+                .finishedAt(resultSet.getTimestamp(DataSourceFields.ORDER_FINISHED_AT).toLocalDateTime())
+                .build();
     }
 }

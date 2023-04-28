@@ -11,17 +11,16 @@ import java.util.Objects;
  * @version 01
  */
 public class Route {
+
     private long id;
+
     private Address address;
+
     private long distance;
 
     private double price;
 
     private int travelTime;
-
-    public Route() {
-
-    }
 
     public Route(long id, Address address, long distance, double price, int travelTime) {
         this.id = id;
@@ -43,7 +42,7 @@ public class Route {
         return address;
     }
 
-    public void setAddress(Address startEnd) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 

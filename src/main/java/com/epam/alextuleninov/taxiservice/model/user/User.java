@@ -13,22 +13,19 @@ import java.util.Objects;
  */
 public class User implements Comparable {
 
-    private long id;
+    private final long id;
 
-    private String firstName;
+    private final String firstName;
 
-    private String lastName;
+    private final String lastName;
 
-    private String email;
+    private final String email;
 
-    private String password;
+    private final String password;
 
-    private Role role;
+    private final Role role;
 
-    public User() {
-    }
-
-    public User(long id, String firstName, String lastName,
+    private User(long id, String firstName, String lastName,
                 String email, String password, Role role) {
         this.id = id;
         this.firstName = firstName;
@@ -38,52 +35,33 @@ public class User implements Comparable {
         this.role = role;
     }
 
-    public long getId() {
-        return id;
+    public static User create(long id, String firstName, String lastName,
+                               String email, String password, Role role) {
+        return new User(id, firstName, lastName, email, password, role);
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getId() {
+        return id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Role getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     @Override
@@ -101,6 +79,55 @@ public class User implements Comparable {
 
     @Override
     public int compareTo(@NotNull Object o) {
-        return this.getEmail().compareTo(((User)o).getEmail());
+        return this.getEmail().compareTo(((User) o).getEmail());
+    }
+
+    public static class UserBuilder {
+
+        private long id;
+
+        private String firstName;
+
+        private String lastName;
+
+        private String email;
+
+        private String password;
+
+        private Role role;
+
+        public UserBuilder id(long id) {
+            this.id = id;
+            return this;
+        }
+
+        public UserBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder role(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public User build() {
+            return User.create(id, firstName, lastName, email, password, role);
+        }
     }
 }

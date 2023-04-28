@@ -7,6 +7,6 @@ import java.util.List;
 public interface Sortable {
 
     List<OrderResponse> sorting(Object sortTypeByDateFromSession,
-                 Object sortTypeByCostFromSession,
-                 List<OrderResponse> allOrders);
+                                Object sortTypeByCostFromSession,
+                                List<OrderResponse> allOrders);
 }

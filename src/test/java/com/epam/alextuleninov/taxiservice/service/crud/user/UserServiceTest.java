@@ -43,14 +43,15 @@ public class UserServiceTest {
     @Test
     void testRegisterIfUserNotExists() {
         when(userDAO.create(getTestUserRequest())).thenReturn(
-                new User(
-                        1,
-                        "Example",
-                        "Example",
-                        "example@gmail.com",
-                        null,
-                        Role.CLIENT
-                ));
+                new User.UserBuilder()
+                        .id(1)
+                        .firstName("Example")
+                        .lastName("Example")
+                        .email("example@gmail.com")
+                        .password(null)
+                        .role(Role.CLIENT)
+                        .build()
+        );
 
         boolean registerPresent = userService.register(getTestUserRequest());
 

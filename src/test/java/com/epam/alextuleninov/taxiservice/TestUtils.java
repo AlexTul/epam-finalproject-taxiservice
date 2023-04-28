@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public final class TestUtils {
 
     public static OrderRequest getTestOrderRequest() {
@@ -43,20 +42,20 @@ public final class TestUtils {
         List<Car> cars = new ArrayList<>();
         cars.add(getTestCar());
 
-        return new Order(
-                ConstantsTest.ORDER_ID_VALUE,
-                ConstantsTest.ORDER_DATE_VALUE.toLocalDateTime(),
-                getTestUser(),
-                ConstantsTest.ORDER_PASSENGERS_VALUE,
-                cars,
-                ConstantsTest.ORDER_START_TRAVEL_VALUE,
-                ConstantsTest.ORDER_END_TRAVEL_VALUE,
-                ConstantsTest.ORDER_DISTANCE_TRAVEL_VALUE,
-                ConstantsTest.ORDER_DURATION_TRAVEL_VALUE,
-                ConstantsTest.ORDER_COST_VALUE,
-                ConstantsTest.ORDER_STARTED_AT_VALUE.toLocalDateTime(),
-                ConstantsTest.ORDER_FINISHED_AT_VALUE.toLocalDateTime()
-        );
+        return new Order.OrderBuilder()
+                .id(ConstantsTest.ORDER_ID_VALUE)
+                .createdAt(ConstantsTest.ORDER_DATE_VALUE.toLocalDateTime())
+                .customer(getTestUser())
+                .numberOfPassengers(ConstantsTest.ORDER_PASSENGERS_VALUE)
+                .cars(cars)
+                .startTravel(ConstantsTest.ORDER_START_TRAVEL_VALUE)
+                .endTravel(ConstantsTest.ORDER_END_TRAVEL_VALUE)
+                .travelDistance(ConstantsTest.ORDER_DISTANCE_TRAVEL_VALUE)
+                .travelDuration(ConstantsTest.ORDER_DURATION_TRAVEL_VALUE)
+                .cost(ConstantsTest.ORDER_COST_VALUE)
+                .startedAt(ConstantsTest.ORDER_STARTED_AT_VALUE.toLocalDateTime())
+                .finishedAt(ConstantsTest.ORDER_FINISHED_AT_VALUE.toLocalDateTime())
+                .build();
     }
 
     public static PageableRequest getTestPageableRequest() {
@@ -78,25 +77,25 @@ public final class TestUtils {
     }
 
     public static User getTestUser() {
-        return new User(
-                ConstantsTest.USER_ID_VALUE,
-                ConstantsTest.USER_FIRST_NAME_VALUE,
-                ConstantsTest.USER_LAST_NAME_VALUE,
-                ConstantsTest.USER_EMAIL_VALUE,
-                ConstantsTest.USER_ENCRYPT_PASSWORD_VALUE,
-                Role.valueOf(ConstantsTest.USER_ROLE_CLIENT_VALUE)
-        );
+        return new User.UserBuilder()
+                .id(ConstantsTest.USER_ID_VALUE)
+                .firstName(ConstantsTest.USER_FIRST_NAME_VALUE)
+                .lastName(ConstantsTest.USER_LAST_NAME_VALUE)
+                .email(ConstantsTest.USER_EMAIL_VALUE)
+                .password(ConstantsTest.USER_ENCRYPT_PASSWORD_VALUE)
+                .role(Role.valueOf(ConstantsTest.USER_ROLE_CLIENT_VALUE))
+                .build();
     }
 
     public static User getTestAdmin() {
-        return new User(
-                ConstantsTest.USER_ID_ADMIN_VALUE,
-                ConstantsTest.USER_FIRST_NAME_ADMIN_VALUE,
-                ConstantsTest.USER_LAST_NAME_ADMIN_VALUE,
-                ConstantsTest.USER_EMAIL_ADMIN_VALUE,
-                ConstantsTest.USER_ENCRYPT_PASSWORD_ADMIN_VALUE,
-                Role.valueOf(ConstantsTest.USER_ROLE_ADMIN_VALUE)
-        );
+        return new User.UserBuilder()
+                .id(ConstantsTest.USER_ID_ADMIN_VALUE)
+                .firstName(ConstantsTest.USER_FIRST_NAME_ADMIN_VALUE)
+                .lastName(ConstantsTest.USER_LAST_NAME_ADMIN_VALUE)
+                .email(ConstantsTest.USER_EMAIL_ADMIN_VALUE)
+                .password(ConstantsTest.USER_ENCRYPT_PASSWORD_ADMIN_VALUE)
+                .role(Role.valueOf(ConstantsTest.USER_ROLE_ADMIN_VALUE))
+                .build();
     }
 
     public static CarRequest getTestCarRequest() {

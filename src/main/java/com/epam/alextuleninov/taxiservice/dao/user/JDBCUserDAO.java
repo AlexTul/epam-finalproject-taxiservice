@@ -42,7 +42,7 @@ public class JDBCUserDAO implements UserDAO {
             boolean autoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
-            try (PreparedStatement createUser = connection.prepareStatement(
+            try (var createUser = connection.prepareStatement(
                     """
                             insert into users (first_name, last_name, email, password, role_id)
                             values (?, ?, ?, ?, ?)
@@ -63,14 +63,14 @@ public class JDBCUserDAO implements UserDAO {
 
                 connection.commit();
 
-                return new User(
-                        id,
-                        request.firstName(),
-                        request.lastName(),
-                        request.email(),
-                        null,
-                        Role.CLIENT
-                );
+                return new User.UserBuilder()
+                        .id(id)
+                        .firstName(request.firstName())
+                        .lastName(request.lastName())
+                        .email(request.email())
+                        .password(null)
+                        .role(Role.CLIENT)
+                        .build();
             } catch (Exception e) {
                 connection.rollback();
                 throw new UnexpectedDataAccessException(e);
