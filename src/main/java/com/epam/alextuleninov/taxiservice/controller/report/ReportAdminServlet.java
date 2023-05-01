@@ -119,13 +119,10 @@ public class ReportAdminServlet extends HttpServlet {
         setNumberRecordsInDatabase(req);
 
         // config pagination
-        var paginationConfig = new PaginationConfig();
-        int page = paginationConfig.configPage(req);
-        paginationConfig.config(req);
-
+        int currentPage = new PaginationConfig().config(req);
         // find orders by filter with pagination for report`s page
         // configure the request for pagination
-        var pageableRequest = PageableRequest.getPageableRequest(page);
+        var pageableRequest = PageableRequest.getPageableRequest(currentPage);
         // put all orders from database or put by dateOfOrders or customerOfOrders
         var allOrders = putOrdersFromDBToPage(req, pageableRequest, locale);
         // sorting by date or sorting by cost

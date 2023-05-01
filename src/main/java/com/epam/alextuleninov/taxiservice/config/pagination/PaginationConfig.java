@@ -19,42 +19,32 @@ public class PaginationConfig {
     // how many links appear at the end of the page list (cannot be set to 0)
     private static final int N_PAGES_LAST = 1;
 
-    public PaginationConfig() {
-    }
-
-    /**
-     * To customize the current page.
-     *
-     * @param req           HttpServletRequest request
-     * @return              number current page
-     */
-    public int configPage(HttpServletRequest req) {
-        String pageFromRequest = req.getParameter(SCOPE_PAGE);
-        int page;
-        if (pageFromRequest == null) {
-            page = 0;
-        } else {
-            page = Integer.parseInt(pageFromRequest);
-        }
-        req.setAttribute(SCOPE_CURRENT_PAGE, page);
-        return page;
-    }
-
     /**
      * To customize the pagination.
      *
-     * @param req           HttpServletRequest request
+     * @param req HttpServletRequest request
      */
-    public void config(HttpServletRequest req) {
+    public int config(HttpServletRequest req) {
+        String pageFromRequest = req.getParameter(SCOPE_PAGE);
+        int currentPage;
+        /*
+         * if the page is loaded for the first time or the user has entered an incorrect page number in the address bar
+         * */
+        if (pageFromRequest == null || !pageFromRequest.matches("\\d+")) {
+            currentPage = 0;
+        } else {
+            currentPage = Integer.parseInt(pageFromRequest);
+        }
+
         long totalRecords = (long) req.getAttribute(SCOPE_TOTAL_RECORDS);
         int pageSize = Constants.PAGE_SIZE;
-        int currentPage = (Integer) req.getAttribute(SCOPE_CURRENT_PAGE);
         long pages = totalRecords / pageSize;
         int lastPage = (int) (pages * pageSize < totalRecords ? pages : pages - 1);
         // if customer haven`t any orders, because app get customer from DB, customer not really orders
-        if (lastPage < 0) {
-            lastPage = 0;
-        }
+        if (lastPage < 0) lastPage = 0;
+        // if the user has entered an incorrect page number in the address bar
+        if (lastPage < currentPage) currentPage = lastPage;
+        req.setAttribute(SCOPE_CURRENT_PAGE, currentPage);
         req.setAttribute(SCOPE_LAST_PAGE, lastPage);
 
         // whether to show in full all links to pages to the left of the current one, or insert an ellipsis
@@ -68,5 +58,7 @@ public class PaginationConfig {
         req.setAttribute("N_PAGES_LAST", N_PAGES_LAST);
         req.setAttribute("showAllPrev", showAllPrev);
         req.setAttribute("showAllNext", showAllNext);
+
+        return currentPage;
     }
 }

@@ -166,11 +166,9 @@ public class UserServlet extends HttpServlet {
         // set attribute for pagination, total_records = all records from database - 1 (admin records)
         req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsUsersInDatabase - 1);
         // set current page for pagination
-        int page = new PaginationConfig().configPage(req);
+        int currentPage = new PaginationConfig().config(req);
         // find all orders with pagination for report`s page
-        new PaginationConfig().config(req);
-
-        var allClients = userCRUD.findAllClients(PageableRequest.getPageableRequest(page));
+        var allClients = userCRUD.findAllClients(PageableRequest.getPageableRequest(currentPage));
         req.getSession().setAttribute(SCOPE_USER_RESPONSES, allClients);
     }
 

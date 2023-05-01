@@ -91,12 +91,9 @@ public class ReportCustomerServlet extends HttpServlet {
         setNumberRecordsInDatabase(req);
 
         // config pagination
-        var paginationConfig = new PaginationConfig();
-        int page = paginationConfig.configPage(req);
-        paginationConfig.config(req);
-
+        int currentPage = new PaginationConfig().config(req);
         // find all orders with pagination for report`s page
-        var allOrders = orderCRUD.findAllByCustomer(customer, PageableRequest.getPageableRequest(page));
+        var allOrders = orderCRUD.findAllByCustomer(customer, PageableRequest.getPageableRequest(currentPage));
         // sorting by date or sorting by cost
         allOrders = sorter.sorting(sortTypeByDateFromSession, sortTypeByCostFromSession, allOrders);
         req.setAttribute(SCOPE_ORDERS, allOrders);

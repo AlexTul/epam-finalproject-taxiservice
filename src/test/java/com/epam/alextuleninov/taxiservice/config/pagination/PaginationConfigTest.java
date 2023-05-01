@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 import static com.epam.alextuleninov.taxiservice.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -27,24 +29,24 @@ public class PaginationConfigTest {
     @Test
     void testConfigPage0() {
         String currentPage = "0";
+        long totalRecords = 10;
         when(req.getParameter(SCOPE_PAGE)).thenReturn(currentPage);
+        when(req.getAttribute(SCOPE_TOTAL_RECORDS)).thenReturn(totalRecords);
 
-        var request = new Request(req);
-        int actual = new PaginationConfig().configPage(request);
+        int actual = new PaginationConfig().config(req);
 
         assertEquals(0 , actual);
-        assertEquals(0 , request.getAttribute(SCOPE_CURRENT_PAGE));
     }
 
     @Test
     void testConfigPageNull() {
+        long totalRecords = 10;
         when(req.getParameter(SCOPE_PAGE)).thenReturn(null);
+        when(req.getAttribute(SCOPE_TOTAL_RECORDS)).thenReturn(totalRecords);
 
-        var request = new Request(req);
-        int actual = new PaginationConfig().configPage(request);
+        int actual = new PaginationConfig().config(req);
 
         assertEquals(0 , actual);
-        assertEquals(0 , request.getAttribute(SCOPE_CURRENT_PAGE));
     }
 
     @Test

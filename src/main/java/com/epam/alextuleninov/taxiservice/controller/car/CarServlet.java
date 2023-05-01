@@ -160,12 +160,10 @@ public class CarServlet extends HttpServlet {
         // set attribute for pagination, total_records = all records from database
         req.setAttribute(SCOPE_TOTAL_RECORDS, numberRecordsCarsInDatabase);
         // set current page for pagination
-        var paginationConfig = new PaginationConfig();
-        int page = paginationConfig.configPage(req);
-        paginationConfig.config(req);
+        int currentPage = new PaginationConfig().config(req);
 
         // find all orders with pagination for report`s page
-        var allCars = carCRUD.findAll(PageableRequest.getCarPageableRequest(page));
+        var allCars = carCRUD.findAll(PageableRequest.getCarPageableRequest(currentPage));
         req.getSession().setAttribute(SCOPE_CAR_RESPONSES, allCars);
     }
 }
