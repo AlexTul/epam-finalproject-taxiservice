@@ -25,16 +25,7 @@ public class PaginationConfig {
      * @param req HttpServletRequest request
      */
     public int config(HttpServletRequest req) {
-        String pageFromRequest = req.getParameter(SCOPE_PAGE);
-        int currentPage;
-        /*
-         * if the page is loaded for the first time or the user has entered an incorrect page number in the address bar
-         * */
-        if (pageFromRequest == null || !pageFromRequest.matches("\\d+")) {
-            currentPage = 0;
-        } else {
-            currentPage = Integer.parseInt(pageFromRequest);
-        }
+        int currentPage = getCurrentPage(req);
 
         long totalRecords = (long) req.getAttribute(SCOPE_TOTAL_RECORDS);
         int pageSize = Constants.PAGE_SIZE;
@@ -59,6 +50,27 @@ public class PaginationConfig {
         req.setAttribute("showAllPrev", showAllPrev);
         req.setAttribute("showAllNext", showAllNext);
 
+        return currentPage;
+    }
+
+    /**
+     * Get current page.
+     *
+     * @param req HttpServletRequest request
+     */
+    private int getCurrentPage(HttpServletRequest req) {
+        String pageFromRequest = req.getParameter(SCOPE_PAGE);
+        int currentPage;
+        /*
+         * if the page is loaded for the first time or the user has entered an incorrect page number in the address bar
+         * */
+        if (pageFromRequest == null
+                || !pageFromRequest.matches("\\d+")
+                || Integer.parseInt(pageFromRequest) < 0) {
+            currentPage = 0;
+        } else {
+            currentPage = Integer.parseInt(pageFromRequest);
+        }
         return currentPage;
     }
 }
